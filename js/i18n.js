@@ -1,0 +1,237 @@
+'use strict';
+// Textos de la interfaz en un solo lugar: clave: [español, inglés].
+// Para agregar un idioma, suma una columna y ajusta LANG.
+// En el HTML: data-i18n (texto), data-i18n-ph (placeholder) y data-i18n-title (tooltip y aria-label).
+
+const LANG = String(chrome.i18n?.getUILanguage?.() || navigator.language || 'en').toLowerCase().startsWith('es') ? 'es' : 'en';
+
+const STR = {
+  tabTitle: ['Nueva pestaña', 'New Tab'],
+  logoDefault: ['Inicio', 'Home'],
+  searchPh: ['Busca o escribe una URL', 'Search or type a URL'],
+  images: ['Imágenes', 'Images'],
+
+  // barra de marcadores
+  moreBookmarks: ['Más marcadores', 'More bookmarks'],
+  allBookmarks: ['Todos los favoritos', 'All bookmarks'],
+  empty: ['(vacío)', '(empty)'],
+
+  // pantallas y barra de edición
+  prevScreen: ['Pantalla anterior', 'Previous screen'],
+  nextScreen: ['Pantalla siguiente', 'Next screen'],
+  screen: ['Pantalla', 'Screen'],
+  screenN: ['Pantalla {0}', 'Screen {0}'],
+  addLink: ['+ Enlace', '+ Link'],
+  addFolder: ['+ Carpeta', '+ Folder'],
+  addWidget: ['+ Widget', '+ Widget'],
+  addScreen: ['+ Pantalla', '+ Screen'],
+  delScreen: ['Borrar pantalla', 'Delete screen'],
+  settings: ['Ajustes', 'Settings'],
+  done: ['Listo', 'Done'],
+  customize: ['Personalizar', 'Customize'],
+  screenSettings: ['Ajustes de esta pantalla…', 'This screen’s settings…'],
+  newScreen: ['Pantalla nueva', 'New screen'],
+  newScreenAsk: ['¿Crear una pantalla nueva? Será la número {0}.', 'Create a new screen? It will be number {0}.'],
+  keepOneScreen: ['Debe quedar al menos una pantalla.', 'At least one screen must remain.'],
+  delScreenAsk: ['¿Borrar {0}?', 'Delete {0}?'],
+  delScreenItemsAsk: ['¿Borrar {0} y sus {1} elementos?', 'Delete {0} and its {1} items?'],
+  screenDeleted: ['Pantalla borrada.', 'Screen deleted.'],
+  pageCreated: ['No cabía todo: se creó la pantalla {0}.', 'Not everything fit: screen {0} was created.'],
+  pagesCreated: ['No cabía todo: se crearon {0} pantallas.', 'Not everything fit: {0} screens were created.'],
+  addedOn: ['Pantalla llena: se agregó en {0}.', 'Screen full: added to {0}.'],
+  movedTo: ['Movido a {0}.', 'Moved to {0}.'],
+
+  // bienvenida
+  welcomeTitle: ['¡Bienvenido a tu nueva pestaña!', 'Welcome to your new tab!'],
+  tip1: ['Toca el lápiz ✎ o mantén presionado un icono para personalizar.', 'Click the pencil ✎ or press and hold an icon to customize.'],
+  tip2: ['Arrastra un icono a cualquier hueco. Suéltalo sobre otro para crear una carpeta.', 'Drag an icon to any empty spot. Drop it on another to make a folder.'],
+  tip3: ['Clic derecho en un icono, un marcador o un espacio vacío para ver más opciones.', 'Right-click an icon, a bookmark or an empty spot for more options.'],
+  tip4: ['Cada pantalla tiene sus propios espacios. Cambia de pantalla con las flechas, la rueda o los puntos.', 'Each screen has its own spaces. Switch screens with the arrows, the wheel or the dots.'],
+  tip5: ['En Ajustes → Extras hay widgets, buscador avanzado y más.', 'Settings → Extras has widgets, an advanced search box and more.'],
+  tipPrivacy: ['Tus accesos iniciales vienen de tus sitios más visitados y la barra muestra tus marcadores. Todo se guarda solo en este computador: nada se envía a internet.', 'Your first shortcuts come from your most visited sites, and the bar shows your bookmarks. Everything is stored only on this computer: nothing is sent to the internet.'],
+  gotIt: ['Entendido', 'Got it'],
+
+  // avisos y confirmaciones
+  undo: ['Deshacer', 'Undo'],
+  undone: ['Cambio deshecho.', 'Change undone.'],
+  nothingToUndo: ['No hay nada que deshacer.', 'Nothing to undo.'],
+  deleted: ['Se eliminó «{0}».', '“{0}” deleted.'],
+  accept: ['Aceptar', 'OK'],
+  cancel: ['Cancelar', 'Cancel'],
+  save: ['Guardar', 'Save'],
+  create: ['Crear', 'Create'],
+  close: ['Cerrar', 'Close'],
+  delete: ['Eliminar', 'Delete'],
+  linkAdded: ['Acceso agregado.', 'Shortcut added.'],
+
+  // iconos y menús
+  edit: ['Editar…', 'Edit…'],
+  open: ['Abrir', 'Open'],
+  changeSize: ['Cambiar tamaño', 'Change size'],
+  takeOut: ['Sacar de la carpeta', 'Remove from folder'],
+  moveTo: ['Mover a', 'Move to'],
+  openNewTab: ['Abrir en pestaña nueva', 'Open in new tab'],
+  openNewWindow: ['Abrir en ventana nueva', 'Open in new window'],
+  openIncognito: ['Abrir en ventana de incógnito', 'Open in incognito window'],
+  openAll: ['Abrir todo ({0})', 'Open all ({0})'],
+  openAllWindow: ['Abrir todo en ventana nueva', 'Open all in new window'],
+  addHere: ['Agregar a esta pantalla', 'Add to this screen'],
+  addFolderHere: ['Agregar como carpeta a esta pantalla', 'Add as a folder to this screen'],
+  folder: ['Carpeta', 'Folder'],
+  folderName: ['Nombre de la carpeta', 'Folder name'],
+  size: ['Tamaño', 'Size'],
+  size_1x1: ['Normal (1×1)', 'Normal (1×1)'],
+  size_2x1: ['Ancho (2×1)', 'Wide (2×1)'],
+  size_1x2: ['Alto (1×2)', 'Tall (1×2)'],
+  size_2x2: ['Grande (2×2)', 'Large (2×2)'],
+  shape: ['Forma', 'Shape'],
+  shapeDefault: ['Como todos', 'Same as all'],
+  shape_circle: ['Círculo', 'Circle'],
+  shape_rounded: ['Redondeado', 'Rounded'],
+  shape_square: ['Cuadrado', 'Square'],
+  shape_hexagon: ['Hexágono', 'Hexagon'],
+  shape_star: ['Estrella', 'Star'],
+  shape_triangle: ['Triángulo', 'Triangle'],
+  shape_heart: ['Corazón', 'Heart'],
+
+  // editor
+  add_link: ['Agregar acceso', 'Add shortcut'],
+  add_folder: ['Agregar carpeta', 'Add folder'],
+  edit_link: ['Editar acceso', 'Edit shortcut'],
+  edit_folder: ['Editar carpeta', 'Edit folder'],
+  name: ['Nombre', 'Name'],
+  uploadIcon: ['Subir icono', 'Upload icon'],
+  glyph: ['Emoji o letra', 'Emoji or letter'],
+  useFavicon: ['Usar el del sitio', 'Use site icon'],
+
+  // ajustes de pantalla
+  screenName: ['Nombre de la pantalla', 'Screen name'],
+  screenNamePh: ['Trabajo, Juegos…', 'Work, Games…'],
+  ownBg: ['Fondo propio', 'Own background'],
+  removeBg: ['Quitar fondo', 'Remove background'],
+  hasOwnBg: ['Tiene fondo propio.', 'Has its own background.'],
+  cols: ['Columnas', 'Columns'],
+  rows: ['Filas', 'Rows'],
+  rowPattern: ['Iconos por fila, separados por coma', 'Icons per row, comma separated'],
+  spacesInfo: ['{0} espacios · {1} elementos en esta pantalla', '{0} spaces · {1} items on this screen'],
+  willMove: ['{0} pasarán a la pantalla {1}', '{0} will move to screen {1}'],
+  applyAll: ['Aplicar a todas', 'Apply to all'],
+  applyAllTip: ['Usar estos espacios en todas las pantallas', 'Use these spaces on every screen'],
+
+  // ajustes generales
+  tabIcons: ['Iconos', 'Icons'],
+  tabButtons: ['Botones', 'Buttons'],
+  tabLook: ['Fondo', 'Background'],
+  tabPage: ['Página', 'Page'],
+  tabExtras: ['Extras', 'Extras'],
+  tabData: ['Datos', 'Data'],
+  layout: ['Disposición', 'Layout'],
+  layoutGrid: ['Cuadrícula', 'Grid'],
+  layoutGridTip: ['Tipo celular: tamaños y posición libre', 'Phone-like: free sizes and placement'],
+  layoutRows: ['Filas a medida', 'Custom rows'],
+  layoutRowsTip: ['Ej.: 3 arriba y 4 abajo', 'E.g. 3 on top, 4 below'],
+  layoutList: ['Lista', 'List'],
+  layoutListTip: ['Un icono bajo otro, con su nombre', 'One icon under another, with its name'],
+  defaultSpacesTip: ['Espacios de las pantallas nuevas. Cada pantalla puede tener los suyos con el botón «Pantalla» del modo edición.', 'Spaces for new screens. Each screen can have its own from the “Screen” button in edit mode.'],
+  cellSize: ['Tamaño máximo de celda', 'Max cell size'],
+  iconSize: ['Tamaño de icono', 'Icon size'],
+  showLabels: ['Mostrar nombres', 'Show names'],
+  iconColor: ['Color del icono', 'Icon color'],
+  transparency: ['Transparencia', 'Transparency'],
+  navButtons: ['Flechas, puntos y lápiz', 'Arrows, dots and pencil'],
+  showArrows: ['Flechas a los lados', 'Side arrows'],
+  arrowSize: ['Tamaño de las flechas', 'Arrow size'],
+  arrowZone: ['Zona de clic de las flechas', 'Arrow click area'],
+  arrowZoneTip: ['Un clic en cualquier parte de la franja lateral cambia de pantalla, aunque la flecha sea pequeña o invisible. En modo edición se ve la zona.', 'Clicking anywhere on the side strip switches screens, even if the arrow is small or invisible. The area is shown in edit mode.'],
+  bgColor: ['Color de fondo', 'Background color'],
+  symbolColor: ['Color del símbolo', 'Symbol color'],
+  invisibleTip: ['Al 100 % los botones son invisibles, pero siguen funcionando y aparecen al pasar el mouse.', 'At 100% the buttons are invisible but still work, and appear on hover.'],
+  editMode: ['Modo edición', 'Edit mode'],
+  longPress: ['Mantener presionado un icono entra al modo edición', 'Press and hold an icon to enter edit mode'],
+  wiggle: ['Iconos que se mueven al editar', 'Wiggle icons while editing'],
+  background: ['Fondo', 'Background'],
+  textColor: ['Color del texto', 'Text color'],
+  bgImage: ['Imagen de fondo', 'Background image'],
+  removeImage: ['Quitar imagen', 'Remove image'],
+  dim: ['Oscurecer imagen', 'Darken image'],
+  bgTooBig: ['No se pudo guardar la imagen (es demasiado grande).', 'The image could not be saved (it is too large).'],
+  panels: ['Paneles', 'Panels'],
+  panelTheme: ['Tema de menús y ventanas', 'Menus and dialogs theme'],
+  themeAuto: ['Automático (como el sistema)', 'Automatic (follow system)'],
+  themeDark: ['Oscuro', 'Dark'],
+  themeLight: ['Claro', 'Light'],
+  logoAndSearch: ['Logo y buscador', 'Logo and search'],
+  showLogo: ['Mostrar logo', 'Show logo'],
+  logoText: ['Texto del logo', 'Logo text'],
+  logoColor: ['Logo a colores', 'Colorful logo'],
+  showSearch: ['Mostrar buscador', 'Show search box'],
+  topLinks: ['Enlaces de arriba a la derecha', 'Top-right links'],
+  topLinksTip: ['Uno por línea: Nombre = URL. Déjalo vacío para no mostrar ninguno.', 'One per line: Name = URL. Leave empty to show none.'],
+  bookmarksBar: ['Barra de marcadores', 'Bookmarks bar'],
+  showBookmarks: ['Mostrar marcadores', 'Show bookmarks'],
+  barColor: ['Color de la barra', 'Bar color'],
+
+  // extras
+  extrasIntro: ['Funciones opcionales. Vienen apagadas para que la página quede simple.', 'Optional features. They are off by default to keep the page simple.'],
+  xWidgets: ['Widgets', 'Widgets'],
+  xWidgetsOn: ['Activar widgets: reloj, notas y tareas', 'Enable widgets: clock, notes and to-dos'],
+  xWidgetsTip: ['Agrégalos con «+ Widget» en el modo edición o con clic derecho. Al apagar esto no se borran los que ya pusiste.', 'Add them with “+ Widget” in edit mode or by right-clicking. Turning this off does not delete existing ones.'],
+  clock24: ['Reloj de 24 horas', '24-hour clock'],
+  w_clock: ['Reloj', 'Clock'],
+  w_notes: ['Notas', 'Notes'],
+  w_todo: ['Tareas', 'To-do'],
+  notesPh: ['Escribe una nota…', 'Write a note…'],
+  todoPh: ['Agregar tarea y Enter', 'Add a task and press Enter'],
+  xPages: ['Personalizar cada pantalla', 'Customize each screen'],
+  xPagesOn: ['Nombre y fondo propio para cada pantalla', 'Own name and background for each screen'],
+  xPagesTip: ['Se configuran con el botón «Pantalla» del modo edición.', 'Set them with the “Screen” button in edit mode.'],
+  xSearch: ['Buscador avanzado', 'Advanced search'],
+  xSearchOn: ['Elegir otro buscador en cada búsqueda y usar atajos', 'Pick another search engine per search and use shortcuts'],
+  searchKeys: ['Buscadores alternativos y atajos', 'Alternative search engines and shortcuts'],
+  searchKeysTip: ['Uno por línea: atajo = URL con %s. Aparecen en el menú ⌄ del buscador, y con atajos como «yt gatos». Cada búsqueda vuelve al buscador de Chrome. La tecla / lleva al buscador.', 'One per line: shortcut = URL with %s. They appear in the ⌄ menu of the search box, and with shortcuts like “yt cats”. Every search goes back to Chrome’s search engine. The / key focuses the search box.'],
+  engineChrome: ['Buscador de Chrome', 'Chrome’s search engine'],
+  engineChoose: ['Elegir buscador solo para esta búsqueda', 'Pick a search engine for this search only'],
+  engineBack: ['Volver al buscador de Chrome', 'Back to Chrome’s search engine'],
+
+  // datos
+  privacyNote: ['Tus accesos, ajustes, marcadores y sitios más visitados se usan y guardan solo en este computador. La extensión no envía datos a ningún servidor.', 'Your shortcuts, settings, bookmarks and most visited sites are used and stored only on this computer. The extension does not send data to any server.'],
+  importTop: ['Agregar mis más visitados', 'Add my most visited'],
+  addedN: ['Se agregaron {0} accesos.', '{0} shortcuts added.'],
+  haveAllTop: ['Ya tienes todos tus sitios más visitados.', 'You already have all your most visited sites.'],
+  exportBackup: ['Exportar respaldo', 'Export backup'],
+  importBackup: ['Importar respaldo', 'Import backup'],
+  backupFile: ['nueva-pestana-respaldo', 'new-tab-backup'],
+  noScreens: ['no tiene pantallas', 'it has no screens'],
+  badBackup: ['El archivo no es un respaldo válido: {0}', 'This file is not a valid backup: {0}'],
+  imported: ['Respaldo importado.', 'Backup imported.'],
+  autoBackups: ['Copias automáticas', 'Automatic backups'],
+  autoBackupsTip: ['Se guarda una copia al día (las últimas 7), solo en este computador.', 'One copy per day is kept (the last 7), only on this computer.'],
+  backupCount: ['{0} pantallas · {1} elementos', '{0} screens · {1} items'],
+  backupNow: ['Crear copia ahora', 'Back up now'],
+  backupDone: ['Copia creada.', 'Backup created.'],
+  noBackups: ['Todavía no hay copias.', 'No backups yet.'],
+  restore: ['Restaurar', 'Restore'],
+  restoreAsk: ['¿Restaurar la copia del {0}? Podrás deshacerlo.', 'Restore the backup from {0}? You can undo it.'],
+  restored: ['Copia restaurada.', 'Backup restored.'],
+  dangerZone: ['Zona peligrosa', 'Danger zone'],
+  reset: ['Restablecer todo', 'Reset everything'],
+  resetAsk: ['¿Borrar todos tus accesos y ajustes? Podrás deshacerlo justo después.', 'Delete all your shortcuts and settings? You can undo it right after.'],
+  resetDone: ['Todo restablecido.', 'Everything was reset.'],
+};
+
+function t(key, ...args) {
+  const e = STR[key];
+  const s = e ? e[LANG === 'es' ? 0 : 1] : key;
+  return args.length ? s.replace(/\{(\d)\}/g, (_, i) => args[i]) : s;
+}
+
+function applyI18n(root = document) {
+  for (const n of root.querySelectorAll('[data-i18n]')) n.textContent = t(n.dataset.i18n);
+  for (const n of root.querySelectorAll('[data-i18n-ph]')) n.placeholder = t(n.dataset.i18nPh);
+  for (const n of root.querySelectorAll('[data-i18n-title]')) {
+    n.title = t(n.dataset.i18nTitle);
+    if (!n.dataset.i18n) n.setAttribute('aria-label', n.title); // si tiene texto visible, ese ya es su nombre
+  }
+  document.documentElement.lang = LANG;
+  document.title = t('tabTitle');
+}

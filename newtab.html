@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Tab</title>
+  <script src="js/boot.js"></script>
+  <link rel="stylesheet" href="css/newtab.css">
+</head>
+<body>
+<!-- Los textos se ponen desde js/i18n.js (data-i18n = texto, data-i18n-ph = placeholder, data-i18n-title = título). -->
+<div id="pagebg"></div>
+<div id="app">
+  <nav id="bmbar">
+    <div id="bmItems"></div>
+    <button type="button" class="bm" id="bmMore" data-i18n-title="moreBookmarks" hidden>»</button>
+    <span class="bm-sep"></span>
+    <button type="button" class="bm folder" id="bmOther"><span class="ficon"></span><span class="bt" data-i18n="allBookmarks"></span></button>
+  </nav>
+
+  <header id="toplinks"></header>
+
+  <main id="hero">
+    <h1 id="logo"></h1>
+    <form id="search" role="search" autocomplete="off">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input id="q" name="q" type="search" data-i18n-ph="searchPh" autofocus>
+      <span id="qhint" hidden></span>
+      <button type="button" id="engineBtn" class="x-search-only"></button>
+    </form>
+  </main>
+
+  <div id="pages">
+    <div id="track"></div>
+    <!-- El botón es toda la franja lateral (zona de clic); el círculo visible va dentro. -->
+    <button type="button" class="nav" id="prev" data-i18n-title="prevScreen">
+      <span class="knob"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></span>
+    </button>
+    <button type="button" class="nav" id="next" data-i18n-title="nextScreen">
+      <span class="knob"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg></span>
+    </button>
+  </div>
+  <nav id="dots"></nav>
+
+  <div id="toolbar">
+    <button type="button" data-act="add-link" data-i18n="addLink"></button>
+    <button type="button" data-act="add-folder" data-i18n="addFolder"></button>
+    <button type="button" data-act="add-widget" class="x-widgets-only" data-i18n="addWidget"></button>
+    <button type="button" data-act="page" data-i18n="screen"></button>
+    <button type="button" data-act="add-page" data-i18n="addScreen"></button>
+    <button type="button" data-act="del-page" data-i18n="delScreen"></button>
+    <button type="button" data-act="settings" data-i18n="settings"></button>
+    <button type="button" data-act="done" class="primary" data-i18n="done"></button>
+  </div>
+
+  <div id="toast" role="status"></div>
+  <div id="dropPreview" hidden></div>
+
+  <div id="welcome" role="dialog" aria-labelledby="welcomeTitle" hidden>
+    <h2 id="welcomeTitle" data-i18n="welcomeTitle"></h2>
+    <ul>
+      <li data-i18n="tip1"></li>
+      <li data-i18n="tip2"></li>
+      <li data-i18n="tip3"></li>
+      <li data-i18n="tip4"></li>
+      <li data-i18n="tip5"></li>
+      <li data-i18n="tipPrivacy"></li>
+    </ul>
+    <button type="button" class="btn primary" id="welcomeOk" data-i18n="gotIt"></button>
+  </div>
+
+  <button id="editBtn" type="button" data-i18n-title="customize">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+  </button>
+</div>
+
+<!-- Agregar / editar acceso -->
+<dialog id="editDlg">
+  <form id="editForm" method="dialog">
+    <h2 id="editTitle"></h2>
+    <label><span data-i18n="name"></span><input name="title" maxlength="60"></label>
+    <label data-for="link"><span>URL</span><input name="url" placeholder="youtube.com"></label>
+    <div class="iconrow">
+      <div class="tile" id="iconPreview"></div>
+      <label class="btn" data-for="link"><span data-i18n="uploadIcon"></span><input type="file" id="iconFile" accept="image/*" hidden></label>
+      <label class="glyph-in" data-for="link"><span data-i18n="glyph"></span><input name="glyph" maxlength="4" placeholder="🎮"></label>
+      <button type="button" class="btn" id="iconReset" data-for="link" data-i18n="useFavicon"></button>
+    </div>
+    <div class="two">
+      <label data-for="size"><span data-i18n="size"></span>
+        <select name="size">
+          <option value="1x1" data-i18n="size_1x1"></option>
+          <option value="2x1" data-i18n="size_2x1"></option>
+          <option value="1x2" data-i18n="size_1x2"></option>
+          <option value="2x2" data-i18n="size_2x2"></option>
+        </select>
+      </label>
+      <label><span data-i18n="shape"></span><select name="shape" id="shapeSelect"><option value="" data-i18n="shapeDefault"></option></select></label>
+    </div>
+    <div class="actions">
+      <button value="cancel" formnovalidate class="btn" data-i18n="cancel"></button>
+      <button value="ok" class="btn primary" data-i18n="save"></button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Carpeta abierta -->
+<dialog id="folderDlg">
+  <div class="fhead">
+    <input id="folderName" maxlength="40" data-i18n-title="folderName">
+    <button type="button" class="btn edit-only" id="folderAdd" data-i18n="addLink"></button>
+    <button type="button" class="btn" id="folderClose" data-i18n-title="close">✕</button>
+  </div>
+  <div id="folderBody"></div>
+</dialog>
+
+<!-- Widget abierto (cuando es compacto) -->
+<dialog id="widgetDlg">
+  <div class="fhead">
+    <h2 id="widgetTitle"></h2>
+    <button type="button" class="btn" id="widgetClose" data-i18n-title="close">✕</button>
+  </div>
+  <div id="widgetBody"></div>
+</dialog>
+
+<!-- Ajustes de la pantalla actual -->
+<dialog id="pageDlg">
+  <form id="pageForm" method="dialog">
+    <h2><span data-i18n="screen"></span> <span id="pageNum"></span></h2>
+    <div class="x-pages-only stack">
+      <label><span data-i18n="screenName"></span><input name="name" maxlength="30" data-i18n-ph="screenNamePh"></label>
+      <div class="iconrow wrap">
+        <label class="btn"><span data-i18n="ownBg"></span><input type="file" id="pageBgFile" accept="image/*" hidden></label>
+        <button type="button" class="btn" id="pageBgRemove" data-i18n="removeBg"></button>
+        <small class="hint" id="pageBgState"></small>
+      </div>
+    </div>
+    <div class="two" data-lay="grid list">
+      <label><span data-i18n="cols"></span><input name="cols" type="number" min="1" max="12"></label>
+      <label><span data-i18n="rows"></span><input name="rows" type="number" min="1" max="10"></label>
+    </div>
+    <label data-lay="rows"><span data-i18n="rowPattern"></span><input name="pattern" placeholder="3,4"></label>
+    <div id="pagePreview" class="ppreview"></div>
+    <p class="hint" id="pageInfo"></p>
+    <div class="actions">
+      <button value="all" class="btn" data-i18n="applyAll" data-i18n-title="applyAllTip"></button>
+      <span class="spacer-flex"></span>
+      <button value="cancel" formnovalidate class="btn" data-i18n="cancel"></button>
+      <button value="ok" class="btn primary" data-i18n="save"></button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Confirmación -->
+<dialog id="askDlg">
+  <form method="dialog">
+    <p id="askMsg"></p>
+    <div class="actions">
+      <button value="no" class="btn" id="askNo"></button>
+      <button value="yes" class="btn primary" id="askYes"></button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Ajustes generales -->
+<dialog id="settingsDlg">
+  <form id="setForm" method="dialog">
+    <div class="shead">
+      <h2 data-i18n="settings"></h2>
+      <button value="close" class="btn" data-i18n-title="close">✕</button>
+    </div>
+    <nav class="tabs">
+      <button type="button" data-tab="icons" data-i18n="tabIcons"></button>
+      <button type="button" data-tab="buttons" data-i18n="tabButtons"></button>
+      <button type="button" data-tab="look" data-i18n="tabLook"></button>
+      <button type="button" data-tab="page" data-i18n="tabPage"></button>
+      <button type="button" data-tab="extras" data-i18n="tabExtras"></button>
+      <button type="button" data-tab="data" data-i18n="tabData"></button>
+    </nav>
+
+    <!-- Iconos -->
+    <section data-tabpanel="icons">
+      <fieldset>
+        <legend data-i18n="layout"></legend>
+        <div class="choices layouts">
+          <label class="choice">
+            <input type="radio" name="layout" value="grid">
+            <span class="pic pg"><i class="D"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <b data-i18n="layoutGrid"></b><small data-i18n="layoutGridTip"></small>
+          </label>
+          <label class="choice">
+            <input type="radio" name="layout" value="rows">
+            <span class="pic pr"><span><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i></span></span>
+            <b data-i18n="layoutRows"></b><small data-i18n="layoutRowsTip"></small>
+          </label>
+          <label class="choice">
+            <input type="radio" name="layout" value="list">
+            <span class="pic pl"><span><i></i><b></b></span><span><i></i><b></b></span><span><i></i><b></b></span></span>
+            <b data-i18n="layoutList"></b><small data-i18n="layoutListTip"></small>
+          </label>
+        </div>
+        <small class="hint" data-i18n="defaultSpacesTip"></small>
+        <div class="two" data-show="layout:grid list">
+          <label><span data-i18n="cols"></span><input name="cols" type="number" min="1" max="12"></label>
+          <label><span data-i18n="rows"></span><input name="rows" type="number" min="1" max="10"></label>
+        </div>
+        <label data-show="layout:rows"><span data-i18n="rowPattern"></span><input name="rowPattern" placeholder="3,4"></label>
+        <label><span class="lr"><span data-i18n="cellSize"></span><output data-for="cell" data-unit="px"></output></span><input name="cell" type="range" min="64" max="200"></label>
+        <label><span class="lr"><span data-i18n="iconSize"></span><output data-for="icon" data-unit="px"></output></span><input name="icon" type="range" min="28" max="110"></label>
+        <label class="check"><input name="showLabels" type="checkbox"><span data-i18n="showLabels"></span></label>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="shape"></legend>
+        <div class="choices shapes" id="shapeChoices"></div>
+        <div class="colors">
+          <label><span data-i18n="iconColor"></span><input name="tileColor" type="color"></label>
+          <label><span class="lr"><span data-i18n="transparency"></span><output data-for="tileTr" data-unit="%"></output></span><input name="tileTr" type="range" min="0" max="100"></label>
+        </div>
+      </fieldset>
+    </section>
+
+    <!-- Botones -->
+    <section data-tabpanel="buttons" hidden>
+      <fieldset>
+        <legend data-i18n="navButtons"></legend>
+        <label class="check"><input name="showArrows" type="checkbox"><span data-i18n="showArrows"></span></label>
+        <label><span class="lr"><span data-i18n="arrowSize"></span><output data-for="navSize" data-unit="px"></output></span><input name="navSize" type="range" min="28" max="80"></label>
+        <label><span class="lr"><span data-i18n="arrowZone"></span><output data-for="navZone" data-unit="px"></output></span><input name="navZone" type="range" min="44" max="240"></label>
+        <small class="hint" data-i18n="arrowZoneTip"></small>
+        <div class="colors">
+          <label><span data-i18n="bgColor"></span><input name="navBg" type="color"></label>
+          <label><span class="lr"><span data-i18n="transparency"></span><output data-for="navBgTr" data-unit="%"></output></span><input name="navBgTr" type="range" min="0" max="100"></label>
+          <label><span data-i18n="symbolColor"></span><input name="navFg" type="color"></label>
+          <label><span class="lr"><span data-i18n="transparency"></span><output data-for="navFgTr" data-unit="%"></output></span><input name="navFgTr" type="range" min="0" max="100"></label>
+        </div>
+        <small class="hint" data-i18n="invisibleTip"></small>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="editMode"></legend>
+        <label class="check"><input name="longPress" type="checkbox"><span data-i18n="longPress"></span></label>
+        <label class="check"><input name="wiggle" type="checkbox"><span data-i18n="wiggle"></span></label>
+      </fieldset>
+    </section>
+
+    <!-- Fondo y colores -->
+    <section data-tabpanel="look" hidden>
+      <fieldset>
+        <legend data-i18n="background"></legend>
+        <div class="colors">
+          <label><span data-i18n="bgColor"></span><input name="bgColor" type="color"></label>
+          <label><span data-i18n="textColor"></span><input name="textColor" type="color"></label>
+        </div>
+        <div class="iconrow">
+          <label class="btn"><span data-i18n="bgImage"></span><input type="file" id="bgFile" accept="image/*" hidden></label>
+          <button type="button" class="btn" id="bgRemove" data-i18n="removeImage"></button>
+        </div>
+        <label><span class="lr"><span data-i18n="dim"></span><output data-for="bgDim" data-unit="%" data-scale="100"></output></span><input name="bgDim" type="range" min="0" max="0.8" step="0.05"></label>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="panels"></legend>
+        <label><span data-i18n="panelTheme"></span>
+          <select name="panelTheme">
+            <option value="auto" data-i18n="themeAuto"></option>
+            <option value="dark" data-i18n="themeDark"></option>
+            <option value="light" data-i18n="themeLight"></option>
+          </select>
+        </label>
+      </fieldset>
+    </section>
+
+    <!-- Página -->
+    <section data-tabpanel="page" hidden>
+      <fieldset>
+        <legend data-i18n="logoAndSearch"></legend>
+        <label class="check"><input name="showLogo" type="checkbox"><span data-i18n="showLogo"></span></label>
+        <label><span data-i18n="logoText"></span><input name="logoText" maxlength="20" data-i18n-ph="logoDefault"></label>
+        <label class="check"><input name="logoColor" type="checkbox"><span data-i18n="logoColor"></span></label>
+        <label class="check"><input name="showSearch" type="checkbox"><span data-i18n="showSearch"></span></label>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="topLinks"></legend>
+        <textarea name="topLinks" rows="3" spellcheck="false" placeholder="Gmail = https://mail.google.com/"></textarea>
+        <small class="hint" data-i18n="topLinksTip"></small>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="bookmarksBar"></legend>
+        <label class="check"><input name="showBookmarks" type="checkbox"><span data-i18n="showBookmarks"></span></label>
+        <div class="colors">
+          <label><span data-i18n="barColor"></span><input name="bmBg" type="color"></label>
+          <label><span class="lr"><span data-i18n="transparency"></span><output data-for="bmTr" data-unit="%"></output></span><input name="bmTr" type="range" min="0" max="100"></label>
+        </div>
+      </fieldset>
+    </section>
+
+    <!-- Extras (opcionales, apagados de fábrica) -->
+    <section data-tabpanel="extras" hidden>
+      <p class="hint" data-i18n="extrasIntro"></p>
+      <fieldset>
+        <legend data-i18n="xWidgets"></legend>
+        <label class="check"><input name="xWidgets" type="checkbox"><span data-i18n="xWidgetsOn"></span></label>
+        <div data-show="xWidgets" class="stack">
+          <label class="check"><input name="clock24" type="checkbox"><span data-i18n="clock24"></span></label>
+          <small class="hint" data-i18n="xWidgetsTip"></small>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="xPages"></legend>
+        <label class="check"><input name="xPages" type="checkbox"><span data-i18n="xPagesOn"></span></label>
+        <small class="hint" data-show="xPages" data-i18n="xPagesTip"></small>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="xSearch"></legend>
+        <label class="check"><input name="xSearch" type="checkbox"><span data-i18n="xSearchOn"></span></label>
+        <div data-show="xSearch" class="stack">
+          <label><span data-i18n="searchKeys"></span><textarea name="searchKeys" rows="5" spellcheck="false"></textarea></label>
+          <small class="hint" data-i18n="searchKeysTip"></small>
+        </div>
+      </fieldset>
+    </section>
+
+    <!-- Datos -->
+    <section data-tabpanel="data" hidden>
+      <fieldset>
+        <legend data-i18n="tabData"></legend>
+        <small class="hint" data-i18n="privacyNote"></small>
+        <div class="iconrow wrap">
+          <button type="button" class="btn" id="importTop" data-i18n="importTop"></button>
+          <button type="button" class="btn" id="exportBtn" data-i18n="exportBackup"></button>
+          <label class="btn"><span data-i18n="importBackup"></span><input type="file" id="importFile" accept="application/json" hidden></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="autoBackups"></legend>
+        <small class="hint" data-i18n="autoBackupsTip"></small>
+        <div id="backupList"></div>
+        <div class="iconrow"><button type="button" class="btn" id="backupNow" data-i18n="backupNow"></button></div>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="dangerZone"></legend>
+        <div class="iconrow"><button type="button" class="btn danger" id="resetBtn" data-i18n="reset"></button></div>
+      </fieldset>
+    </section>
+  </form>
+</dialog>
+
+<!-- Scripts clásicos al final: se ejecutan antes del primer pintado. -->
+<script src="js/i18n.js"></script>
+<script src="js/store.js"></script>
+<script src="js/core.js"></script>
+<script src="js/widgets.js"></script>
+<script src="js/interact.js"></script>
+<script src="js/panels.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
