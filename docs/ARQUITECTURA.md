@@ -39,7 +39,8 @@ de tus sitios más visitados (la misma que usa Google en sus accesos) y `bookmar
 ```
 manifest.json        configuración (Manifest V3), idiomas y permisos
 _locales/es|en/      nombre y descripción de la extensión en cada idioma
-icons/               íconos (icon.svg es el original; tools/make_icons.py genera los PNG)
+icons/               íconos: icon.svg (48 y 128 px, colorido) e icon-small.svg (16 y 32 px, gris y discreto,
+                     el que se ve en la pestaña); tools/make_icons.py genera los PNG
 newtab.html          estructura: barra de marcadores, logo, buscador, pantallas, diálogos
 css/newtab.css       estilos (variables CSS para tamaños, colores, formas y tema de paneles)
 js/boot.js           pinta color e imagen de fondo antes del primer frame

@@ -64,6 +64,9 @@ document.addEventListener('click', e => {
 
 document.addEventListener('pointerdown', e => {
   if (menus.length && !e.target.closest('.bm-menu, #bmbar button.bm')) closeMenus();
+  // Carpetas «burbuja» y «pantalla» (no modales): un clic afuera las cierra.
+  const fd = $('#folderDlg');
+  if (fd.open && fd.dataset.style !== 'panel' && !drag && !e.target.closest('dialog, .bm-menu, .item.folder')) fd.close();
 });
 
 const openUrls = urls => urls.forEach(url => chrome.tabs.create({ url, active: false }));
@@ -82,7 +85,10 @@ function itemMenu(loc) {
     E.push({ label: t('openAll', it.items.length), act: () => openUrls(it.items.map(c => c.url)) },
       { label: t('openAllWindow'), act: () => chrome.windows.create({ url: it.items.map(c => c.url) }) }, '-');
   }
-  if (it.type === 'widget' && WIDGETS[it.kind]) E.push({ label: t('open'), act: () => openWidget(it) });
+  if (it.type === 'widget' && WIDGETS[it.kind]) {
+    if (it.kind !== 'notes') E.push({ label: t('open'), act: () => openWidget(it) });
+    if (WIDGETS[it.kind].cfg) E.push({ label: t('configure') + '…', act: () => openWidgetCfg(it) });
+  }
   if (it.type !== 'widget') E.push({ label: t('edit'), act: () => openEditor(it) });
   if (!inFolder && sp.sized) E.push({ label: t('size'), sub: SIZES.map(sz => ({ label: sizeLabel(sz), checked: `${it.w || 1}x${it.h || 1}` === sz, act: () => setSize(it, sz) })) });
   if (it.type !== 'widget') {
@@ -119,7 +125,7 @@ function pageMenu() {
   return [
     { label: t('addLink'), act: () => openEditor(null, 'link') },
     { label: t('addFolder'), act: () => openEditor(null, 'folder') },
-    s.xWidgets && { label: t('addWidget'), sub: Object.keys(WIDGETS).map(k => ({ label: t('w_' + k), act: () => addItem(newWidget(k)) })) },
+    s.xWidgets && { label: t('addWidget'), sub: Object.keys(WIDGETS).map(k => ({ label: `${WIDGETS[k].icon}  ${t('w_' + k)}`, act: () => addItem(newWidget(k)) })) },
     { label: t('screenSettings'), act: openPageDlg },
     '-',
     { label: editing ? t('done') : t('customize'), act: () => setEditing(!editing) },
@@ -175,8 +181,20 @@ document.addEventListener('pointerdown', e => {
   }
 });
 
+let dragRaf = null, dragX = 0, dragY = 0;
+
 document.addEventListener('pointermove', e => {
-  if (drag) return moveDrag(e.clientX, e.clientY);
+  if (drag) {
+    dragX = e.clientX;
+    dragY = e.clientY;
+    if (!dragRaf) {
+      dragRaf = requestAnimationFrame(() => {
+        dragRaf = null;
+        if (drag) moveDrag(dragX, dragY);
+      });
+    }
+    return;
+  }
   if (!press || e.pointerId !== press.pointer) return;
   if (Math.hypot(e.clientX - press.x, e.clientY - press.y) < DRAG_START) return;
   clearTimeout(press.timer);
@@ -212,12 +230,15 @@ function beginDrag(x, y) {
   if (src.kind === 'item' && !locate(src.id)) return;
   const r = p.el.getBoundingClientRect();
   const cell = parseFloat(getComputedStyle(p.el).getPropertyValue('--cell')) || r.width;
+  // El punto de agarre se limita al icono: tras mantener presionado, la página se reacomoda
+  // al entrar en edición y el icono puede quedar corrido respecto del dedo.
+  const gx = Math.max(0, Math.min(x - r.left, r.width - 1)), gy = Math.max(0, Math.min(y - r.top, r.height - 1));
   const ghost = el('div', { class: 'drag-ghost', popover: 'manual', style: { width: r.width + 'px', height: r.height + 'px' } }, p.el.cloneNode(true));
   document.body.append(ghost);
   ghost.showPopover();
   drag = {
     src, ghost, srcEl: p.el, hit: null,
-    grab: { dx: x - r.left, dy: y - r.top, cx: Math.floor((x - r.left) / cell), cy: Math.floor((y - r.top) / cell) },
+    grab: { dx: gx, dy: gy, cx: Math.floor(gx / cell), cy: Math.floor(gy / cell) },
   };
   p.el.classList.add('dragging');
   document.body.classList.add('dragging-active');
@@ -265,8 +286,10 @@ function hitTest(x, y) {
   const fd = $('#folderDlg');
   if (fd.open) {
     const r = fd.getBoundingClientRect();
-    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
-      const node = document.elementFromPoint(x, y)?.closest('#folderBody .item');
+    const elUnder = document.elementFromPoint(x, y);
+    const overHead = fd.dataset.style === 'screen' && elUnder?.closest('#folderDlg .fhead');
+    if (!overHead && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
+      const node = elUnder?.closest('#folderBody .item');
       if (node && node.dataset.id !== drag.src.id) {
         const nr = node.getBoundingClientRect();
         return { kind: 'fitem', id: node.dataset.id, node, after: x > nr.left + nr.width / 2 };
@@ -275,7 +298,8 @@ function hitTest(x, y) {
     }
     return { kind: 'leave-folder' };
   }
-  const dot = document.elementFromPoint(x, y)?.closest('.dot');
+  const elUnder = document.elementFromPoint(x, y);
+  const dot = elUnder?.closest('.dot');
   if (dot) return { kind: 'dot', page: +dot.dataset.page };
   const pr = $('#pages').getBoundingClientRect();
   if (y < pr.top || y > pr.bottom) return null;
@@ -304,35 +328,59 @@ function resolveCell(hit) {
   }
   const sp = slotSpec(p);
   const [w, h] = sizeIn(moving, sp);
-  const x = Math.max(0, Math.min(hit.x - Math.min(drag.grab.cx, w - 1), sp.cols - w));
-  const y = Math.max(0, Math.min(hit.y - Math.min(drag.grab.cy, h - 1), sp.rows - h));
+  const x = Math.max(0, Math.min(hit.x - Math.max(0, Math.min(drag.grab.cx, w - 1)), sp.cols - w));
+  const y = Math.max(0, Math.min(hit.y - Math.max(0, Math.min(drag.grab.cy, h - 1)), sp.rows - h));
   return { action: 'place', x, y, w, h, ok: canPlace(p, moving, x, y, loc ? [moving] : []) };
 }
 
+let dropNode = null, dropClass = '';
 function clearHit() {
-  $$('.drop-merge, .drop-swap, .drop-bad, .drop-before, .drop-after').forEach(n => n.classList.remove('drop-merge', 'drop-swap', 'drop-bad', 'drop-before', 'drop-after'));
+  if (dropNode && dropClass) {
+    dropNode.classList.remove(dropClass);
+    dropNode = null;
+    dropClass = '';
+  }
   $('#dropPreview').hidden = true;
 }
 
 function showHit(hit) {
-  clearHit();
   if (hit?.kind !== 'edge') cancelEdge();
-  if (!hit) return;
+  if (!hit) return clearHit();
   if (hit.kind === 'cell') {
     const res = hit.res = resolveCell(hit);
-    if (res.action === 'merge') res.node.classList.add('drop-merge');
-    else if (res.action === 'swap') res.node.classList.add(res.ok ? 'drop-swap' : 'drop-bad');
-    else if (res.action === 'none') res.node.classList.add('drop-bad');
-    else {
-      const pv = $('#dropPreview'), rc = cellsRect(res.x, res.y, res.w, res.h);
-      Object.assign(pv.style, { left: rc.left + 'px', top: rc.top + 'px', width: rc.width + 'px', height: rc.height + 'px' });
-      pv.classList.toggle('bad', !res.ok);
-      pv.hidden = false;
+    if (res.action === 'merge' || res.action === 'swap' || res.action === 'none') {
+      const cls = res.action === 'merge' ? 'drop-merge' : (res.action === 'swap' ? (res.ok ? 'drop-swap' : 'drop-bad') : 'drop-bad');
+      if (dropNode === res.node && dropClass === cls) return;
+      clearHit();
+      dropNode = res.node;
+      dropClass = cls;
+      dropNode.classList.add(dropClass);
+      return;
     }
-  } else if (hit.kind === 'edge') scheduleEdge(hit.dir);
-  else if (hit.kind === 'dot' && hit.page !== current) goToPage(hit.page);
-  else if (hit.kind === 'fitem') hit.node.classList.add(hit.after ? 'drop-after' : 'drop-before');
-  else if (hit.kind === 'leave-folder') $('#folderDlg').close(); // sacar de la carpeta arrastrando hacia afuera
+    clearHit();
+    const pv = $('#dropPreview'), rc = cellsRect(res.x, res.y, res.w, res.h);
+    Object.assign(pv.style, { left: rc.left + 'px', top: rc.top + 'px', width: rc.width + 'px', height: rc.height + 'px' });
+    pv.classList.toggle('bad', !res.ok);
+    pv.hidden = false;
+  } else if (hit.kind === 'edge') {
+    clearHit();
+    scheduleEdge(hit.dir);
+  } else if (hit.kind === 'dot' && hit.page !== current) {
+    clearHit();
+    goToPage(hit.page);
+  } else if (hit.kind === 'fitem') {
+    const cls = hit.after ? 'drop-after' : 'drop-before';
+    if (dropNode === hit.node && dropClass === cls) return;
+    clearHit();
+    dropNode = hit.node;
+    dropClass = cls;
+    dropNode.classList.add(dropClass);
+  } else if (hit.kind === 'leave-folder') {
+    clearHit();
+    if ($('#folderDlg').open) $('#folderDlg').close();
+  } else {
+    clearHit();
+  }
 }
 
 function cancelEdge() { clearTimeout(edgeTimer); edgeTimer = null; }
@@ -412,6 +460,7 @@ function applyDrop(hit) {
 }
 
 function endDrag() {
+  if (dragRaf) { cancelAnimationFrame(dragRaf); dragRaf = null; }
   if (!drag) return;
   drag.ghost.hidePopover?.();
   drag.ghost.remove();
@@ -428,6 +477,7 @@ function finishDrag(x, y) {
   const fromBm = drag.src.kind === 'bm';
   endDrag();
   pruneAutoPages();
+  pruneFolders(activeFolder()); // si se sacó el último icono de una carpeta, la carpeta desaparece
   commit();
   if (changed && fromBm) toast(t('linkAdded'), true);
 }
@@ -597,6 +647,7 @@ $('#pages').addEventListener('wheel', e => {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && menus.length) return closeMenus();
+  if (e.key === 'Escape' && $('#folderDlg').open && $('#folderDlg').dataset.style !== 'panel') return $('#folderDlg').close();
   if (anyDialogOpen() || e.target.matches('input, textarea, select')) return;
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); return undo(); }
   if (e.key === 'ArrowRight') goToPage(current + 1);
@@ -609,5 +660,5 @@ let fitRaf = 0;
 addEventListener('resize', () => {
   closeMenus();
   cancelAnimationFrame(fitRaf);
-  fitRaf = requestAnimationFrame(() => { fitBookmarks(); fitPages(); });
+  fitRaf = requestAnimationFrame(() => { fitBookmarks(); fitPages(); if ($('#folderDlg').open) positionFolder(); });
 });

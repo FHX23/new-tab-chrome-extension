@@ -57,6 +57,13 @@ function el(tag, props = {}, ...children) {
 // API de favicons de MV3 (permiso "favicon"): caché de favicons del propio Chrome, sin red.
 const faviconUrl = (pageUrl, size = 64) => `${FAV}?pageUrl=${encodeURIComponent(pageUrl)}&size=${size}`;
 const hostOf = url => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; } };
+// Nombre corto de un sitio de búsqueda: "google.com/maps", pero "youtube.com" (sin /results ni /search).
+const siteOf = url => {
+  try {
+    const u = new URL(url.replace('%s', 'x')), seg = u.pathname.split('/')[1] || '';
+    return hostOf(u.href) + (seg && !/^(search|results|w)$/.test(seg) && !seg.includes('.') ? '/' + seg : '');
+  } catch { return url; }
+};
 const keyOf = url => { try { const u = new URL(url); return u.hostname.replace(/^www\./, '') + u.pathname.replace(/\/$/, ''); } catch { return url; } };
 const normUrl = u => (u = u.trim()) && (/^([a-z][\w+.-]*:\/\/|mailto:|about:)/i.test(u) ? u : 'https://' + u);
 const looksLikeUrl = q => !/\s/.test(q) && /^([a-z][\w+.-]*:\/\/)?[\w-]+(\.[\w-]+)+(:\d+)?(\/\S*)?$/i.test(q);
@@ -110,24 +117,26 @@ function locate(id) {
 }
 
 // ---------- espacios de cada pantalla y colocación libre ----------
+// Configuración de una pantalla: la propia si la tiene; si no, la de Ajustes.
+const PAGE_KEYS = ['layout', 'cols', 'rows', 'pattern'];
 function pageCfg(p) {
   const s = state.settings;
-  return { cols: p.cols || s.cols, rows: p.rows || s.rows, pattern: parsePattern(p.pattern || s.rowPattern) };
+  return { layout: p.layout || s.layout, cols: p.cols || s.cols, rows: p.rows || s.rows, pattern: parsePattern(p.pattern || s.rowPattern) };
 }
 
 const copyCfg = (from, to) => {
-  for (const k of ['cols', 'rows', 'pattern']) if (from[k]) to[k] = from[k];
+  for (const k of PAGE_KEYS) if (from[k]) to[k] = from[k];
   return to;
 };
 
 // Describe los huecos de una pantalla. En "filas a medida" cada fila tiene su largo.
 function slotSpec(p) {
-  const s = state.settings, cfg = pageCfg(p);
-  if (s.layout === 'rows') {
+  const cfg = pageCfg(p);
+  if (cfg.layout === 'rows') {
     const pat = cfg.pattern;
     return { layout: 'rows', cols: Math.max(...pat), rows: pat.length, rowLen: y => pat[y] || 0, sized: false };
   }
-  return { layout: s.layout, cols: cfg.cols, rows: cfg.rows, rowLen: () => cfg.cols, sized: s.layout === 'grid' };
+  return { layout: cfg.layout, cols: cfg.cols, rows: cfg.rows, rowLen: () => cfg.cols, sized: cfg.layout === 'grid' };
 }
 
 // Tamaño efectivo: solo la cuadrícula admite iconos grandes.
@@ -249,6 +258,16 @@ function toast(msg, withUndo = false) {
   toastTimer = setTimeout(() => box.classList.remove('show'), withUndo ? 6000 : 3200);
 }
 
+// Cambios pequeños que no redibujan (texto de notas, tareas, hábitos, nombre de carpeta…).
+// Además de guardar, actualizan la copia de referencia de Deshacer: si no, deshacer otra acción
+// restauraría un estado anterior a lo que escribiste y lo borraría.
+let quietTimer = null;
+function saveQuiet() {
+  Store.save(state);
+  clearTimeout(quietTimer);
+  quietTimer = setTimeout(() => { lastJson = snap(); }, 250);
+}
+
 // Guarda y vuelve a pintar. full=false solo actualiza variables CSS (mucho más barato).
 function commit(full = true) {
   if (full) {
@@ -368,6 +387,7 @@ function applySettings() {
     '--dim': s.bgDim,
     '--nav-size': s.navSize + 'px',
     '--nav-zone': Math.max(s.navZone, s.navSize) + 'px',
+    '--nav-zone-h': s.navZoneH + '%',
     '--nav-bg': mix(s.navBg, s.navBgTr),
     '--nav-fg': mix(s.navFg, s.navFgTr),
     '--nav-bg-h': mix(s.navBg, Math.min(s.navBgTr, 35)),
@@ -515,14 +535,15 @@ function buildFolderContainer(items, folderId) {
 function renderItem(it, { inFolder, layout, lazy, w = 1, h = 1 }) {
   const isLink = it.type === 'link';
   const node = el(isLink ? 'a' : 'div', {
-    class: `item ${it.type} w${w} h${h}`,
+    class: `item ${it.type} w${w} h${h}${it.kind ? ' kind-' + it.kind : ''}`,
     href: isLink ? it.url : null,
     title: isLink ? `${it.title || ''}\n${it.url}`.trim() : (it.title || null),
     draggable: editing ? 'false' : null,
     dataset: { id: it.id },
   });
   if (it.type === 'widget') {
-    node.append(...renderWidget(it, w, h, layout === 'grid' && !inFolder));
+    const isRoomy = !inFolder && (layout === 'grid' || it.kind === 'notes');
+    node.append(...renderWidget(it, w, h, isRoomy));
   } else {
     const big = w * h >= 4;
     const tile = el('div', { class: 'tile' }, iconFor(it, big ? 9 : 4, lazy, big ? 128 : 64));
@@ -540,6 +561,7 @@ function ctrlsFor(it, inFolder, layout) {
   }, txt);
   return el('div', { class: 'ctrls' },
     it.type !== 'widget' && btn('✎', t('edit'), () => openEditor(it)),
+    it.type === 'widget' && WIDGETS[it.kind]?.cfg && btn('⚙', t('configure'), () => openWidgetCfg(it)),
     !inFolder && layout === 'grid' && btn('⤢', t('changeSize'), () => cycleSize(it)),
     inFolder && btn('⇱', t('takeOut'), () => takeOut(it.id)),
     btn('✕', t('delete'), () => removeItem(it.id)),
@@ -603,6 +625,7 @@ function removeItem(id) {
   const loc = locate(id);
   if (!loc) return;
   loc.list.splice(loc.index, 1);
+  if (loc.item.type === 'widget') disposeWidget(id);
   commit();
   toast(t('deleted', loc.item.title || (loc.item.kind ? t('w_' + loc.item.kind) : hostOf(loc.item.url || ''))), true);
 }
@@ -638,8 +661,15 @@ function addItem(item, pageIdx = current) {
   if (now != null && now !== pageIdx) toast(t('addedOn', pageLabel(now)), true);
 }
 
-function pruneFolders() {
-  for (const p of state.pages) p.items = p.items.filter(it => it.type !== 'folder' || it.items.length);
+// Quita carpetas vacías (salvo `keep`). Devuelve true si quitó alguna.
+function pruneFolders(keep = null) {
+  let removed = false;
+  for (const p of state.pages) {
+    const n = p.items.length;
+    p.items = p.items.filter(it => it.type !== 'folder' || it.items.length || it === keep);
+    removed ||= p.items.length !== n;
+  }
+  return removed;
 }
 
 // Quita pantallas vacías creadas automáticamente al arrastrar a un borde.

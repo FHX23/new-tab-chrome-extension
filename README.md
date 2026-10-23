@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Versión 0.4.0 preliminar" src="https://img.shields.io/badge/versión-0.4.0%20preliminar-orange">
+  <img alt="Versión 0.5.0 preliminar" src="https://img.shields.io/badge/versión-0.5.0%20preliminar-orange">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Chrome-Manifest%20V3-4c8bf5">
   <img alt="Sin librerías" src="https://img.shields.io/badge/librerías-0-2ea44f">
   <img alt="Licencia GPL-3.0" src="https://img.shields.io/badge/licencia-GPL--3.0-blue">
@@ -54,7 +54,7 @@ anuncios ni analítica, y no carga nada desde internet. Detalle completo en [PRI
 - La arquitectura, el modelo de datos y las decisiones de rendimiento están en
   [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
 - `python tools/build_zip.py` arma el paquete para la tienda en `dist/`.
-- `python tools/make_icons.py` vuelve a generar los íconos desde el diseño de `icons/icon.svg`.
+- `python tools/make_icons.py` vuelve a generar los íconos: el colorido (`icons/icon.svg`) y el discreto de la pestaña (`icons/icon-small.svg`).
 - Los textos están en `js/i18n.js` (`clave: [español, inglés]`). Agregar un idioma es sumar una columna.
 
 ```
@@ -96,7 +96,7 @@ ads or analytics, and loads nothing from the internet. Full details in [PRIVACY.
   `chrome://extensions`, done.
 - Architecture, data model and performance notes (in Spanish): [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
 - `python tools/build_zip.py` builds the store package in `dist/`.
-- `python tools/make_icons.py` regenerates the icons from the `icons/icon.svg` design.
+- `python tools/make_icons.py` regenerates the icons: the colorful one (`icons/icon.svg`) and the subtle tab icon (`icons/icon-small.svg`).
 - UI strings live in `js/i18n.js` (`key: [Spanish, English]`). Adding a language means adding a column.
 
 ---

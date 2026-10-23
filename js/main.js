@@ -7,6 +7,18 @@ function migrate() {
   if ((state.v || 0) < 4) migrateV4(s);
   // v5: la búsqueda vuelve siempre al buscador de Chrome (política de la tienda): sin selector permanente
   if (state.v < 5) { delete s.engine; delete s.engineUrl; state.v = 5; }
+  // v6: se quitó el ícono de pestaña personalizado (Chrome siempre mostraba un instante el de la extensión)
+  if (state.v < 6) {
+    delete s.tabIcon;
+    delete s.tabIconData;
+    try { localStorage.removeItem('ntp_tabicon'); } catch {}
+    state.v = 6;
+  }
+  // v7: se quitó el widget de frase del día
+  if (state.v < 7) {
+    for (const p of state.pages) p.items = p.items.filter(it => it.kind !== 'quote');
+    state.v = 7;
+  }
 }
 
 function migrateV4(s) {
@@ -58,8 +70,16 @@ renderAll();
 renderBookmarks();
 lastJson = snap();
 
-// ---------- lo que no es urgente va después del primer pintado ----------
-setTimeout(async () => {
+// ---------- lo que no es urgente va después de la carga, cuando el navegador está libre ----------
+// Chrome procesa el ícono de la pestaña justo al terminar la carga; si en ese momento la página está
+// ocupada (marcadores, copia automática, limpieza de fotos…), el ícono de la extensión se ve más tiempo.
+function whenIdleAfterLoad(fn) {
+  const go = () => setTimeout(() => requestIdleCallback(fn, { timeout: 1000 }), 250);
+  if (document.readyState === 'complete') go();
+  else addEventListener('load', go, { once: true });
+}
+
+whenIdleAfterLoad(async () => {
   if (!cached) {
     const durable = await Store.loadDurable();
     if (durable) { state = durable; migrate(); reflow(); Store.save(state); renderAll(); }
@@ -83,7 +103,14 @@ setTimeout(async () => {
   }
   if (!state.welcomed) showWelcome();
   Store.addBackup(state).catch(() => {});
-}, 0);
+  // Fotos de widgets eliminados: se borran de IndexedDB.
+  // Se conservan las que usa el estado actual o alguna copia automática (para poder restaurarlas).
+  Promise.all([Store.fileKeys(), Store.getBackups()]).then(([keys, backups]) => {
+    const photosOf = s => (s?.pages || []).flatMap(p => p.items || []).flatMap(it => it.photos || []);
+    const used = new Set([state, ...backups.map(b => b.state)].flatMap(photosOf).map(id => 'photo:' + id));
+    for (const k of keys) if (String(k).startsWith('photo:') && !used.has(k)) Store.delFile(k);
+  }).catch(() => {});
+});
 
 Store.onExternalChange(next => {
   if (drag) return; // no interrumpir un arrastre; se sincroniza en el próximo cambio

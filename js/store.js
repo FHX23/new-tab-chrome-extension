@@ -20,6 +20,7 @@ const Store = (() => {
     cell: 112,
     icon: 48,
     shape: 'circle',
+    folderStyle: 'panel', // 'panel' (centrada, como iPhone) | 'bubble' (junto a la carpeta) | 'screen' (como una pantalla)
     showLabels: true,
     showLogo: true,
     logoText: '',         // vacío = nombre neutro según idioma
@@ -35,7 +36,8 @@ const Store = (() => {
     panelTheme: 'auto',   // 'auto' | 'dark' | 'light'
     showArrows: true,
     navSize: 44,
-    navZone: 96,          // ancho de la zona de clic de cada flecha
+    navZone: 96,          // ancho de la zona de clic de cada flecha (px)
+    navZoneH: 60,         // alto de la zona de clic (% del área de iconos)
     navBg: '#000000',
     navBgTr: 65,
     navFg: '#ffffff',
@@ -72,7 +74,7 @@ const Store = (() => {
 
   function defaultState() {
     return {
-      v: 5,
+      v: 6,
       fresh: true,        // instalación nueva: al iniciar se reemplaza por tus sitios más visitados
       settings: { ...DEFAULT_SETTINGS },
       pages: [{ id: uid(), items: DEFAULT_LINKS.map(([t, u]) => link(t, u)) }],
@@ -187,10 +189,14 @@ const Store = (() => {
   const getPageBg = id => idb('readonly', s => s.get('page:' + id));
   const delPageBg = id => idb('readwrite', s => s.delete('page:' + id));
   const getOldBg = () => idb('readonly', s => s.get('bg')); // versión 0.1 guardaba el fondo aquí
+  const putFile = (key, blob) => idb('readwrite', s => s.put(blob, key));
+  const getFile = key => idb('readonly', s => s.get(key));
+  const delFile = key => idb('readwrite', s => s.delete(key));
+  const fileKeys = () => idb('readonly', s => s.getAllKeys());
 
   return {
     KEY, BG, uid, DEFAULT_SETTINGS, DEFAULT_LINKS, newPage, defaultState, normalize, readCache, loadDurable,
     save, flush, onExternalChange, getBg, setBg, restoreBg, getBackups, addBackup,
-    putPageBg, getPageBg, delPageBg, getOldBg,
+    putPageBg, getPageBg, delPageBg, getOldBg, putFile, getFile, delFile, fileKeys,
   };
 })();

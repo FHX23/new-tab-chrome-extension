@@ -2,6 +2,27 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). Versiones 0.x = preliminares.
 
+## [0.5.0] – 2026-10-23
+### Agregado
+- **10 nuevos widgets:** calendario, cuenta regresiva, temporizador (con modos foco y descanso), reloj mundial con buscador de ciudades y zonas horarias, medidor de progreso temporal (día, semana, mes, año), calculadora, álbum de fotos rotativas (almacenadas localmente), registro semanal de hábitos, conversor de unidades y ejercicio de respiración guiada.
+- **Ventana «Configurar» para widgets:** diálogo dedicado para ajustar opciones de cada widget (diseño del reloj digital/analógico/minimalista/en palabras, fecha objetivo de cuenta regresiva, tiempos del temporizador, selector y buscador de ciudades para el reloj mundial, fotos locales, etc.).
+- **3 estilos de apertura de carpetas:** panel centrado (estilo modal iOS), burbuja contextual pegada a la carpeta y vista como pantalla completa con botón para volver.
+- **Configuración por pantalla mejorada:** selector visual de disposición (cuadrícula, filas o lista) con soporte para patrones y dimensiones personalizadas por pantalla.
+- **Selector de colores interactivo:** paleta de acceso rápido con tonos Tailwind CSS más opción de selector nativo del sistema para todos los ajustes de color.
+- **Avisos contextuales de personalización:** notas informativas («esto no cambiará…») en Ajustes cuando una pantalla o icono cuenta con configuración individual propia, con opción para aplicar los ajustes a todos los elementos.
+- **Íconos discretos para pestañas:** nuevo diseño monocromático en 16 y 32 px (`icons/icon-small.svg`) para la pestaña y barra de Chrome, reservando el ícono colorido para la tienda y administración de extensiones.
+- Altura configurable para la zona de interacción de las flechas de navegación lateral (`navZoneH`), con indicador visual interactivo al ajustar.
+
+### Cambiado
+- Arrastre y soltado más fluido con sincronización en `requestAnimationFrame` y mejor posicionamiento del punto de agarre.
+- Las tareas en segundo plano no urgentes (marcadores, respaldos diarios automáticos y limpieza de fotos huérfanas en IndexedDB) se ejecutan con `requestIdleCallback` tras la carga para garantizar un inicio inmediato.
+- Búsqueda en otros sitios: visualización en tabla de atajos configurados con lista editable plegable.
+- En notas: botones para copiar texto al portapapeles, limpiar y visualización de caracteres.
+
+### Quitado
+- Selector de ícono de pestaña personalizado (migración v6) debido al comportamiento de parpadeo propio de Chrome.
+- Widget de frase del día (migración v7) priorizando utilidades completamente autónomas y fuera de línea.
+
 ## [0.4.0] – 2026-10-14
 ### Cambiado
 - La búsqueda usa **siempre el buscador predeterminado de Chrome**, como pide la política de la Chrome
@@ -44,4 +65,5 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). V
 - Primera versión: nueva pestaña con buscador, accesos ilimitados en varias pantallas, tamaños, carpetas,
   arrastrar y soltar, y ajustes de colores y fondo.
 
+[0.5.0]: https://github.com/FHX23/new-tab-chrome-extension/releases/tag/v0.5.0
 [0.4.0]: https://github.com/FHX23/new-tab-chrome-extension/releases/tag/v0.4.0

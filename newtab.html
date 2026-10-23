@@ -81,7 +81,7 @@
     <label><span data-i18n="name"></span><input name="title" maxlength="60"></label>
     <label data-for="link"><span>URL</span><input name="url" placeholder="youtube.com"></label>
     <div class="iconrow">
-      <div class="tile" id="iconPreview"></div>
+      <span class="pv-wrap" data-i18n-title="preview"><span class="tile" id="iconPreview"></span></span>
       <label class="btn" data-for="link"><span data-i18n="uploadIcon"></span><input type="file" id="iconFile" accept="image/*" hidden></label>
       <label class="glyph-in" data-for="link"><span data-i18n="glyph"></span><input name="glyph" maxlength="4" placeholder="🎮"></label>
       <button type="button" class="btn" id="iconReset" data-for="link" data-i18n="useFavicon"></button>
@@ -97,6 +97,7 @@
       </label>
       <label><span data-i18n="shape"></span><select name="shape" id="shapeSelect"><option value="" data-i18n="shapeDefault"></option></select></label>
     </div>
+    <small class="hint" id="shapeHint" data-i18n="shapeOwnHint" hidden></small>
     <div class="actions">
       <button value="cancel" formnovalidate class="btn" data-i18n="cancel"></button>
       <button value="ok" class="btn primary" data-i18n="save"></button>
@@ -107,6 +108,7 @@
 <!-- Carpeta abierta -->
 <dialog id="folderDlg">
   <div class="fhead">
+    <button type="button" class="btn fback" id="folderBack" data-i18n-title="back">‹</button>
     <input id="folderName" maxlength="40" data-i18n-title="folderName">
     <button type="button" class="btn edit-only" id="folderAdd" data-i18n="addLink"></button>
     <button type="button" class="btn" id="folderClose" data-i18n-title="close">✕</button>
@@ -118,9 +120,22 @@
 <dialog id="widgetDlg">
   <div class="fhead">
     <h2 id="widgetTitle"></h2>
+    <button type="button" class="btn" id="widgetCfgBtn" data-i18n-title="configure">⚙</button>
     <button type="button" class="btn" id="widgetClose" data-i18n-title="close">✕</button>
   </div>
   <div id="widgetBody"></div>
+</dialog>
+
+<!-- Configurar un widget (los campos se arman desde WIDGETS[tipo].cfg) -->
+<dialog id="wcfgDlg">
+  <form id="wcfgForm" method="dialog">
+    <h2 id="wcfgTitle"></h2>
+    <div id="wcfgFields" class="stack"></div>
+    <div class="actions">
+      <button value="cancel" formnovalidate class="btn" data-i18n="cancel"></button>
+      <button value="ok" class="btn primary" data-i18n="save"></button>
+    </div>
+  </form>
 </dialog>
 
 <!-- Ajustes de la pantalla actual -->
@@ -135,11 +150,29 @@
         <small class="hint" id="pageBgState"></small>
       </div>
     </div>
+    <div class="choices layouts compact" role="radiogroup">
+      <label class="choice">
+        <input type="radio" name="layout" value="grid">
+        <span class="pic pg"><i class="D"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <b data-i18n="layoutGrid"></b>
+      </label>
+      <label class="choice">
+        <input type="radio" name="layout" value="rows">
+        <span class="pic pr"><span><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i></span></span>
+        <b data-i18n="layoutRows"></b>
+      </label>
+      <label class="choice">
+        <input type="radio" name="layout" value="list">
+        <span class="pic pl"><span><i></i><b></b></span><span><i></i><b></b></span><span><i></i><b></b></span></span>
+        <b data-i18n="layoutList"></b>
+      </label>
+    </div>
     <div class="two" data-lay="grid list">
       <label><span data-i18n="cols"></span><input name="cols" type="number" min="1" max="12"></label>
       <label><span data-i18n="rows"></span><input name="rows" type="number" min="1" max="10"></label>
     </div>
     <label data-lay="rows"><span data-i18n="rowPattern"></span><input name="pattern" placeholder="3,4"></label>
+    <p class="note" id="pageSpacesNote" hidden></p>
     <div id="pagePreview" class="ppreview"></div>
     <p class="hint" id="pageInfo"></p>
     <div class="actions">
@@ -205,13 +238,35 @@
           <label><span data-i18n="rows"></span><input name="rows" type="number" min="1" max="10"></label>
         </div>
         <label data-show="layout:rows"><span data-i18n="rowPattern"></span><input name="rowPattern" placeholder="3,4"></label>
+        <p class="note" id="spacesNote" hidden></p>
         <label><span class="lr"><span data-i18n="cellSize"></span><output data-for="cell" data-unit="px"></output></span><input name="cell" type="range" min="64" max="200"></label>
         <label><span class="lr"><span data-i18n="iconSize"></span><output data-for="icon" data-unit="px"></output></span><input name="icon" type="range" min="28" max="110"></label>
         <label class="check"><input name="showLabels" type="checkbox"><span data-i18n="showLabels"></span></label>
       </fieldset>
       <fieldset>
+        <legend data-i18n="folderStyle"></legend>
+        <div class="choices layouts">
+          <label class="choice">
+            <input type="radio" name="folderStyle" value="panel">
+            <span class="pic fs-pic fs-panel"><span><i></i><i></i><i></i><i></i></span></span>
+            <b data-i18n="folderPanel"></b><small data-i18n="folderPanelTip"></small>
+          </label>
+          <label class="choice">
+            <input type="radio" name="folderStyle" value="bubble">
+            <span class="pic fs-pic fs-bubble"><span><i></i><i></i><i></i></span><em></em></span>
+            <b data-i18n="folderBubble"></b><small data-i18n="folderBubbleTip"></small>
+          </label>
+          <label class="choice">
+            <input type="radio" name="folderStyle" value="screen">
+            <span class="pic fs-pic fs-screen"><b>‹</b><span><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+            <b data-i18n="folderScreen"></b><small data-i18n="folderScreenTip"></small>
+          </label>
+        </div>
+      </fieldset>
+      <fieldset>
         <legend data-i18n="shape"></legend>
         <div class="choices shapes" id="shapeChoices"></div>
+        <p class="note" id="shapeNote" hidden></p>
         <div class="colors">
           <label><span data-i18n="iconColor"></span><input name="tileColor" type="color"></label>
           <label><span class="lr"><span data-i18n="transparency"></span><output data-for="tileTr" data-unit="%"></output></span><input name="tileTr" type="range" min="0" max="100"></label>
@@ -225,7 +280,8 @@
         <legend data-i18n="navButtons"></legend>
         <label class="check"><input name="showArrows" type="checkbox"><span data-i18n="showArrows"></span></label>
         <label><span class="lr"><span data-i18n="arrowSize"></span><output data-for="navSize" data-unit="px"></output></span><input name="navSize" type="range" min="28" max="80"></label>
-        <label><span class="lr"><span data-i18n="arrowZone"></span><output data-for="navZone" data-unit="px"></output></span><input name="navZone" type="range" min="44" max="240"></label>
+        <label><span class="lr"><span data-i18n="arrowZoneW"></span><output data-for="navZone" data-unit="px"></output></span><input name="navZone" type="range" min="44" max="240"></label>
+        <label><span class="lr"><span data-i18n="arrowZoneH"></span><output data-for="navZoneH" data-unit="%"></output></span><input name="navZoneH" type="range" min="15" max="100"></label>
         <small class="hint" data-i18n="arrowZoneTip"></small>
         <div class="colors">
           <label><span data-i18n="bgColor"></span><input name="navBg" type="color"></label>
@@ -237,8 +293,14 @@
       </fieldset>
       <fieldset>
         <legend data-i18n="editMode"></legend>
-        <label class="check"><input name="longPress" type="checkbox"><span data-i18n="longPress"></span></label>
-        <label class="check"><input name="wiggle" type="checkbox"><span data-i18n="wiggle"></span></label>
+        <div class="opt">
+          <label class="check"><input name="longPress" type="checkbox"><span data-i18n="longPress"></span></label>
+          <small class="hint" data-i18n="longPressTip"></small>
+        </div>
+        <div class="opt">
+          <label class="check"><input name="wiggle" type="checkbox"><span data-i18n="wiggle"></span></label>
+          <small class="hint" data-i18n="wiggleTip"></small>
+        </div>
       </fieldset>
     </section>
 
@@ -254,6 +316,7 @@
           <label class="btn"><span data-i18n="bgImage"></span><input type="file" id="bgFile" accept="image/*" hidden></label>
           <button type="button" class="btn" id="bgRemove" data-i18n="removeImage"></button>
         </div>
+        <p class="note" id="bgNote" hidden></p>
         <label><span class="lr"><span data-i18n="dim"></span><output data-for="bgDim" data-unit="%" data-scale="100"></output></span><input name="bgDim" type="range" min="0" max="0.8" step="0.05"></label>
       </fieldset>
       <fieldset>
@@ -310,10 +373,19 @@
       </fieldset>
       <fieldset>
         <legend data-i18n="xSearch"></legend>
+        <p class="hint" data-i18n="xSearchWhat"></p>
         <label class="check"><input name="xSearch" type="checkbox"><span data-i18n="xSearchOn"></span></label>
         <div data-show="xSearch" class="stack">
-          <label><span data-i18n="searchKeys"></span><textarea name="searchKeys" rows="5" spellcheck="false"></textarea></label>
-          <small class="hint" data-i18n="searchKeysTip"></small>
+          <div class="howto">
+            <div><kbd>yt gatos</kbd><span data-i18n="xSearchEx1"></span></div>
+            <div><kbd>⌄</kbd><span data-i18n="xSearchEx2"></span></div>
+          </div>
+          <div class="keys" id="keysTable"></div>
+          <details class="keys-edit">
+            <summary data-i18n="editList"></summary>
+            <textarea name="searchKeys" rows="6" spellcheck="false" data-i18n-title="searchKeys"></textarea>
+            <small class="hint" data-i18n="searchKeysTip"></small>
+          </details>
         </div>
       </fieldset>
     </section>
