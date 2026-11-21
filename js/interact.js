@@ -90,7 +90,7 @@ function itemMenu(loc) {
     if (WIDGETS[it.kind].cfg) E.push({ label: t('configure') + '…', act: () => openWidgetCfg(it) });
   }
   if (it.type !== 'widget') E.push({ label: t('edit'), act: () => openEditor(it) });
-  if (!inFolder && sp.sized) E.push({ label: t('size'), sub: SIZES.map(sz => ({ label: sizeLabel(sz), checked: `${it.w || 1}x${it.h || 1}` === sz, act: () => setSize(it, sz) })) });
+  if (!inFolder && (sp.sized || sp.layout === 'rows' || it.type === 'widget')) E.push({ label: t('size'), sub: sizesFor(it).map(sz => ({ label: sizeLabel(sz), checked: `${it.w || 1}x${it.h || 1}` === sz, act: () => setSize(it, sz) })) });
   if (it.type !== 'widget') {
     E.push({ label: t('shape'), sub: [{ label: t('shapeDefault'), checked: !it.shape, act: () => setShape(it, '') },
       ...Object.keys(SHAPES).map(k => ({ label: t('shape_' + k), checked: it.shape === k, act: () => setShape(it, k) }))] });
@@ -261,10 +261,17 @@ function cellAt(x, y) {
   if (!box) return null;
   const sp = slotSpec(state.pages[current]), r = box.getBoundingClientRect();
   if (sp.layout === 'rows') {
-    const cell = r.height / sp.rows, yy = Math.floor((y - r.top) / cell);
-    if (yy < 0 || yy >= sp.rows) return null;
-    const n = sp.rowLen(yy), left = r.left + (r.width - n * cell) / 2, xx = Math.floor((x - left) / cell);
-    return xx >= 0 && xx < n ? { x: xx, y: yy } : null;
+    const rows = box.children;
+    for (let yy = 0; yy < rows.length; yy++) {
+      const rr = rows[yy].getBoundingClientRect();
+      if (y < rr.top || y > rr.bottom) continue;
+      const kids = rows[yy].children;
+      for (let xx = 0; xx < kids.length; xx++) {
+        const kr = kids[xx].getBoundingClientRect();
+        if (x >= kr.left && x <= kr.right) return { x: xx, y: yy };
+      }
+    }
+    return null;
   }
   const xx = Math.floor((x - r.left) / (r.width / sp.cols)), yy = Math.floor((y - r.top) / (r.height / sp.rows));
   return xx >= 0 && xx < sp.cols && yy >= 0 && yy < sp.rows ? { x: xx, y: yy } : null;
@@ -275,6 +282,8 @@ function cellsRect(x, y, w, h) {
   const box = pageEl()?.querySelector('.items');
   const sp = slotSpec(state.pages[current]), r = box.getBoundingClientRect();
   if (sp.layout === 'rows') {
+    const node = box?.children[y]?.children[x];
+    if (node) return node.getBoundingClientRect();
     const cell = r.height / sp.rows, left = r.left + (r.width - sp.rowLen(y) * cell) / 2;
     return { left: left + x * cell, top: r.top + y * cell, width: cell, height: cell };
   }
@@ -473,6 +482,8 @@ function endDrag() {
 
 function finishDrag(x, y) {
   const hit = hitTest(x, y);
+  const willMakeFolder = hit?.kind === 'cell' && resolveCell(hit)?.action === 'merge' && resolveCell(hit)?.target?.type !== 'folder';
+  const wasAutoPage = !!state.pages[current]?.auto;
   const changed = applyDrop(hit);
   const fromBm = drag.src.kind === 'bm';
   endDrag();
@@ -480,6 +491,8 @@ function finishDrag(x, y) {
   pruneFolders(activeFolder()); // si se sacó el último icono de una carpeta, la carpeta desaparece
   commit();
   if (changed && fromBm) toast(t('linkAdded'), true);
+  else if (changed && willMakeFolder) toast(t('folderCreated'), true);
+  else if (changed && wasAutoPage) toast(t('movedTo', pageLabel(current)), true);
 }
 
 function cancelDrag() {

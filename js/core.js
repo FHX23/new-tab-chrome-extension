@@ -7,7 +7,7 @@ const { uid, newPage, normalize, DEFAULT_SETTINGS } = Store;
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const SIZES = ['1x1', '2x1', '1x2', '2x2'];
+const SIZES = ['1x1', '2x1', '1x2', '2x2', '3x2', '2x3', '3x3', '4x2', '4x3'];
 const LOGO_COLORS = ['#8ab4f8', '#f28b82', '#fdd663', '#81c995', '#c58af9', '#78d9ec']; // paleta propia (la del ícono)
 const STRUCTURAL = new Set(['layout', 'cols', 'rows', 'rowPattern']); // ajustes que obligan a reacomodar iconos
 const FAV = chrome.runtime.getURL('/_favicon/');
@@ -139,8 +139,14 @@ function slotSpec(p) {
   return { layout: cfg.layout, cols: cfg.cols, rows: cfg.rows, rowLen: () => cfg.cols, sized: cfg.layout === 'grid' };
 }
 
-// Tamaño efectivo: solo la cuadrícula admite iconos grandes.
-const sizeIn = (it, sp) => sp.sized ? [Math.min(it.w || 1, sp.cols), Math.min(it.h || 1, sp.rows)] : [1, 1];
+// Tamaño efectivo en la cuadrícula (en modo lista, los widgets abiertos ocupan varias filas de alto).
+const sizeIn = (it, sp) => {
+  if (sp.sized) return [Math.min(it.w || 1, sp.cols), Math.min(it.h || 1, sp.rows)];
+  if (sp.layout === 'list' && it.type === 'widget' && ((it.w || 1) > 1 || (it.h || 1) > 1)) {
+    return [Math.min(Math.max(1, Math.floor((it.w || 2) / 2)), sp.cols), Math.min(Math.max(2, (it.h || 2) * 2), sp.rows)];
+  }
+  return [1, 1];
+};
 
 // Orden de lectura: por filas; la lista se llena por columnas.
 const readOrder = sp => sp.layout === 'list'
@@ -291,6 +297,7 @@ function undo() {
   state = normalize(JSON.parse(prev));
   lastJson = prev;
   current = Math.min(current, state.pages.length - 1);
+  if (openFolderId && !locate(openFolderId)) $('#folderDlg').close();
   Store.save(state);
   renderAll();
   toast(t('undone'));
@@ -367,6 +374,7 @@ function favImg(url, size, lazy) {
 // ---------- dibujo ----------
 function renderAll() {
   document.body.classList.toggle('editing', editing); // antes de medir: cambia el espacio disponible
+  if ($('#undoBtn')) $('#undoBtn').disabled = !undoStack.length;
   applySettings();
   renderDots();
   renderPages();
@@ -393,6 +401,7 @@ function applySettings() {
     '--nav-bg-h': mix(s.navBg, Math.min(s.navBgTr, 35)),
     '--nav-fg-h': s.navFg,
     '--bm-bg': mix(s.bmBg, s.bmTr),
+    '--toplinks-color': s.topLinksColor || s.textColor,
     ...shapeVars(s.shape),
   });
   r.backgroundColor = s.bgColor;
@@ -414,9 +423,14 @@ function applySettings() {
     $('#logo').replaceChildren(...[...text].map((ch, i) =>
       el('span', { style: s.logoColor ? { color: LOGO_COLORS[i % LOGO_COLORS.length] } : null }, ch)));
   }
-  if (s.topLinks !== topKey) {
-    topKey = s.topLinks;
-    $('#toplinks').replaceChildren(...parseLines(s.topLinks).map(l => el('a', { href: normUrl(l.url) }, l.name)));
+  const tColors = s.topLinksColors || {};
+  const tKey = s.topLinks + '\0' + (s.topLinksColor || '') + '\0' + JSON.stringify(tColors);
+  if (tKey !== topKey) {
+    topKey = tKey;
+    $('#toplinks').replaceChildren(...parseLines(s.topLinks).map((l, i) => {
+      const c = tColors[i] || tColors[l.name] || s.topLinksColor || s.textColor;
+      return el('a', { href: normUrl(l.url), style: c ? { color: c } : null }, l.name);
+    }));
   }
   try { if (localStorage.getItem('ntp_bg') !== s.bgColor) localStorage.setItem('ntp_bg', s.bgColor); } catch {}
 }
@@ -469,7 +483,14 @@ function renderPage(p, i) {
       const row = el('div', { class: 'row' });
       for (let x = 0; x < sp.rowLen(y); x++) {
         const it = p.items.find(o => o.x === x && o.y === y);
-        row.append(it ? renderItem(it, opts) : el('div', { class: editing ? 'slot' : 'gap' }));
+        if (it) {
+          const w = it.w || 1, h = it.h || 1;
+          const n = renderItem(it, { ...opts, w, h });
+          setVars(n.style, { '--iw': w, '--ih': h });
+          row.append(n);
+        } else {
+          row.append(el('div', { class: editing ? 'slot' : 'gap' }));
+        }
       }
       box.append(row);
     }
@@ -481,7 +502,9 @@ function renderPage(p, i) {
     for (const it of p.items) {
       const [w, h] = sizeIn(it, sp);
       g.mark(it.x, it.y, w, h);
-      const n = renderItem(it, { ...opts, w, h });
+      const rw = list && it.type === 'widget' ? (it.w || 1) : w;
+      const rh = list && it.type === 'widget' ? (it.h || 1) : h;
+      const n = renderItem(it, { ...opts, w: rw, h: rh });
       n.style.gridArea = `${it.y + 1} / ${it.x + 1} / span ${h} / span ${w}`;
       box.append(n);
     }
@@ -512,9 +535,23 @@ function fitPages() {
     const name = node.querySelector('.page-name');
     const H = H0 - (name ? name.offsetHeight + 8 : 0);
     const sp = slotSpec(p);
+    let rowsW = sp.cols, rowsH = sp.rows;
+    if (sp.layout === 'rows') {
+      rowsH = 0;
+      for (let y = 0; y < sp.rows; y++) {
+        let rw = 0, rh = 1;
+        for (let x = 0; x < sp.rowLen(y); x++) {
+          const it = p.items.find(o => o.x === x && o.y === y);
+          rw += it ? (it.w || 1) : 1;
+          if (it && (it.h || 1) > rh) rh = it.h || 1;
+        }
+        if (rw > rowsW) rowsW = rw;
+        rowsH += rh;
+      }
+    }
     const [natW, natH] =
       sp.layout === 'grid' ? [sp.cols * s.cell, sp.rows * s.cell]
-      : sp.layout === 'rows' ? [sp.cols * s.cell, sp.rows * s.cell]
+      : sp.layout === 'rows' ? [rowsW * s.cell, Math.max(sp.rows, rowsH) * s.cell]
       : [sp.cols * LIST_W + (sp.cols - 1) * 12, sp.rows * LIST_H];
     const k = Math.max(0.3, Math.min(1, W / natW, H / natH));
     setVars(node.style, {
@@ -542,7 +579,7 @@ function renderItem(it, { inFolder, layout, lazy, w = 1, h = 1 }) {
     dataset: { id: it.id },
   });
   if (it.type === 'widget') {
-    const isRoomy = !inFolder && (layout === 'grid' || it.kind === 'notes');
+    const isRoomy = !inFolder;
     node.append(...renderWidget(it, w, h, isRoomy));
   } else {
     const big = w * h >= 4;
@@ -554,15 +591,29 @@ function renderItem(it, { inFolder, layout, lazy, w = 1, h = 1 }) {
   return node;
 }
 
+const MIN2X2_KINDS = new Set(['calc', 'calendar', 'timer', 'todo', 'habits', 'gdrive', 'gcal', 'photos', 'breathe']);
+
+function sizesFor(it) {
+  if (it?.type === 'widget') {
+    if (MIN2X2_KINDS.has(it.kind)) return ['1x1', '2x2', '3x2', '2x3', '3x3', '4x2', '4x3'];
+    if (it.kind !== 'notes') return ['1x1', '2x1', '2x2', '3x2', '3x3', '4x2', '4x3'];
+  }
+  return SIZES;
+}
+
 function ctrlsFor(it, inFolder, layout) {
-  const btn = (txt, title, fn) => el('button', {
-    type: 'button', class: 'ctrl', title,
-    onclick: e => { e.preventDefault(); e.stopPropagation(); fn(); },
+  const btn = (txt, title, fn, dis = false) => el('button', {
+    type: 'button', class: 'ctrl', title, disabled: dis || null,
+    onclick: e => { e.preventDefault(); e.stopPropagation(); if (!dis) fn(); },
   }, txt);
+  const canResize = !inFolder && (layout !== 'list' || it.type === 'widget');
+  const list = sizesFor(it);
+  const curIdx = list.indexOf(`${it.w || 1}x${it.h || 1}`);
   return el('div', { class: 'ctrls' },
     it.type !== 'widget' && btn('✎', t('edit'), () => openEditor(it)),
     it.type === 'widget' && WIDGETS[it.kind]?.cfg && btn('⚙', t('configure'), () => openWidgetCfg(it)),
-    !inFolder && layout === 'grid' && btn('⤢', t('changeSize'), () => cycleSize(it)),
+    canResize && btn('−', t('shrinkSize'), () => stepSize(it, -1), curIdx === 0),
+    canResize && btn('+', t('growSize'), () => stepSize(it, 1), curIdx === list.length - 1),
     inFolder && btn('⇱', t('takeOut'), () => takeOut(it.id)),
     btn('✕', t('delete'), () => removeItem(it.id)),
   );
@@ -613,7 +664,15 @@ function setSize(it, size) {
   commit();
 }
 
-const cycleSize = it => setSize(it, SIZES[(SIZES.indexOf(`${it.w || 1}x${it.h || 1}`) + 1) % SIZES.length]);
+function stepSize(it, dir) {
+  const list = sizesFor(it);
+  let idx = list.indexOf(`${it.w || 1}x${it.h || 1}`);
+  if (idx < 0) idx = 0;
+  const next = list[Math.max(0, Math.min(list.length - 1, idx + dir))];
+  if (next) setSize(it, next);
+}
+
+const cycleSize = it => stepSize(it, 1);
 
 function setShape(it, shape) {
   if (shape) it.shape = shape;
