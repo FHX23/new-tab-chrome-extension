@@ -2,9 +2,18 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). Versiones 0.x = preliminares.
 
-## [0.5.0] – 2026-10-23
+## [0.5.0] – 2026-11-20
 ### Agregado
-- **10 nuevos widgets:** calendario, cuenta regresiva, temporizador (con modos foco y descanso), reloj mundial con buscador de ciudades y zonas horarias, medidor de progreso temporal (día, semana, mes, año), calculadora, álbum de fotos rotativas (almacenadas localmente), registro semanal de hábitos, conversor de unidades y ejercicio de respiración guiada.
+- **Tarjetas opcionales de Google Drive y Calendario de Google (`Ajustes → Drive y Calendar`):**
+  - *Google Drive:* muestra automáticamente los últimos Documentos, Hojas de cálculo, Presentaciones, Formularios, PDFs y archivos de Drive abiertos en el navegador, con iconos por tipo de documento, tiempo relativo («Lo abriste hace...»), eliminación individual (`✕`) y vista ampliada en pop-up (`⤢`).
+  - *Calendario de Google:* sincronización mediante enlace iCal (`.ics`), lectura directa de sesión o subida de archivo `.ics`/`.zip` exportado (sin necesidad de hacer público el calendario), con indicadores de estado («En curso», «En X min»), botón directo «Unirse a la reunión» para Google Meet/Zoom/Teams, diálogo para agregar reuniones rápidas y vista ampliada en pop-up (`⤢`).
+- **Galería de 9 fondos incluidos y rotación automática (`Ajustes → Fondo`):** 5 fotografías QHD 2.5K de dominio público (NASA James Webb, ISS y U.S. National Park Service) + 4 paisajes vectoriales 4K propios (`bg/`), subida múltiple de imágenes propias a IndexedDB y rotación automática configurable (al abrir pestaña o por intervalo) permitiendo mezclar fondos incluidos con fotos propias.
+- **Calculadora profunda:** historial interactivo clicable, botón `⌫` (borrar 1 dígito), botón `AC` (borrar todo / limpiar historial), botón `Ans` (usar último resultado), corrección de precisión decimal en coma flotante y soporte completo de teclado físico.
+- **Tamaños ampliados hasta `4×3` y controles `+` / `−`:** nuevos tamaños `3×2`, `2×3`, `3×3`, `4×2` y `4×3`, botones separados para **Agrandar (`+`)** y **Achicar (`−`)** con salto inteligente de proporciones para cada widget, y soporte de widgets abiertos en los tres modos de disposición (*Cuadrícula*, *Filas a medida* y *Lista*).
+- **Botón exprés «↶ Deshacer» en la barra de edición:** acceso directo en `#toolbar` para anular al instante cualquier acción (como crear una carpeta o pantalla por error al arrastrar).
+- **Color propio e individual para enlaces de arriba a la derecha:** selector de color general y selector individual por cada enlace configurado en *Ajustes → Página*.
+- **10 widgets adicionales:** calendario mensual, cuenta regresiva, temporizador Pomodoro, reloj mundial con buscador de ciudades, medidor de progreso temporal, álbum de fotos rotativas, registro semanal de hábitos, conversor de unidades y ejercicio de respiración guiada.
+- **3 estilos de apertura de carpetas:** panel centrado (estilo modal iOS), burbuja contextual pegada a la carpeta y vista como pantalla completa.
 - **Ventana «Configurar» para widgets:** diálogo dedicado para ajustar opciones de cada widget (diseño del reloj digital/analógico/minimalista/en palabras, fecha objetivo de cuenta regresiva, tiempos del temporizador, selector y buscador de ciudades para el reloj mundial, fotos locales, etc.).
 - **3 estilos de apertura de carpetas:** panel centrado (estilo modal iOS), burbuja contextual pegada a la carpeta y vista como pantalla completa con botón para volver.
 - **Configuración por pantalla mejorada:** selector visual de disposición (cuadrícula, filas o lista) con soporte para patrones y dimensiones personalizadas por pantalla.
