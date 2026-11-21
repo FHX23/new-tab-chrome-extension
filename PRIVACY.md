@@ -22,6 +22,8 @@ ningún servidor**, ni del desarrollador ni de terceros. No usa analítica, anun
 | **Íconos de sitios** (permiso `favicon`) | Muestra el ícono de cada acceso usando la caché de íconos del propio Chrome, sin conectarse a los sitios. | En la caché de Chrome |
 | **Búsquedas** (permiso `search`) | Envía lo que escribes en el buscador a tu buscador predeterminado de Chrome, igual que la barra de direcciones. La extensión no guarda tus búsquedas. | No se guardan |
 | **Tus accesos, carpetas, widgets (notas y tareas), ajustes e imágenes de fondo** | Para que la página sea como la configuraste. Se guarda una copia automática al día (las últimas 7) para poder restaurarla. | Solo en tu computador (`chrome.storage.local`, `localStorage` e IndexedDB) |
+| **Historial local de archivos de Google Drive / Docs** (permiso opcional `history`, **apagado de fábrica**) | Solo si activas voluntariamente la tarjeta opcional de Google Drive en *Ajustes → Drive y Calendar*, busca en el historial local de tu navegador los últimos documentos de Google Docs, Sheets, Slides o Drive que abriste para mostrártelos como accesos rápidos. | Solo en tu computador |
+| **Calendario de Google** (permiso opcional `calendar.google.com`, **apagado de fábrica**) | Solo si conectas voluntariamente la tarjeta opcional de Calendario en *Ajustes → Drive y Calendar* mediante tu dirección iCal (`.ics`) o exportación de calendario, tu propio navegador lee tus próximos eventos directamente desde Google Calendar. | En caché local dentro de tu propio computador (`localStorage`). Ningún dato pasa por servidores del desarrollador. |
 
 ### Qué NO hace
 - No envía, vende ni comparte datos con nadie.
@@ -65,6 +67,8 @@ third party's. It uses no analytics, ads or tracking.
 | **Site icons** (`favicon` permission) | Shows each shortcut's icon from Chrome's own icon cache, without contacting the sites. | In Chrome's cache |
 | **Searches** (`search` permission) | Sends what you type in the search box to Chrome's default search engine, just like the address bar. The extension does not store your searches. | Not stored |
 | **Your shortcuts, folders, widgets (notes and to-dos), settings and background images** | So the page looks the way you set it up. One automatic copy per day (the last 7) is kept so you can restore it. | Only on your computer (`chrome.storage.local`, `localStorage` and IndexedDB) |
+| **Local history of Google Drive / Docs files** (optional `history` permission, **off by default**) | Only if you voluntarily enable the optional Google Drive card in *Settings → Drive & Calendar*, it reads from your browser's local history the latest Google Docs, Sheets, Slides or Drive files you opened to display them as quick links. | Only on your computer |
+| **Google Calendar** (optional `calendar.google.com` permission, **off by default**) | Only if you voluntarily connect the optional Calendar card in *Settings → Drive & Calendar* via your iCal (`.ics`) link or calendar export, your own browser reads your upcoming events directly from Google Calendar. | Cached locally on your own computer (`localStorage`). No data ever passes through any developer server. |
 
 ### What it does NOT do
 - It does not send, sell or share data with anyone.

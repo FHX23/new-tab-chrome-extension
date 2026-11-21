@@ -294,10 +294,12 @@ const WIDGETS = {
     },
     cfg: [{ k: 'zones', type: 'zones' }],
     mini: it => el('span', { class: 'clock-mini' }, fmtTime(new Date(), it.zones?.[0])),
-    full(it, b) {
+    full(it, b, w = 2, h = 1) {
       const draw = () => {
         const zones = (it.zones || []).filter(Boolean);
+        // 4+ zonas: en tarjetas angostas va en una columna compacta; a partir de 3 de ancho, en dos columnas
         b.classList.toggle('dense', zones.length > 3);
+        b.classList.toggle('two-col', zones.length > 3 && w >= 3);
         if (!zones.length) {
           b.replaceChildren(el('div', { class: 'w-empty' }, el('span', {}, t('world_empty'))));
           return;
@@ -342,25 +344,126 @@ const WIDGETS = {
   },
 
   calc: {
-    icon: '🧮', size: [2, 2],
+    icon: '🧮', size: [2, 2], defaults: { hist: [], ans: null },
     full(it, b) {
+      it.hist ||= [];
       const st = liveOf(it, () => ({ cur: '0', prev: null, op: null, fresh: true }));
+      const histBox = el('div', { class: 'calc-hist' });
+      const exprBox = el('div', { class: 'calc-expr' });
       const disp = el('div', { class: 'calc-disp' });
       const num = s => parseFloat(s) || 0;
-      const run = (a, op, c) => ({ '+': a + c, '−': a - c, '×': a * c, '÷': c === 0 ? NaN : a / c }[op]);
-      const show = () => { const v = parseFloat(st.cur); disp.textContent = /NaN|Infinity/.test(st.cur) ? 'Error' : st.cur.length > 12 ? String(+v.toPrecision(10)) : st.cur; };
+      const cleanNum = v => Number.isFinite(v) ? +v.toPrecision(12) : NaN;
+      const run = (a, op, c) => cleanNum({ '+': a + c, '−': a - c, '×': a * c, '÷': c === 0 ? NaN : a / c }[op]);
+      const fmtVal = s => {
+        const v = parseFloat(s);
+        return /NaN|Infinity|Error/.test(s) ? 'Error' : String(s).length > 12 && Number.isFinite(v) ? String(+v.toPrecision(10)) : String(s);
+      };
+      const record = (a, op, c, res) => {
+        if (!Number.isFinite(res)) return;
+        const rStr = String(res);
+        it.ans = rStr;
+        (it.hist ||= []).push({ expr: `${fmtVal(a)} ${op} ${fmtVal(c)}`, res: rStr });
+        if (it.hist.length > 8) it.hist.shift();
+        saveW();
+      };
+      const opBtns = new Map();
+      const ansBtnRef = { el: null };
+      const show = () => {
+        disp.textContent = fmtVal(st.cur);
+        exprBox.textContent = st.op != null && st.prev != null
+          ? `${fmtVal(st.prev)} ${st.op}`
+          : (it.ans != null ? `Ans = ${fmtVal(it.ans)}` : '');
+        const list = it.hist || [];
+        if (!list.length) {
+          histBox.replaceChildren(el('div', { class: 'calc-h-empty' }, t('calcHistEmpty')));
+        } else {
+          histBox.replaceChildren(...list.map(h => el('button', {
+            type: 'button',
+            class: 'widget-ui calc-hitem',
+            title: t('calcHistUse'),
+            onclick: e => { e.stopPropagation(); st.cur = String(h.res); st.fresh = false; show(); },
+          }, `${h.expr} = `, el('b', {}, fmtVal(h.res)))));
+          histBox.scrollTop = histBox.scrollHeight;
+          // en el primer pintado la tarjeta aún no está en el DOM: bajar al final cuando ya tenga tamaño
+          requestAnimationFrame(() => { histBox.scrollTop = histBox.scrollHeight; });
+        }
+        for (const [k, btn] of opBtns) btn.classList.toggle('active', st.op === k && st.fresh);
+        if (ansBtnRef.el) {
+          ansBtnRef.el.disabled = it.ans == null;
+          ansBtnRef.el.title = it.ans != null ? `${t('calcAns')}: ${fmtVal(it.ans)}` : t('calcAns');
+        }
+      };
       const press = k => {
-        if (/\d/.test(k)) { st.cur = st.fresh || st.cur === '0' ? k : st.cur + k; st.fresh = false; }
-        else if (k === ',') { if (st.fresh) { st.cur = '0.'; st.fresh = false; } else if (!st.cur.includes('.')) st.cur += '.'; }
-        else if (k === 'C') Object.assign(st, { cur: '0', prev: null, op: null, fresh: true });
-        else if (k === '±') st.cur = String(-num(st.cur));
-        else if (k === '%') st.cur = String(num(st.cur) / 100);
-        else if (k === '=') { if (st.op) { st.cur = String(run(st.prev, st.op, num(st.cur))); st.op = null; st.fresh = true; } }
-        else { if (st.op && !st.fresh) st.cur = String(run(st.prev, st.op, num(st.cur))); st.prev = num(st.cur); st.op = k; st.fresh = true; }
+        if (/\d/.test(k)) {
+          if (st.fresh || st.cur === '0' || /NaN|Infinity|Error/.test(st.cur)) { st.cur = k; st.fresh = false; }
+          else if (st.cur.replace(/[-.]/g, '').length < 15) st.cur += k;
+        } else if (k === ',') {
+          if (st.fresh || /NaN|Infinity|Error/.test(st.cur)) { st.cur = '0.'; st.fresh = false; }
+          else if (!st.cur.includes('.')) st.cur += '.';
+        } else if (k === '⌫') {
+          if (st.fresh || /NaN|Infinity|Error/.test(st.cur)) { st.cur = '0'; st.fresh = true; }
+          else {
+            st.cur = st.cur.slice(0, -1);
+            if (!st.cur || st.cur === '-' || st.cur === '-0') { st.cur = '0'; st.fresh = true; }
+          }
+        } else if (k === 'AC') {
+          if (st.cur === '0' && st.prev == null && !st.op && it.hist?.length) { it.hist = []; saveW(); }
+          Object.assign(st, { cur: '0', prev: null, op: null, fresh: true });
+        } else if (k === 'Ans') {
+          if (it.ans != null) { st.cur = String(it.ans); st.fresh = false; }
+        } else if (k === '±') {
+          if (st.cur !== '0' && !/NaN|Infinity|Error/.test(st.cur)) st.cur = String(cleanNum(-num(st.cur)));
+        } else if (k === '%') {
+          if (!/NaN|Infinity|Error/.test(st.cur)) { st.cur = String(cleanNum(num(st.cur) / 100)); st.fresh = false; }
+        } else if (k === '=') {
+          if (st.op != null && st.prev != null) {
+            const c = num(st.cur), res = run(st.prev, st.op, c);
+            record(st.prev, st.op, c, res);
+            st.cur = Number.isFinite(res) ? String(res) : 'Error';
+            st.prev = null; st.op = null; st.fresh = true;
+          }
+        } else {
+          if (st.op && !st.fresh) {
+            const c = num(st.cur), res = run(st.prev, st.op, c);
+            record(st.prev, st.op, c, res);
+            st.cur = Number.isFinite(res) ? String(res) : 'Error';
+          }
+          st.prev = num(st.cur); st.op = k; st.fresh = true;
+        }
         show();
       };
-      const keys = ['C', '±', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '−', '1', '2', '3', '+', '0', ',', '='];
-      b.append(disp, el('div', { class: 'calc-keys' }, keys.map(k => wbtn(k, k, () => press(k), /[÷×−+=]/.test(k) ? 'op' : k === '0' ? 'zero' : ''))));
+      const fnDefs = [
+        ['AC', t('calcAC'), 'fn ac'],
+        ['⌫', t('calcDel'), 'fn del'],
+        ['Ans', t('calcAns'), 'fn ans'],
+        ['±', t('calcSign'), 'fn'],
+        ['%', t('calcPct'), 'fn'],
+      ];
+      const fnRow = el('div', { class: 'calc-fns' }, fnDefs.map(([k, title, cls]) => {
+        const btn = wbtn(k, title, () => press(k), cls);
+        if (k === 'Ans') ansBtnRef.el = btn;
+        return btn;
+      }));
+      const keys = ['7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '−', '0', ',', '=', '+'];
+      const keyGrid = el('div', { class: 'calc-keys' }, keys.map(k => {
+        const isOp = /[÷×−+]/.test(k);
+        const btn = wbtn(k, k, () => press(k), isOp ? 'op' : k === '=' ? 'eq' : '');
+        if (isOp) opBtns.set(k, btn);
+        return btn;
+      }));
+      const screen = el('div', { class: 'calc-screen' }, histBox, el('div', { class: 'calc-bottom' }, exprBox, disp));
+      b.tabIndex = 0;
+      b.addEventListener('keydown', e => {
+        if (editing) return;
+        const k = e.key;
+        const map = { '+': '+', '-': '−', '*': '×', 'x': '×', 'X': '×', '/': '÷', '.': ',', ',': ',', '%': '%', '=': '=', Enter: '=', Backspace: '⌫', Delete: 'AC', Escape: 'AC', a: 'Ans', A: 'Ans' };
+        const act = /\d/.test(k) ? k : map[k];
+        if (!act) return;
+        e.preventDefault();
+        e.stopPropagation();
+        press(act);
+      });
+      b.append(screen, fnRow, keyGrid);
       show();
     },
   },
@@ -470,7 +573,573 @@ const WIDGETS = {
       breathePaint(it.id, b);
     },
   },
+
+  gdrive: {
+    icon: '📁', size: [2, 2],
+    full(it, b, w, h) {
+      b.dataset.gdrive = it.id;
+      b.classList.toggle('compact-h', h === 1);
+      const draw = () => paintGDriveCard(it, b, w, h);
+      draw();
+      b._tick = draw;
+      maybeAutoRefreshGDrive();
+    },
+  },
+
+  gcal: {
+    icon: '📆', size: [2, 2], defaults: { manual: [] },
+    full(it, b, w, h) {
+      b.dataset.gcal = it.id;
+      b.classList.toggle('compact-h', h === 1);
+      const draw = () => paintGCalCard(it, b, w, h);
+      draw();
+      b._tick = draw;
+      maybeAutoRefreshGCal();
+    },
+  },
 };
+
+// ---------- Tarjetas de Google Drive y Google Calendar ----------
+const GDRIVE_CACHE_KEY = 'ntp_gdrive_cache';
+const GDRIVE_HIDDEN_KEY = 'ntp_gdrive_hidden';
+const GCAL_CACHE_KEY = 'ntp_gcal_cache';
+
+function readJsonCache(k, fallback = []) {
+  try { return JSON.parse(localStorage.getItem(k)) || fallback; } catch { return fallback; }
+}
+function writeJsonCache(k, val) {
+  try { localStorage.setItem(k, JSON.stringify(val)); } catch {}
+}
+
+function fmtDriveAgo(ts) {
+  if (!ts) return '';
+  const diffMin = Math.max(0, Math.floor((Date.now() - ts) / 60000));
+  if (diffMin < 3) return t('gOpenedJustNow');
+  if (diffMin < 60) return t('gOpenedMinAgo', diffMin);
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return t('gOpenedHrAgo', diffHr);
+  const diffDays = Math.floor(diffHr / 24);
+  if (diffDays === 1) return t('gOpenedYesterday');
+  if (diffDays < 30) return t('gOpenedDaysAgo', diffDays);
+  const diffMonths = Math.floor(diffDays / 30);
+  if (diffMonths <= 1) return t('gOpenedLastMonth');
+  if (diffMonths < 12) return t('gOpenedMonthsAgo', diffMonths);
+  return t('gOpenedLastYear');
+}
+
+function driveTypeIcon(kind) {
+  const box = el('span', { class: `gd-ico gd-${kind || 'doc'}` });
+  const svgs = {
+    doc: '<svg viewBox="0 0 24 24"><path fill="#fff" d="M6 7h12v2H6zm0 4h12v2H6zm0 4h8v2H6z"/></svg>',
+    sheet: '<svg viewBox="0 0 24 24"><path fill="#fff" d="M10 5v5H5v3h5v6h3v-6h6v-3h-6V5z"/></svg>',
+    slide: '<svg viewBox="0 0 24 24"><path fill="#fff" d="M5 6h14v12H5V6zm3 3v6h8V9H8z"/></svg>',
+    form: '<svg viewBox="0 0 24 24"><path fill="#fff" d="M6 7h2v2H6zm4 0h8v2h-8zm-4 4h2v2H6zm4 0h8v2h-8zm-4 4h2v2H6zm4 0h5v2h-5z"/></svg>',
+    pdf: '<span class="gd-pdf-txt">PDF</span>',
+    drive: '<svg viewBox="0 0 24 24"><path fill="#fff" d="M8 5h8l4 7-4 7H8L4 12z"/></svg>',
+  };
+  box.innerHTML = svgs[kind] || svgs.doc;
+  return box;
+}
+
+function cleanDriveDocTitle(raw) {
+  return String(raw || '')
+    .replace(/\s*[-–—•·]\s*(Documentos|Hojas de cálculo|Presentaciones|Formularios|Dibujos)\s+de\s+Google.*$/i, '')
+    .replace(/\s*[-–—•·]\s*Google\s+(Docs|Sheets|Slides|Forms|Drawings|Drive).*$/i, '')
+    .replace(/\.(docx?|xlsx?|pptx?)$/i, '')
+    .trim();
+}
+
+function classifyDriveUrl(url, rawTitle = '') {
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'docs.google.com') {
+      const m = u.pathname.match(/\/(document|spreadsheets|presentation|forms)\/d\/([a-zA-Z0-9_-]{15,})/);
+      if (!m) return null;
+      const map = { document: 'doc', spreadsheets: 'sheet', presentation: 'slide', forms: 'form' };
+      return { id: m[2], kind: map[m[1]] || 'doc', cleanUrl: `https://docs.google.com/${m[1]}/d/${m[2]}/edit` };
+    }
+    if (u.hostname === 'drive.google.com') {
+      const m = u.pathname.match(/\/file\/d\/([a-zA-Z0-9_-]{15,})/);
+      if (m) {
+        const isPdf = /\.pdf(\b|$)/i.test(rawTitle);
+        return { id: m[1], kind: isPdf ? 'pdf' : 'drive', cleanUrl: `https://drive.google.com/file/d/${m[1]}/view` };
+      }
+    }
+  } catch {}
+  return null;
+}
+
+async function hasHistPerm() {
+  try { return await chrome.permissions.contains({ permissions: ['history'] }); } catch { return false; }
+}
+
+function hideDriveFile(id, url) {
+  const hidden = new Set(readJsonCache(GDRIVE_HIDDEN_KEY, []));
+  hidden.add(id);
+  writeJsonCache(GDRIVE_HIDDEN_KEY, [...hidden]);
+  if (url && chrome.history?.deleteUrl) chrome.history.deleteUrl({ url }).catch(() => {});
+  const cur = readJsonCache(GDRIVE_CACHE_KEY, []).filter(x => x.id !== id);
+  writeJsonCache(GDRIVE_CACHE_KEY, cur);
+  repaintGDriveCards();
+}
+
+// Lee automáticamente archivos de Docs, Sheets, Slides, PDFs y Drive desde el navegador.
+async function scanDriveHistory() {
+  if (!await hasHistPerm()) return null;
+  const hidden = new Set(readJsonCache(GDRIVE_HIDDEN_KEY, []));
+  const rows = await chrome.history.search({ text: 'google.com', maxResults: 500, startTime: 0 });
+  const byId = new Map();
+  for (const r of rows) {
+    const info = classifyDriveUrl(r.url, r.title);
+    if (!info || hidden.has(info.id)) continue;
+    const title = cleanDriveDocTitle(r.title);
+    // Si el título indica página de error o archivo eliminado/no encontrado, lo descarta
+    if (!title || /^(Google Docs|Google Sheets|Google Slides|Google Drive|Documentos de Google|Hojas de cálculo de Google|Archivo no encontrado|File not found|Error 404)$/i.test(title)) continue;
+    const prev = byId.get(info.id);
+    const ts = r.lastVisitTime || Date.now();
+    if (!prev || ts > prev.ts) {
+      byId.set(info.id, { id: info.id, title, url: info.cleanUrl, kind: info.kind, ts });
+    }
+  }
+  const list = [...byId.values()].sort((a, b) => b.ts - a.ts).slice(0, 12);
+  writeJsonCache(GDRIVE_CACHE_KEY, list);
+  repaintGDriveCards();
+  return list;
+}
+
+let lastDriveAuto = 0;
+async function maybeAutoRefreshGDrive(force = false) {
+  if (!force && Date.now() - lastDriveAuto < 10000) return;
+  lastDriveAuto = Date.now();
+  await scanDriveHistory();
+}
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && $('[data-gdrive]')) maybeAutoRefreshGDrive(true);
+});
+
+function repaintGDriveCards() {
+  for (const b of $$('[data-gdrive]')) b._tick?.();
+}
+
+function paintGDriveCard(it, b, w = 2, h = 2) {
+  const isPopup = b.classList.contains('in-modal') || !!b.closest('#widgetBody');
+  const files = readJsonCache(GDRIVE_CACHE_KEY, []);
+  const expandBtn = !isPopup && wbtn('⤢', t('open'), () => openWidget(it), 'gcard-dots');
+  const menuBtn = wbtn('⋮', t('configure'), () => {
+    openMenu([
+      !isPopup && entryEl({ label: '⤢  ' + t('open'), act: () => openWidget(it) }),
+      entryEl({ label: t('tabGCards') + '…', act: () => { openSettings(); showTab('gcards'); } }),
+      entryEl('-'),
+      entryEl({ label: t('gDriveOpen') + ' ↗', act: () => window.open('https://drive.google.com/', '_blank', 'noopener') }),
+    ].filter(Boolean), menuBtn);
+  }, 'gcard-dots');
+
+  const moreLink = el('a', {
+    class: 'widget-ui gcal-more',
+    href: 'https://drive.google.com/',
+    target: '_blank',
+    rel: 'noopener',
+    onclick: e => { e.stopPropagation(); if (editing) e.preventDefault(); },
+  }, el('span', { class: 'gm-txt' }, t('gCalMore') + ' '), '↗');
+
+  const head = el('div', { class: 'w-head gcard-head' },
+    el('b', { class: 'gcard-title' }, t('w_gdrive')),
+    el('div', { class: 'gcard-actions' }, moreLink, expandBtn, menuBtn)
+  );
+
+  if (!files.length) {
+    const actBtn = wbtn(t('gDriveEnableBtn'), t('gDriveEnableBtn'), async () => {
+      const ok = await chrome.permissions.request({ permissions: ['history'] }).catch(() => false);
+      if (ok) await scanDriveHistory();
+      else { openSettings(); showTab('gcards'); }
+    }, 'wb-text gcard-cta');
+    b.replaceChildren(head, el('div', { class: 'w-empty' }, el('span', {}, t('gDriveEmpty')), actBtn));
+    return;
+  }
+
+  const maxItems = isPopup ? 12 : (h >= 3 ? 10 : (h === 1 ? 2 : 6));
+  const listEl = el('div', { class: 'gd-list' }, files.slice(0, maxItems).map(f => el('a', {
+    class: 'widget-ui gd-row',
+    href: f.url,
+    target: '_blank',
+    rel: 'noopener',
+    title: `${f.title}\n${fmtDriveAgo(f.ts)}`,
+    onclick: e => { e.stopPropagation(); if (editing) e.preventDefault(); },
+  },
+    driveTypeIcon(f.kind),
+    el('div', { class: 'gd-meta' },
+      el('div', { class: 'gd-name' }, f.title),
+      el('div', { class: 'gd-sub' }, fmtDriveAgo(f.ts))
+    ),
+    el('button', {
+      type: 'button',
+      class: 'widget-ui gd-hide',
+      title: t('delete'),
+      onclick: e => { e.preventDefault(); e.stopPropagation(); hideDriveFile(f.id, f.url); },
+    }, '✕')
+  )));
+  b.replaceChildren(head, listEl);
+}
+
+// ---------- Google Calendar: Parser iCal (.ics) + OAuth API + Reuniones rápidas ----------
+function parseIcsDate(val, params = '') {
+  const clean = String(val || '').trim();
+  const m = clean.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?$/);
+  if (!m) return null;
+  const [, y, mo, d, h, mi, s, z] = m;
+  if (!h) return { ts: new Date(+y, +mo - 1, +d, 0, 0, 0).getTime(), allDay: true };
+  const ts = z ? Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) : new Date(+y, +mo - 1, +d, +h, +mi, +s).getTime();
+  return { ts, allDay: false };
+}
+
+function unescapeIcs(s) {
+  return String(s || '').replace(/\\n/gi, '\n').replace(/\\([,;\\])/g, '$1').trim();
+}
+
+function extractMeetUrl(...texts) {
+  const joined = texts.filter(Boolean).join(' ');
+  const m = joined.match(/https:\/\/(?:meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}|[\w.-]*zoom\.us\/(?:j|my)\/[^\s"<>\n\\]+|teams\.microsoft\.com\/l\/meetup-join\/[^\s"<>\n\\]+)/i);
+  return m ? m[0] : '';
+}
+
+function parseIcsText(ics) {
+  const unfolded = String(ics || '').replace(/\r?\n[ \t]/g, '');
+  const lines = unfolded.split(/\r?\n/);
+  const now = Date.now();
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const minEnd = startOfToday.getTime();
+  const maxStart = now + 90 * 86400000;
+  const events = [];
+  const pastEvents = [];
+  let cur = null;
+
+  for (const line of lines) {
+    if (line === 'BEGIN:VEVENT') { cur = {}; continue; }
+    if (line === 'END:VEVENT') {
+      if (cur && cur.status !== 'CANCELLED' && cur.start) {
+        const start = cur.start.ts;
+        const end = cur.end?.ts || (start + (cur.start.allDay ? 86400000 : 3600000));
+        const dur = Math.max(1800000, end - start);
+        const meetUrl = extractMeetUrl(cur.conf, cur.location, cur.desc, cur.url);
+        const makeEv = (sTs, eTs) => ({
+          id: (cur.uid || uid()) + '_' + sTs,
+          title: cur.summary || '(Sin título)',
+          start: sTs,
+          end: eTs,
+          allDay: !!cur.start.allDay,
+          location: cur.location && !cur.location.startsWith('http') ? cur.location : '',
+          meetUrl,
+        });
+        const pushOcc = (sTs, eTs) => {
+          if (eTs >= minEnd && sTs <= maxStart) events.push(makeEv(sTs, eTs));
+          else if (eTs < minEnd && eTs >= now - 60 * 86400000) pastEvents.push(makeEv(sTs, eTs));
+        };
+        pushOcc(start, end);
+        // Proyección para reuniones recurrentes activas (respeta UNTIL si existe)
+        if (cur.rrule && start < now) {
+          const untilM = cur.rrule.match(/UNTIL=(\d{8}(?:T\d{6}Z?)?)/i);
+          const untilTs = untilM ? (parseIcsDate(untilM[1])?.ts ?? Infinity) : Infinity;
+          if (untilTs >= minEnd) {
+            const isDaily = /FREQ=DAILY/i.test(cur.rrule);
+            const isWeekly = /FREQ=WEEKLY/i.test(cur.rrule);
+            if (isDaily || isWeekly) {
+              const step = isDaily ? 86400000 : 7 * 86400000;
+              const k = Math.max(1, Math.floor((minEnd - start) / step));
+              for (let j = k; j <= k + 4; j++) {
+                const occStart = start + j * step;
+                if (occStart <= untilTs) pushOcc(occStart, occStart + dur);
+              }
+            }
+          }
+        }
+      }
+      cur = null;
+      continue;
+    }
+    if (!cur) continue;
+    const idx = line.indexOf(':');
+    if (idx < 0) continue;
+    const rawKey = line.slice(0, idx), val = line.slice(idx + 1);
+    const [k, ...p] = rawKey.split(';');
+    const key = k.toUpperCase();
+    if (key === 'SUMMARY') cur.summary = unescapeIcs(val);
+    else if (key === 'DTSTART') cur.start = parseIcsDate(val, p.join(';'));
+    else if (key === 'DTEND') cur.end = parseIcsDate(val, p.join(';'));
+    else if (key === 'LOCATION') cur.location = unescapeIcs(val);
+    else if (key === 'DESCRIPTION') cur.desc = unescapeIcs(val);
+    else if (key === 'URL') cur.url = unescapeIcs(val);
+    else if (key === 'X-GOOGLE-CONFERENCE') cur.conf = unescapeIcs(val);
+    else if (key === 'STATUS') cur.status = val.trim().toUpperCase();
+    else if (key === 'RRULE') cur.rrule = val.trim();
+    else if (key === 'UID') cur.uid = val.trim();
+  }
+  // Ordena priorizando los que aún no terminan; si no hay futuros, muestra los más recientes de hoy/últimos días
+  const upcoming = events.filter(e => e.end >= now - 15 * 60000).sort((a, b) => a.start - b.start);
+  if (upcoming.length) return upcoming.slice(0, 15);
+  const todayList = events.sort((a, b) => b.start - a.start);
+  if (todayList.length) return todayList.slice(0, 10);
+  return pastEvents.sort((a, b) => b.start - a.start).slice(0, 5);
+}
+
+// Descomprime un archivo .zip (incluidos los .ical.zip generados en streaming por Google Calendar,
+// que guardan el tamaño comprimido real en el Central Directory al final del archivo).
+async function unpackZipBuffer(buf) {
+  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+  let eocdOff = -1;
+  for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) {
+    if (dv.getUint32(i, true) === 0x06054b50) { eocdOff = i; break; }
+  }
+  const texts = [];
+  if (eocdOff >= 0) {
+    const entries = dv.getUint16(eocdOff + 10, true);
+    let cd = dv.getUint32(eocdOff + 16, true);
+    for (let e = 0; e < entries && cd + 46 <= buf.length; e++) {
+      if (dv.getUint32(cd, true) !== 0x02014b50) break;
+      const method = dv.getUint16(cd + 10, true);
+      const cSize = dv.getUint32(cd + 20, true);
+      const nLen = dv.getUint16(cd + 28, true);
+      const xLen = dv.getUint16(cd + 30, true);
+      const cLen = dv.getUint16(cd + 32, true);
+      const lOff = dv.getUint32(cd + 42, true);
+      cd += 46 + nLen + xLen + cLen;
+      if (lOff + 30 > buf.length || dv.getUint32(lOff, true) !== 0x04034b50) continue;
+      const lnLen = dv.getUint16(lOff + 26, true);
+      const lxLen = dv.getUint16(lOff + 28, true);
+      const dStart = lOff + 30 + lnLen + lxLen;
+      const slice = buf.subarray(dStart, dStart + cSize);
+      try {
+        if (method === 0) {
+          const out = new TextDecoder().decode(slice);
+          if (out.includes('BEGIN:VCALENDAR')) texts.push(out);
+        } else if (method === 8 && typeof DecompressionStream !== 'undefined' && slice.length > 0) {
+          const stream = new Blob([slice]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+          const out = await new Response(stream).text();
+          if (out.includes('BEGIN:VCALENDAR')) texts.push(out);
+        }
+      } catch {}
+    }
+  }
+  return texts.join('\n');
+}
+
+async function readIcsOrZipFile(file) {
+  const buf = new Uint8Array(await file.arrayBuffer());
+  if (buf.length > 30 && buf[0] === 0x50 && buf[1] === 0x4b) {
+    return await unpackZipBuffer(buf);
+  }
+  return new TextDecoder().decode(buf);
+}
+
+// Si el usuario pegó por error el ID del calendario (correo), la URL pública embed o el código <iframe src="...">,
+// extrae automáticamente el calendario y construye su dirección iCal (.ics).
+function normalizeIcsInput(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return '';
+  if (/\.ics(\?.*)?$/i.test(s)) return s;
+  const iframeMatch = s.match(/src=["']([^"']+)["']/i);
+  const candidate = iframeMatch ? iframeMatch[1] : s;
+  try {
+    const u = new URL(candidate);
+    const src = u.searchParams.get('src');
+    if (src) return `https://calendar.google.com/calendar/ical/${encodeURIComponent(src)}/public/basic.ics`;
+  } catch {}
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) {
+    return `https://calendar.google.com/calendar/ical/${encodeURIComponent(s)}/public/basic.ics`;
+  }
+  return s;
+}
+
+async function syncCalendarIcs(url, askPerm = true) {
+  const u = normalizeIcsInput(url || state.settings.gCalIcsUrl || '');
+  if (askPerm) {
+    let origin = 'https://calendar.google.com/*';
+    if (u) try { origin = new URL(u).origin + '/*'; } catch {}
+    const ok = await chrome.permissions.request({ origins: [origin, 'https://calendar.google.com/*'] }).catch(() => false);
+    if (!ok) { toast(t('gPermDenied')); return null; }
+  }
+  const tryFetchText = async target => {
+    const res = await fetch(target, { cache: 'no-store', credentials: 'include' }).catch(() => null);
+    if (!res?.ok) return null;
+    const buf = new Uint8Array(await res.arrayBuffer());
+    if (buf.length > 30 && buf[0] === 0x50 && buf[1] === 0x4b) {
+      const unzipped = await unpackZipBuffer(buf);
+      return unzipped.includes('BEGIN:VCALENDAR') ? unzipped : null;
+    }
+    const text = new TextDecoder().decode(buf);
+    return text.includes('BEGIN:VCALENDAR') ? text : null;
+  };
+  let text = u ? await tryFetchText(u) : null;
+  if (!text && u.includes('/public/basic.ics')) {
+    text = await tryFetchText(u.replace('/public/basic.ics', '/private/basic.ics'));
+  }
+  // Si el enlace público falla porque el calendario es privado (¡no hace falta hacerlo público!),
+  // intenta exportar directamente el paquete iCal privado de la sesión activa de Google Calendar en Chrome.
+  if (!text) {
+    text = await tryFetchText('https://calendar.google.com/calendar/u/0/exporticalzip');
+  }
+  if (!text) return null;
+  const events = parseIcsText(text);
+  writeJsonCache(GCAL_CACHE_KEY, events);
+  repaintGCalCards();
+  return events;
+}
+
+let lastCalAuto = 0;
+async function maybeAutoRefreshGCal() {
+  if (Date.now() - lastCalAuto < 300000) return;
+  lastCalAuto = Date.now();
+  if (state.settings.gCalIcsUrl) await syncCalendarIcs(state.settings.gCalIcsUrl, false);
+}
+
+function repaintGCalCards() {
+  for (const b of $$('[data-gcal]')) b._tick?.();
+}
+
+function fmtEventBadge(ev, now) {
+  if (now >= ev.start && now <= ev.end) return { text: t('gCalNow'), live: true };
+  const diffMin = Math.round((ev.start - now) / 60000);
+  if (diffMin >= 0 && diffMin <= 60) return { text: t('gCalInMin', Math.max(1, diffMin)), soon: true };
+  const dStart = new Date(ev.start), dNow = new Date(now);
+  if (dayKey(dStart) === dayKey(dNow)) return { text: t('gCalInHr', Math.max(1, Math.round(diffMin / 60))) };
+  const tmr = new Date(dNow.getFullYear(), dNow.getMonth(), dNow.getDate() + 1);
+  if (dayKey(dStart) === dayKey(tmr)) return { text: t('gCalTomorrow') };
+  return { text: fmtWith('md', { day: 'numeric', month: 'short' }).format(dStart) };
+}
+
+let qevTargetId = null;
+function openQuickEventPrompt(it) {
+  const dlg = $('#qevDlg'), form = $('#qevForm');
+  if (!dlg || !form) return;
+  qevTargetId = it.id;
+  form.elements.title.value = '';
+  const nextHr = new Date(Date.now() + 3600000);
+  form.elements.time.value = `${pad2(nextHr.getHours())}:00`;
+  form.elements.url.value = '';
+  dlg.showModal();
+  form.elements.title.focus();
+}
+
+$('#qevForm')?.addEventListener('submit', e => {
+  if (e.submitter?.value !== 'ok') return;
+  const it = locate(qevTargetId)?.item;
+  if (!it) return;
+  const f = e.currentTarget.elements;
+  const title = f.title.value.trim();
+  if (!title) return;
+  const [hh, mm] = (f.time.value || '15:00').split(':').map(n => parseInt(n, 10) || 0);
+  const now = new Date();
+  let start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0).getTime();
+  if (start + 3600000 < Date.now()) start += 86400000;
+  const meetRaw = f.url.value.trim();
+  const meetUrl = /^https?:\/\/\S+\.\S+/i.test(meetRaw) ? meetRaw : '';
+  (it.manual ||= []).push({
+    id: uid(),
+    title,
+    start,
+    end: start + 3600000,
+    allDay: false,
+    location: meetUrl ? t('gCalVirtual') : '',
+    meetUrl,
+    isManual: true,
+  });
+  saveW();
+  repaintGCalCards();
+});
+
+function paintGCalCard(it, b, w = 2, h = 2) {
+  const isPopup = b.classList.contains('in-modal') || !!b.closest('#widgetBody');
+  const now = Date.now();
+  const cached = readJsonCache(GCAL_CACHE_KEY, []);
+  const manual = (it.manual || []).filter(e => e.end >= now - 15 * 60000).map(e => ({ ...e, isManual: true }));
+  const all = [...manual, ...cached].filter(e => e.end >= now - 5 * 60000).sort((a, c) => a.start - c.start);
+
+  const expandBtn = !isPopup && wbtn('⤢', t('open'), () => openWidget(it), 'gcard-dots');
+  const menuBtn = wbtn('⋮', t('configure'), () => {
+    openMenu([
+      !isPopup && entryEl({ label: '⤢  ' + t('open'), act: () => openWidget(it) }),
+      entryEl({ label: t('gCalAddQuick'), act: () => openQuickEventPrompt(it) }),
+      entryEl({ label: t('gcardRefresh'), act: async () => {
+        const list = await syncCalendarIcs(state.settings.gCalIcsUrl, true);
+        if (list) toast(t('gIcsSynced', list.length));
+      } }),
+      entryEl({ label: t('tabGCards') + '…', act: () => { openSettings(); showTab('gcards'); } }),
+      entryEl('-'),
+      entryEl({ label: t('w_gcal') + ' ↗', act: () => window.open('https://calendar.google.com/', '_blank', 'noopener') }),
+    ].filter(Boolean), menuBtn);
+  }, 'gcard-dots');
+
+  const moreLink = el('a', {
+    class: 'widget-ui gcal-more',
+    href: 'https://calendar.google.com/',
+    target: '_blank',
+    rel: 'noopener',
+    onclick: e => { e.stopPropagation(); if (editing) e.preventDefault(); },
+  }, el('span', { class: 'gm-txt' }, t('gCalMore') + ' '), '↗');
+
+  const head = el('div', { class: 'w-head gcard-head' },
+    el('b', { class: 'gcard-title' }, t('w_gcal')),
+    el('div', { class: 'gcard-actions' }, moreLink, expandBtn, menuBtn)
+  );
+
+  if (!all.length) {
+    const hasSource = !!(state.settings.gCalIcsUrl || cached.length);
+    const cta = hasSource
+      ? wbtn(t('gCalAddQuick'), t('gCalAddQuick'), () => openQuickEventPrompt(it), 'wb-text gcard-cta')
+      : wbtn(t('gCalSetupBtn'), t('gCalSetupBtn'), () => { openSettings(); showTab('gcards'); }, 'wb-text gcard-cta');
+    b.replaceChildren(head, el('div', { class: 'w-empty' }, el('span', {}, t('gCalEmpty')), cta));
+    return;
+  }
+
+  const maxEvents = isPopup ? 12 : (h >= 3 ? 7 : (h === 1 ? 1 : 4));
+  const items = all.slice(0, maxEvents).map((ev, idx) => {
+    const badge = fmtEventBadge(ev, now);
+    const dStart = new Date(ev.start);
+    const isToday = dayKey(dStart) === dayKey(new Date(now));
+    const datePrefix = !isToday ? fmtWith('md', { day: 'numeric', month: 'short' }).format(dStart) + ' · ' : '';
+    const timeTxt = ev.allDay ? t('gCalAllDay') : (datePrefix + fmtTime(dStart));
+    const locTxt = ev.location || (ev.meetUrl ? t('gCalVirtual') : '');
+    const isFeatured = idx === 0 || isPopup;
+
+    return el('div', {
+      class: `gcal-item${badge.live ? ' is-live' : badge.soon ? ' is-soon' : ''}${idx === 0 ? ' is-first' : ''}`,
+      onclick: e => {
+        if (!editing && !isPopup && !e.target.closest('a, button')) openWidget(it);
+      },
+    },
+      el('div', { class: 'gcal-meta' },
+        el('span', { class: 'gcal-time' }, timeTxt),
+        el('div', { class: 'gcard-actions' },
+          el('span', { class: `gcal-pill${badge.live ? ' live' : badge.soon ? ' soon' : ''}` }, badge.text),
+          ev.isManual && el('button', {
+            type: 'button',
+            class: 'widget-ui gd-hide',
+            title: t('delete'),
+            onclick: e => {
+              e.stopPropagation();
+              it.manual = (it.manual || []).filter(m => m.id !== ev.id);
+              saveW();
+              repaintGCalCards();
+            },
+          }, '✕')
+        )
+      ),
+      el('div', { class: 'gcal-ev-title', title: ev.title }, ev.title),
+      isFeatured && (locTxt || ev.meetUrl) && el('div', { class: 'gcal-subrow' },
+        locTxt && el('span', { class: 'gcal-loc' }, '📍 ', locTxt),
+        ev.meetUrl && el('a', {
+          class: 'widget-ui gcal-join',
+          href: ev.meetUrl,
+          target: '_blank',
+          rel: 'noopener',
+          onclick: e => { e.stopPropagation(); if (editing) e.preventDefault(); },
+        }, t('gCalJoin') + ' ↗')
+      )
+    );
+  });
+
+  b.replaceChildren(head, el('div', { class: 'gcal-box' }, items));
+}
 
 // Pinta todas las copias visibles del widget de respiración (en la pantalla y en su ventana).
 function breathePaint(id, only) {
@@ -572,7 +1241,7 @@ function newWidget(kind) {
 
 const widgetTitle = it => (it.kind === 'countdown' && it.label) || t('w_' + it.kind);
 
-function renderWidget(it, w, h, roomy) {
+function renderWidget(it, w, h, roomy, inModal = false) {
   const def = WIDGETS[it.kind];
   if (!def) return [el('div', { class: 'tile' }, '?')];
   if (!roomy || (w === 1 && h === 1 && !def.tiny)) {
@@ -582,7 +1251,7 @@ function renderWidget(it, w, h, roomy) {
     tile._tick = fill;
     return [tile, el('span', { class: 'label' }, widgetTitle(it))];
   }
-  const body = el('div', { class: `wbody w-${it.kind}` });
+  const body = el('div', { class: `wbody w-${it.kind}${inModal ? ' in-modal' : ''}` });
   def.full(it, body, w, h);
   return [body];
 }
@@ -597,26 +1266,32 @@ function tickClocks() {
 }
 document.addEventListener('visibilitychange', tickClocks);
 
-// ---------- ventana del widget (cuando está compacto) ----------
+// ---------- ventana del widget (cuando está compacto o al ampliar) ----------
 let widgetOpenId = null;
 function openWidget(it) {
   const def = WIDGETS[it.kind];
   if (!def) return;
   widgetOpenId = it.id;
+  const isGCard = it.kind === 'gcal' || it.kind === 'gdrive';
   const [w, h] = def.size;
   const wide = Math.max(2, w);
   const tall = it.kind === 'world' ? ((it.zones?.length || 0) > 3 ? 2 : 1) : Math.max(2, h);
   $('#widgetTitle').textContent = widgetTitle(it);
-  $('#widgetCfgBtn').hidden = !def.cfg;
+  $('#widgetCfgBtn').hidden = !def.cfg && !isGCard;
   const body = $('#widgetBody');
-  body.style.width = wide * 150 + 'px';
-  body.style.height = tall * 150 + 'px';
-  body.replaceChildren(...renderWidget(it, wide, tall, true));
+  body.style.width = (isGCard ? 440 : wide * 150) + 'px';
+  body.style.height = (isGCard ? 420 : tall * 150) + 'px';
+  body.replaceChildren(...renderWidget(it, wide, tall, true, true));
   if (!$('#widgetDlg').open) $('#widgetDlg').showModal();
 }
 
 $('#widgetClose').addEventListener('click', () => $('#widgetDlg').close());
-$('#widgetCfgBtn').addEventListener('click', () => { const it = locate(widgetOpenId)?.item; if (it) openWidgetCfg(it); });
+$('#widgetCfgBtn').addEventListener('click', () => {
+  const it = locate(widgetOpenId)?.item;
+  if (!it) return;
+  if (it.kind === 'gcal' || it.kind === 'gdrive') { openSettings(); showTab('gcards'); }
+  else openWidgetCfg(it);
+});
 $('#widgetDlg').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 $('#widgetDlg').addEventListener('close', () => { widgetOpenId = null; renderAll(); }); // refresca la vista compacta
 

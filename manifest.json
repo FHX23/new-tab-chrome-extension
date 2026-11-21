@@ -13,5 +13,9 @@
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
-  "permissions": ["storage", "favicon", "search", "topSites", "bookmarks"]
+  "permissions": ["storage", "favicon", "search", "topSites", "bookmarks"],
+  "optional_permissions": ["history"],
+  "optional_host_permissions": [
+    "https://calendar.google.com/*"
+  ]
 }
