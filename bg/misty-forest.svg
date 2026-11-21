@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="mistSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b1d28"/>
+      <stop offset="45%" stop-color="#183848"/>
+      <stop offset="80%" stop-color="#2c5765"/>
+      <stop offset="100%" stop-color="#41727e"/>
+    </linearGradient>
+    <radialGradient id="moonGlow" cx="74%" cy="26%" r="36%">
+      <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.35"/>
+      <stop offset="45%" stop-color="#7dd3fc" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#183848" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#234856"/>
+      <stop offset="100%" stop-color="#16313c"/>
+    </linearGradient>
+    <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#173440"/>
+      <stop offset="100%" stop-color="#0e222b"/>
+    </linearGradient>
+    <linearGradient id="hill3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d2028"/>
+      <stop offset="100%" stop-color="#061015"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#mistSky)"/>
+  <rect width="3840" height="2160" fill="url(#moonGlow)"/>
+
+  <!-- Moon -->
+  <circle cx="2840" cy="540" r="110" fill="#f0f9ff" opacity="0.88"/>
+
+  <!-- Distant misty hills -->
+  <path d="M0,1260 Q640,1040 1320,1220 T2680,1180 T3840,1240 L3840,2160 L0,2160 Z" fill="url(#hill1)" opacity="0.85"/>
+  <path d="M0,1480 Q780,1280 1580,1440 T3120,1380 T3840,1460 L3840,2160 L0,2160 Z" fill="url(#hill2)"/>
+  <path d="M0,1720 Q920,1540 1840,1690 T3480,1620 T3840,1700 L3840,2160 L0,2160 Z" fill="url(#hill3)"/>
+  <path d="M0,1910 Q1050,1780 2120,1890 T3840,1840 L3840,2160 L0,2160 Z" fill="#040a0e"/>
+</svg>

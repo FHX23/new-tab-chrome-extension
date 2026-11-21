@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="duskSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f1026"/>
+      <stop offset="28%" stop-color="#241734"/>
+      <stop offset="55%" stop-color="#5c2751"/>
+      <stop offset="76%" stop-color="#b84a62"/>
+      <stop offset="92%" stop-color="#f08a5d"/>
+      <stop offset="100%" stop-color="#f9ed69"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="62%" r="42%">
+      <stop offset="0%" stop-color="#fde047" stop-opacity="0.55"/>
+      <stop offset="35%" stop-color="#fb923c" stop-opacity="0.32"/>
+      <stop offset="70%" stop-color="#e11d48" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#241734" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sunBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="55%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#e11d48"/>
+    </linearGradient>
+    <linearGradient id="ridge1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6b2d5c"/>
+      <stop offset="100%" stop-color="#3b1840"/>
+    </linearGradient>
+    <linearGradient id="ridge2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#481d46"/>
+      <stop offset="100%" stop-color="#24112b"/>
+    </linearGradient>
+    <linearGradient id="ridge3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2b122e"/>
+      <stop offset="100%" stop-color="#14081a"/>
+    </linearGradient>
+    <linearGradient id="ridge4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#16091b"/>
+      <stop offset="100%" stop-color="#09030c"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#duskSky)"/>
+  <rect width="3840" height="2160" fill="url(#sunGlow)"/>
+
+  <!-- High altitude stars -->
+  <g fill="#fff" opacity="0.6">
+    <circle cx="420" cy="180" r="1.8"/><circle cx="880" cy="120" r="2.2"/><circle cx="1390" cy="220" r="1.5"/>
+    <circle cx="1950" cy="110" r="2"/><circle cx="2490" cy="190" r="1.8"/><circle cx="3050" cy="130" r="2.3"/>
+    <circle cx="3490" cy="240" r="1.6"/><circle cx="640" cy="340" r="1.4"/><circle cx="2780" cy="310" r="1.7"/>
+  </g>
+
+  <!-- Setting Sun -->
+  <circle cx="1920" cy="1260" r="340" fill="url(#sunBody)" opacity="0.92"/>
+
+  <!-- Layered Sunset Mountain Ranges -->
+  <path d="M0,1360 C340,1240 620,1150 940,1260 C1280,1370 1540,1190 1920,1310 C2280,1420 2610,1140 2980,1240 C3320,1330 3580,1210 3840,1290 L3840,2160 L0,2160 Z" fill="url(#ridge1)" opacity="0.9"/>
+  <path d="M0,1510 C420,1380 780,1520 1190,1390 C1620,1250 1980,1480 2410,1360 C2820,1240 3260,1460 3840,1350 L3840,2160 L0,2160 Z" fill="url(#ridge2)"/>
+  <path d="M0,1670 C510,1540 940,1710 1460,1560 C1940,1420 2390,1660 2890,1530 C3290,1430 3590,1590 3840,1520 L3840,2160 L0,2160 Z" fill="url(#ridge3)"/>
+  <path d="M0,1830 C620,1720 1180,1880 1790,1760 C2410,1640 2980,1850 3840,1710 L3840,2160 L0,2160 Z" fill="url(#ridge4)"/>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#050814"/>
+      <stop offset="50%" stop-color="#0a1128"/>
+      <stop offset="100%" stop-color="#071a2c"/>
+    </linearGradient>
+    <linearGradient id="w1" x1="0" y1="0" x2="1" y2="0.4">
+      <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.55"/>
+      <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="w2" x1="1" y1="0" x2="0" y2="0.6">
+      <stop offset="0%" stop-color="#6d28d9" stop-opacity="0.48"/>
+      <stop offset="50%" stop-color="#2563eb" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="w3" x1="0" y1="0.2" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#0f766e" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#1e40af" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#4c1d95" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="w4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#030712" stop-opacity="0.95"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="65%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.25"/>
+      <stop offset="55%" stop-color="#6366f1" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#050814" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bg)"/>
+  <rect width="3840" height="2160" fill="url(#glow)"/>
+
+  <path d="M-200,620 C520,280 1180,980 1960,580 C2740,180 3280,740 4040,420 L4040,2160 L-200,2160 Z" fill="url(#w2)"/>
+  <path d="M-200,980 C640,560 1320,1280 2180,860 C2940,480 3420,980 4040,740 L4040,2160 L-200,2160 Z" fill="url(#w1)"/>
+  <path d="M-200,1340 C580,1020 1440,1580 2320,1220 C3060,920 3510,1340 4040,1140 L4040,2160 L-200,2160 Z" fill="url(#w3)"/>
+  <path d="M-200,1680 C740,1380 1580,1860 2540,1560 C3220,1340 3610,1640 4040,1520 L4040,2160 L-200,2160 Z" fill="url(#w4)"/>
+</svg>

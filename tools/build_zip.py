@@ -9,8 +9,8 @@ import os
 import zipfile
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-INCLUDE = ['manifest.json', 'newtab.html', 'css', 'js', 'icons', '_locales']
-SKIP_EXT = {'.svg', '.md', '.py'}
+INCLUDE = ['manifest.json', 'newtab.html', 'css', 'js', 'icons', 'bg', '_locales']
+SKIP_EXT = {'.md', '.py'}
 
 
 def files():
@@ -21,7 +21,8 @@ def files():
             continue
         for base, _, names in os.walk(path):
             for n in sorted(names):
-                if os.path.splitext(n)[1] in SKIP_EXT:
+                ext = os.path.splitext(n)[1]
+                if ext in SKIP_EXT or (item == 'icons' and ext == '.svg'):
                     continue
                 yield os.path.relpath(os.path.join(base, n), ROOT).replace(os.sep, '/')
 
