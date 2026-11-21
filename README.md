@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://mi-nueva-pestana.vercel.app"><img alt="Sitio Web Oficial" src="https://img.shields.io/badge/🌐%20Sitio%20Web-mi--nueva--pestana.vercel.app-93f1f7?style=for-the-badge&labelColor=000000"></a>
   <a href="https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip"><img alt="Descargar v0.5.0 (.zip)" src="https://img.shields.io/badge/⬇%20Descargar-v0.5.0%20(.zip)-2ea44f?style=for-the-badge"></a>
 </p>
 
@@ -21,7 +22,7 @@
   <img alt="Licencia GPL-3.0" src="https://img.shields.io/badge/licencia-GPL--3.0-blue">
 </p>
 
-[Español](#español) · [English](#english) · [Descargar / Download](https://github.com/FHX23/new-tab-chrome-extension/releases/latest)
+[Sitio Web](https://mi-nueva-pestana.vercel.app) · [Español](#español) · [English](#english) · [Descargar / Download](https://github.com/FHX23/new-tab-chrome-extension/releases/latest)
 
 ---
 
