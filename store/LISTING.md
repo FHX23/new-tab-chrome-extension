@@ -22,7 +22,7 @@ Convierte la nueva pestaña en tu propia pantalla de inicio, como la de un celul
 • Clic derecho para abrir en pestaña nueva, ventana o incógnito, cambiar tamaño, forma o moverlo de pantalla.
 • Funciona con mouse, pantalla táctil y lápiz. Mantén presionado un icono para editar.
 • Botón exprés «↶ Deshacer» en la barra de edición (además de Ctrl+Z), y copias automáticas diarias para no perder nada.
-• Galería de 9 fondos de alta resolución (fotografías 2.5K de dominio público NASA/NPS + fondos vectoriales 4K) y rotación automática mezclando fondos incluidos con tus propias fotos subidas.
+• Galería de 18 fondos de alta resolución (12 fotografías 2.5K de dominio público NASA/NPS/arte clásico + 6 fondos vectoriales 4K) y rotación automática mezclando fondos incluidos con tus propias fotos subidas.
 • Widgets opcionales (abiertos en cuadrícula, filas a medida y lista): reloj, notas, tareas, calendario mensual, calculadora con historial interactivo y soporte de teclado, temporizador Pomodoro, reloj mundial, cuenta regresiva, progreso, hábitos, conversor, respiración, fotos y tarjetas opcionales de Google Drive (archivos recientes) y Google Calendar (próximas reuniones con botón «Unirse a la reunión»).
 
 El buscador usa siempre el buscador predeterminado de tu Chrome.
@@ -44,7 +44,7 @@ Turn your new tab into your own home screen, like the one on your phone.
 • Right-click to open in a new tab, window or incognito, change size or shape, or move to another screen.
 • Works with mouse, touchscreen and pen. Press and hold an icon to edit.
 • Express “↶ Undo” button in the edit toolbar (plus Ctrl+Z), and automatic daily backups so you never lose anything.
-• Built-in gallery of 9 high-resolution backgrounds (2.5K Public Domain NASA/NPS photos + 4K vector art) plus automatic rotation mixing included backgrounds with your own uploaded photos.
+• Built-in gallery of 18 high-resolution backgrounds (12 2.5K Public Domain NASA/NPS/classic art photos + 6 4K vector landscapes) plus automatic rotation mixing included backgrounds with your own uploaded photos.
 • Optional widgets (open in grid, custom rows and list layouts): clock, notes, to-dos, monthly calendar, calculator with interactive history and keyboard support, Pomodoro timer, world clock, countdown, progress, habits, converter, breathing, photos, plus optional Google Drive (recent files) and Google Calendar (upcoming meetings with “Join meeting” button) cards.
 
 The search box always uses your Chrome default search engine.

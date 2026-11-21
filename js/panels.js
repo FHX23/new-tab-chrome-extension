@@ -504,14 +504,23 @@ setF.addEventListener('change', onSetting);
 // + Fotos subidas por el usuario en IndexedDB ('bgpool:<id>') + Rotación automática optimizada.
 const BG_PRESETS = [
   ['bg/cosmic-cliffs.webp', 'bg_cosmic_cliffs'],
+  ['bg/pillars-creation.webp', 'bg_pillars_creation'],
   ['bg/earth-aurora.webp', 'bg_earth_aurora'],
   ['bg/grand-teton.webp', 'bg_grand_teton'],
+  ['bg/grand-canyon.webp', 'bg_grand_canyon'],
+  ['bg/olympic-coast.webp', 'bg_olympic_coast'],
+  ['bg/redwood-forest.webp', 'bg_redwood_forest'],
+  ['bg/rainier-meadow.webp', 'bg_rainier_meadow'],
+  ['bg/autumn-tundra.webp', 'bg_autumn_tundra'],
   ['bg/milky-way-dunes.webp', 'bg_milky_way_dunes'],
   ['bg/starry-arch.webp', 'bg_starry_arch'],
+  ['bg/great-wave.webp', 'bg_great_wave'],
   ['bg/aurora-peaks.svg', 'bg_aurora_peaks'],
   ['bg/sunset-dunes.svg', 'bg_sunset_dunes'],
   ['bg/ocean-waves.svg', 'bg_ocean_waves'],
   ['bg/misty-forest.svg', 'bg_misty_forest'],
+  ['bg/cyber-city.svg', 'bg_cyber_city'],
+  ['bg/sakura-lake.svg', 'bg_sakura_lake'],
 ];
 
 const bgThumbUrls = new Map();

@@ -34,7 +34,7 @@
 - **Colocación libre, como en Android:** arrastras un icono o widget a cualquier hueco; si lo sueltas en el centro de otro icono se crea una **carpeta**, y en el borde se intercambian.
 - **9 tamaños y 7 formas:** desde `1×1` hasta `4×3` con botones directos para **agrandar (`+`)** y **achicar (`−`)**; formas en círculo, redondeado, cuadrado, hexágono, estrella, triángulo y corazón.
 - **3 estilos de carpetas:** panel centrado (estilo modal), burbuja contextual pegada a la carpeta o vista a pantalla completa.
-- **Galería de 9 fondos de alta resolución y rotación automática:** incluye 5 fotografías QHD 2.5K de dominio público (NASA James Webb, ISS y U.S. National Park Service) y 4 paisajes vectoriales 4K (`bg/`), además de subida múltiple de tus propias fotos y rotación automática al abrir una pestaña o cada ciertos minutos.
+- **Galería de 18 fondos de alta resolución y rotación automática:** incluye 12 fotografías QHD 2.5K de dominio público (NASA James Webb, ISS, Parques Nacionales y arte clásico de Hokusai) y 6 paisajes vectoriales 4K (`bg/`), además de subida múltiple de tus propias fotos y rotación automática al abrir una pestaña o cada ciertos minutos.
 - **15 widgets opcionales** (abiertos y redimensionables en cuadrícula, filas y lista):
   - **Productividad y herramientas:** Reloj (digital, analógico, minimalista o en palabras), Notas rápidas (con contador y copiado en 1 clic), Lista de tareas, Calendario mensual, Temporizador Pomodoro, Reloj mundial con buscador de ciudades, Cuenta regresiva, Barra de progreso temporal, Registro semanal de hábitos, Conversor de unidades, Álbum de fotos y Ejercicio de respiración guiada.
   - **Calculadora profunda:** historial interactivo clicable, botones `AC`, `⌫` y `Ans`, precisión decimal corregida y soporte completo de teclado físico.
@@ -78,7 +78,7 @@ tools/     scripts de íconos y empaquetado (.zip)
 - **Free placement, Android style:** drag an icon or widget to any empty spot; drop it on another icon's center to make a **folder**, or on its edge to swap them.
 - **9 sizes and 7 shapes:** from `1×1` up to `4×3` with direct **enlarge (`+`)** and **shrink (`−`)** buttons; circle, rounded, square, hexagon, star, triangle and heart shapes.
 - **3 folder opening styles:** centered modal panel, contextual bubble next to the folder, or full-screen view.
-- **Built-in gallery of 9 high-resolution backgrounds & auto-rotation:** 5 Public Domain QHD 2.5K photographs (NASA James Webb, ISS & U.S. National Park Service) + 4 original 4K vector landscapes (`bg/`), multi-photo local uploads and automatic rotation on every new tab or by minute intervals.
+- **Built-in gallery of 18 high-resolution backgrounds & auto-rotation:** 12 Public Domain QHD 2.5K photographs (NASA James Webb, ISS, U.S. National Park Service & classic Hokusai art) + 6 original 4K vector landscapes (`bg/`), multi-photo local uploads and automatic rotation on every new tab or by minute intervals.
 - **15 optional widgets** (open and resizable in grid, custom rows and list layouts):
   - **Productivity & utilities:** Clock (digital, analog, minimalist or in words), Quick Notes (with character count and 1-click copy), To-do list, Monthly Calendar, Pomodoro Timer, World Clock with city search, Countdown, Time Progress bar, Weekly Habit tracker, Unit Converter, Photo Album and Guided Breathing.
   - **Deep Calculator:** clickable interactive history tape, `AC`, `⌫` and `Ans` buttons, floating-point precision fix and full physical keyboard support.

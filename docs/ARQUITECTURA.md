@@ -42,7 +42,7 @@ manifest.json        configuración (Manifest V3), idiomas y permisos obligatori
 _locales/es|en/      nombre y descripción de la extensión en cada idioma
 icons/               íconos: icon.svg (48 y 128 px, colorido) e icon-small.svg (16 y 32 px, gris y discreto,
                      el que se ve en la pestaña); tools/make_icons.py genera los PNG
-bg/                  galería integrada de 9 fondos (5 fotos QHD 2.5K de dominio público + 4 paisajes SVG 4K)
+bg/                  galería integrada de 18 fondos (12 fotos QHD 2.5K de dominio público + 6 paisajes SVG 4K)
 newtab.html          estructura: barra de marcadores, logo, buscador, pantallas, barra de edición, diálogos
 css/newtab.css       estilos (variables CSS, unidades de contenedor cqw/cqh, formas, widgets y temas)
 js/boot.js           pinta color, imagen de fondo y rotación automática antes del primer frame

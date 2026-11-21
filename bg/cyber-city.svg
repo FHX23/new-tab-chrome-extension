@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="nightSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050611"/>
+      <stop offset="45%" stop-color="#0c1229"/>
+      <stop offset="80%" stop-color="#1c193b"/>
+      <stop offset="100%" stop-color="#2b1e3f"/>
+    </linearGradient>
+    <radialGradient id="cityGlow" cx="50%" cy="72%" r="55%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.28"/>
+      <stop offset="45%" stop-color="#ec4899" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#050611" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="waterRef" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#11162c"/>
+      <stop offset="100%" stop-color="#04060e"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#nightSky)"/>
+  <rect width="3840" height="2160" fill="url(#cityGlow)"/>
+
+  <!-- Stars -->
+  <g fill="#f8fafc" opacity="0.7">
+    <circle cx="320" cy="180" r="2"/><circle cx="740" cy="260" r="1.5"/><circle cx="1180" cy="140" r="2.2"/>
+    <circle cx="1620" cy="220" r="1.6"/><circle cx="2120" cy="150" r="2.1"/><circle cx="2580" cy="240" r="1.7"/>
+    <circle cx="3040" cy="160" r="2.3"/><circle cx="3480" cy="230" r="1.8"/><circle cx="520" cy="420" r="1.4"/>
+    <circle cx="1390" cy="390" r="1.9"/><circle cx="2340" cy="410" r="1.5"/><circle cx="3220" cy="380" r="2"/>
+  </g>
+
+  <!-- Crescent Moon -->
+  <path d="M3120,280 A95,95 0 1,0 3240,410 A78,78 0 1,1 3120,280 Z" fill="#fef08a" opacity="0.88"/>
+
+  <!-- Distant skyline silhouette -->
+  <g fill="#12172e">
+    <rect x="120" y="1080" width="180" height="540"/>
+    <rect x="340" y="960" width="210" height="660"/>
+    <rect x="590" y="1120" width="160" height="500"/>
+    <rect x="790" y="840" width="240" height="780"/>
+    <rect x="1070" y="1020" width="190" height="600"/>
+    <rect x="1310" y="760" width="260" height="860"/>
+    <polygon points="1310,760 1440,590 1570,760"/>
+    <rect x="1620" y="940" width="220" height="680"/>
+    <rect x="1880" y="680" width="280" height="940"/>
+    <rect x="2015" y="520" width="10" height="160"/>
+    <rect x="2210" y="890" width="230" height="730"/>
+    <rect x="2480" y="790" width="250" height="830"/>
+    <rect x="2770" y="980" width="200" height="640"/>
+    <rect x="3010" y="860" width="240" height="760"/>
+    <rect x="3290" y="1040" width="190" height="580"/>
+    <rect x="3520" y="950" width="210" height="670"/>
+  </g>
+
+  <!-- Foreground skyline silhouette -->
+  <g fill="#090c1a">
+    <rect x="0" y="1240" width="260" height="420"/>
+    <rect x="240" y="1140" width="220" height="520"/>
+    <rect x="490" y="1040" width="250" height="620"/>
+    <rect x="770" y="1190" width="210" height="470"/>
+    <rect x="1010" y="920" width="270" height="740"/>
+    <rect x="1320" y="1100" width="230" height="560"/>
+    <rect x="1580" y="860" width="290" height="800"/>
+    <rect x="1910" y="1060" width="240" height="600"/>
+    <rect x="2180" y="960" width="260" height="700"/>
+    <rect x="2470" y="1120" width="220" height="540"/>
+    <rect x="2720" y="910" width="270" height="750"/>
+    <rect x="3020" y="1090" width="230" height="570"/>
+    <rect x="3280" y="1180" width="250" height="480"/>
+    <rect x="3560" y="1070" width="280" height="590"/>
+  </g>
+
+  <!-- Warm Illuminated City Windows -->
+  <g fill="#fbbf24" opacity="0.72">
+    <rect x="530" y="1090" width="22" height="12"/><rect x="570" y="1090" width="22" height="12"/><rect x="650" y="1140" width="22" height="12"/>
+    <rect x="530" y="1190" width="22" height="12"/><rect x="610" y="1240" width="22" height="12"/><rect x="650" y="1290" width="22" height="12"/>
+    <rect x="1050" y="970" width="26" height="12"/><rect x="1100" y="970" width="26" height="12"/><rect x="1180" y="1020" width="26" height="12"/>
+    <rect x="1050" y="1070" width="26" height="12"/><rect x="1140" y="1120" width="26" height="12"/><rect x="1200" y="1180" width="26" height="12"/>
+    <rect x="1630" y="910" width="28" height="14"/><rect x="1680" y="910" width="28" height="14"/><rect x="1760" y="960" width="28" height="14"/>
+    <rect x="1630" y="1020" width="28" height="14"/><rect x="1720" y="1080" width="28" height="14"/><rect x="1780" y="1140" width="28" height="14"/>
+    <rect x="1930" y="740" width="24" height="12"/><rect x="1980" y="740" width="24" height="12"/><rect x="2060" y="790" width="24" height="12"/>
+    <rect x="2230" y="1010" width="26" height="12"/><rect x="2290" y="1060" width="26" height="12"/><rect x="2350" y="1120" width="26" height="12"/>
+    <rect x="2770" y="960" width="26" height="12"/><rect x="2830" y="1010" width="26" height="12"/><rect x="2900" y="1070" width="26" height="12"/>
+  </g>
+  <g fill="#38bdf8" opacity="0.55">
+    <rect x="830" y="890" width="24" height="12"/><rect x="890" y="940" width="24" height="12"/><rect x="940" y="990" width="24" height="12"/>
+    <rect x="1360" y="810" width="24" height="12"/><rect x="1420" y="860" width="24" height="12"/><rect x="1480" y="910" width="24" height="12"/>
+    <rect x="2530" y="840" width="24" height="12"/><rect x="2590" y="890" width="24" height="12"/><rect x="2640" y="940" width="24" height="12"/>
+  </g>
+
+  <!-- Harbor water reflection -->
+  <rect x="0" y="1640" width="3840" height="520" fill="url(#waterRef)"/>
+  <g fill="#fbbf24" opacity="0.22">
+    <rect x="510" y="1680" width="180" height="6" rx="3"/>
+    <rect x="1030" y="1720" width="220" height="6" rx="3"/>
+    <rect x="1600" y="1690" width="260" height="8" rx="4"/>
+    <rect x="1640" y="1750" width="180" height="6" rx="3"/>
+    <rect x="2200" y="1710" width="210" height="6" rx="3"/>
+    <rect x="2740" y="1700" width="230" height="6" rx="3"/>
+  </g>
+</svg>

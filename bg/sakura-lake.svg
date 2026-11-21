@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="duskSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1025"/>
+      <stop offset="38%" stop-color="#3b1d38"/>
+      <stop offset="72%" stop-color="#7c2d42"/>
+      <stop offset="100%" stop-color="#d97757"/>
+    </linearGradient>
+    <radialGradient id="crimsonSun" cx="50%" cy="56%" r="24%">
+      <stop offset="0%" stop-color="#fde047" stop-opacity="0.95"/>
+      <stop offset="45%" stop-color="#fb7185" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#fb7185" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lakeWater" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4c1d32"/>
+      <stop offset="50%" stop-color="#271224"/>
+      <stop offset="100%" stop-color="#110915"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#duskSky)"/>
+  <rect width="3840" height="2160" fill="url(#crimsonSun)"/>
+
+  <!-- Setting Sun Disc -->
+  <circle cx="1920" cy="1180" r="260" fill="#fef08a" opacity="0.9"/>
+
+  <!-- Distant Mt. Fuji / Volcano Silhouette -->
+  <path d="M680,1420 Q1540,1320 1760,820 L2080,820 Q2300,1320 3160,1420 Z" fill="#2d172c"/>
+  <path d="M1760,820 L2080,820 L2135,950 L2030,920 L1960,970 L1890,915 L1810,965 L1705,950 Z" fill="#fde68a" opacity="0.25"/>
+
+  <!-- Midground misty hills -->
+  <path d="M0,1450 Q520,1260 1180,1420 T2460,1390 T3840,1440 L3840,1520 L0,1520 Z" fill="#211022"/>
+
+  <!-- Calm Lake -->
+  <rect x="0" y="1460" width="3840" height="700" fill="url(#lakeWater)"/>
+
+  <!-- Sun shimmer on lake -->
+  <g fill="#fde047" opacity="0.35">
+    <rect x="1720" y="1500" width="400" height="10" rx="5"/>
+    <rect x="1760" y="1540" width="320" height="8" rx="4"/>
+    <rect x="1800" y="1580" width="240" height="8" rx="4"/>
+    <rect x="1840" y="1620" width="160" height="6" rx="3"/>
+    <rect x="1870" y="1660" width="100" height="6" rx="3"/>
+  </g>
+
+  <!-- Torii Gate Silhouette in Water -->
+  <g fill="#120814">
+    <ellipse cx="980" cy="1760" rx="360" ry="38"/>
+    <rect x="860" y="1430" width="22" height="320"/>
+    <rect x="1078" y="1430" width="22" height="320"/>
+    <path d="M770,1410 Q980,1375 1190,1410 L1175,1438 Q980,1408 785,1438 Z"/>
+    <rect x="815" y="1475" width="330" height="18"/>
+  </g>
+
+  <!-- Foreground Sakura Branch Silhouette (Top Left) -->
+  <path d="M0,0 L0,360 Q260,310 520,420 Q740,510 920,460 L910,435 Q730,480 530,390 Q280,280 0,310 Z" fill="#120814"/>
+  <g fill="#fbcfe8" opacity="0.82">
+    <circle cx="240" cy="330" r="18"/><circle cx="265" cy="315" r="14"/><circle cx="390" cy="360" r="20"/>
+    <circle cx="420" cy="380" r="15"/><circle cx="560" cy="415" r="22"/><circle cx="590" cy="395" r="16"/>
+    <circle cx="720" cy="465" r="19"/><circle cx="755" cy="450" r="15"/><circle cx="880" cy="455" r="18"/>
+    <circle cx="915" cy="440" r="14"/><circle cx="1040" cy="520" r="10"/><circle cx="1180" cy="590" r="8"/>
+  </g>
+</svg>
