@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icons/icon128.png" width="96" height="96" alt="">
+  <img src="icons/icon128.png" width="96" height="96" alt="Mi Nueva Pestaña">
 </p>
 
 <h1 align="center">Mi Nueva Pestaña · My New Tab</h1>
@@ -10,58 +10,61 @@
 </p>
 
 <p align="center">
-  <img alt="Versión 0.5.0 preliminar" src="https://img.shields.io/badge/versión-0.5.0%20preliminar-orange">
+  <a href="https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip"><img alt="Descargar v0.5.0 (.zip)" src="https://img.shields.io/badge/⬇%20Descargar-v0.5.0%20(.zip)-2ea44f?style=for-the-badge"></a>
+</p>
+
+<p align="center">
+  <img alt="Versión 0.5.0" src="https://img.shields.io/badge/versión-0.5.0-orange">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Chrome-Manifest%20V3-4c8bf5">
   <img alt="Sin librerías" src="https://img.shields.io/badge/librerías-0-2ea44f">
+  <img alt="100% Local" src="https://img.shields.io/badge/privacidad-100%25%20local-0d9488">
   <img alt="Licencia GPL-3.0" src="https://img.shields.io/badge/licencia-GPL--3.0-blue">
 </p>
 
-> **Versión preliminar.** Todavía no está en la Chrome Web Store y puede cambiar.
-> *Preview release: not yet on the Chrome Web Store, and things may change.*
-
-[Español](#español) · [English](#english)
+[Español](#español) · [English](#english) · [Descargar / Download](https://github.com/FHX23/new-tab-chrome-extension/releases/latest)
 
 ---
 
 ## Español
 
 ### Qué hace
-- **Accesos ilimitados en varias pantallas**, con flechas laterales, rueda del mouse o puntos para moverte.
-- **Cada pantalla tiene los espacios que tú eliges** (por ejemplo 3×3, o una fila de 3 y otra de 4) y **sin scroll**.
-- **Colocación libre, como en Android:** arrastras un icono a cualquier hueco; si lo sueltas sobre otro se crea una carpeta, y en el borde se intercambian.
-- **Tamaños y formas:** normal, ancho, alto y grande; círculo, redondeado, cuadrado, hexágono, estrella, triángulo y corazón.
-- **Tu barra de marcadores** dentro de la página, con carpetas y submenús.
-- **Clic derecho** en iconos, marcadores y espacios vacíos: abrir en pestaña, ventana o incógnito; editar; mover…
-- **Mouse, pantalla táctil y lápiz.** Mantén presionado un icono para editar.
-- **Deshacer** (`Ctrl+Z`) y **copias automáticas** diarias.
-- **Personalización:** colores, transparencias, imagen de fondo y tema claro u oscuro.
-- **Extras opcionales** (apagados de fábrica): reloj, notas y tareas; nombre y fondo por pantalla; otro buscador para una búsqueda puntual.
+- **Accesos ilimitados en varias pantallas**, con flechas laterales (de altura configurable), rueda del mouse o puntos inferiores para moverte.
+- **Cada pantalla tiene los espacios que tú eliges** (*Cuadrícula* como `4×3`, *Filas a medida* como `3,4` o *Lista*) y **sin scroll**.
+- **Colocación libre, como en Android:** arrastras un icono o widget a cualquier hueco; si lo sueltas en el centro de otro icono se crea una **carpeta**, y en el borde se intercambian.
+- **9 tamaños y 7 formas:** desde `1×1` hasta `4×3` con botones directos para **agrandar (`+`)** y **achicar (`−`)**; formas en círculo, redondeado, cuadrado, hexágono, estrella, triángulo y corazón.
+- **3 estilos de carpetas:** panel centrado (estilo modal), burbuja contextual pegada a la carpeta o vista a pantalla completa.
+- **Galería de 9 fondos de alta resolución y rotación automática:** incluye 5 fotografías QHD 2.5K de dominio público (NASA James Webb, ISS y U.S. National Park Service) y 4 paisajes vectoriales 4K (`bg/`), además de subida múltiple de tus propias fotos y rotación automática al abrir una pestaña o cada ciertos minutos.
+- **15 widgets opcionales** (abiertos y redimensionables en cuadrícula, filas y lista):
+  - **Productividad y herramientas:** Reloj (digital, analógico, minimalista o en palabras), Notas rápidas (con contador y copiado en 1 clic), Lista de tareas, Calendario mensual, Temporizador Pomodoro, Reloj mundial con buscador de ciudades, Cuenta regresiva, Barra de progreso temporal, Registro semanal de hábitos, Conversor de unidades, Álbum de fotos y Ejercicio de respiración guiada.
+  - **Calculadora profunda:** historial interactivo clicable, botones `AC`, `⌫` y `Ans`, precisión decimal corregida y soporte completo de teclado físico.
+  - **Google Drive y Google Calendar (100% locales, sin OAuth):** tarjeta de archivos recientes de Drive (Docs, Sheets, Slides, Forms y PDFs abiertos en tu navegador, con vista ampliada `⤢`) y tarjeta de próximas reuniones de Calendar (vía enlace iCal `.ics`, sesión o archivo exportado, con indicador *«En curso / En X min»*, botón directo **«Unirse a la reunión»** para Meet/Zoom/Teams y creador de reuniones rápidas).
+- **Tu barra de marcadores** dentro de la página, con carpetas y submenús, más enlaces rápidos arriba a la derecha con **color individual por enlace**.
+- **Clic derecho** en iconos, marcadores y espacios vacíos: abrir en pestaña, ventana o incógnito; editar; redimensionar; cambiar forma; mover de pantalla…
+- **Mouse, pantalla táctil y lápiz.** Mantén presionado un icono para entrar al modo edición.
+- **Deshacer exprés:** botón directo **«↶ Deshacer»** en la barra de edición, atajo `Ctrl+Z` y **copias automáticas diarias** (las últimas 7) además de exportación/importación en `.json`.
 - **Español e inglés**, según el idioma de Chrome.
 
-### Instalarla desde el código
-1. Descarga el repositorio (botón **Code → Download ZIP**) y descomprímelo, o usa `git clone`.
-2. Abre `chrome://extensions` y activa el **Modo de desarrollador**.
-3. Pulsa **Cargar descomprimida** y elige la carpeta del proyecto.
+### Cómo instalarla (en 30 segundos)
+1. **[Haz clic aquí para descargar `mi-nueva-pestana-0.5.0.zip`](https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip)** y descomprímelo en una carpeta fija de tu computador (por ejemplo, en `Documentos\MiNuevaPestana`).
+2. En Chrome, escribe `chrome://extensions` en la barra de direcciones y activa el interruptor **Modo de desarrollador** (arriba a la derecha).
+3. Pulsa **Cargar descomprimida** (*Load unpacked*) y selecciona la carpeta que descomprimiste.
 4. Abre una pestaña nueva. Si Chrome pregunta si es la página que esperabas, elige **Conservar**.
 
 ### Privacidad
-Todo se usa y se guarda **solo en tu computador**: la extensión no envía datos a ningún servidor, no tiene
-anuncios ni analítica, y no carga nada desde internet. Detalle completo en [PRIVACY.md](PRIVACY.md).
+Todo se procesa y se guarda **exclusivamente en tu computador** (`localStorage`, `chrome.storage.local` e `IndexedDB`). La extensión no tiene servidores propios, no envía telemetría ni analítica, no contiene anuncios y no requiere crear cuentas. Los permisos adicionales (`history` para Drive y `calendar.google.com` para Calendar) son **opcionales** y vienen apagados de fábrica. Detalle completo en [PRIVACY.md](PRIVACY.md).
 
 ### Para desarrolladores
-- **HTML, CSS y JavaScript escritos a mano, sin librerías ni proceso de compilación.** Editas, pulsas ↻ en
-  `chrome://extensions`, y listo.
-- La arquitectura, el modelo de datos y las decisiones de rendimiento están en
-  [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
-- `python tools/build_zip.py` arma el paquete para la tienda en `dist/`.
-- `python tools/make_icons.py` vuelve a generar los íconos: el colorido (`icons/icon.svg`) y el discreto de la pestaña (`icons/icon-small.svg`).
-- Los textos están en `js/i18n.js` (`clave: [español, inglés]`). Agregar un idioma es sumar una columna.
+- **HTML, CSS y JavaScript escritos a mano, sin librerías ni proceso de compilación.** Editas, pulsas ↻ en `chrome://extensions`, y listo.
+- La arquitectura, el modelo de datos y las decisiones de rendimiento están en [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
+- `python tools/build_zip.py` arma el paquete limpio de distribución en `dist/mi-nueva-pestana-<versión>.zip`.
+- `python tools/make_icons.py` regenera los íconos desde `icons/icon.svg` (colorido) e `icons/icon-small.svg` (monocromático discreto para la pestaña).
+- Los textos bilingües viven en `js/i18n.js` (`clave: [español, inglés]`).
 
-```
-manifest.json · newtab.html · css/ · js/ · icons/ · _locales/   la extensión
-docs/      documentación técnica
-store/     textos para la Chrome Web Store
-tools/     scripts de íconos y empaquetado
+```text
+manifest.json · newtab.html · css/ · js/ · icons/ · bg/ · _locales/   la extensión
+docs/      documentación técnica y arquitectura
+store/     textos y ficha para la Chrome Web Store
+tools/     scripts de íconos y empaquetado (.zip)
 ```
 
 ---
@@ -69,35 +72,37 @@ tools/     scripts de íconos y empaquetado
 ## English
 
 ### What it does
-- **Unlimited shortcuts across several screens**, with side arrows, mouse wheel or dots to move around.
-- **Each screen has the spaces you choose** (e.g. 3×3, or a row of 3 and a row of 4) and **no scrolling**.
-- **Free placement, Android style:** drag an icon to any empty spot; drop it on another to make a folder, or on its edge to swap them.
-- **Sizes and shapes:** normal, wide, tall and large; circle, rounded, square, hexagon, star, triangle and heart.
-- **Your bookmarks bar** inside the page, with folders and submenus.
-- **Right-click** icons, bookmarks and empty spots: open in a tab, window or incognito; edit; move…
-- **Mouse, touchscreen and pen.** Press and hold an icon to edit.
-- **Undo** (`Ctrl+Z`) and **automatic daily backups**.
-- **Customization:** colors, transparency, background image and light or dark theme.
-- **Optional extras** (off by default): clock, notes and to-dos; name and background per screen; another search engine for a single search.
+- **Unlimited shortcuts across several screens**, with side arrows, mouse wheel or bottom dots to move around.
+- **Each screen has the spaces you choose** (*Grid* like `4×3`, *Custom rows* like `3,4` or *List*) and **no scrolling**.
+- **Free placement, Android style:** drag an icon or widget to any empty spot; drop it on another icon's center to make a **folder**, or on its edge to swap them.
+- **9 sizes and 7 shapes:** from `1×1` up to `4×3` with direct **enlarge (`+`)** and **shrink (`−`)** buttons; circle, rounded, square, hexagon, star, triangle and heart shapes.
+- **3 folder opening styles:** centered modal panel, contextual bubble next to the folder, or full-screen view.
+- **Built-in gallery of 9 high-resolution backgrounds & auto-rotation:** 5 Public Domain QHD 2.5K photographs (NASA James Webb, ISS & U.S. National Park Service) + 4 original 4K vector landscapes (`bg/`), multi-photo local uploads and automatic rotation on every new tab or by minute intervals.
+- **15 optional widgets** (open and resizable in grid, custom rows and list layouts):
+  - **Productivity & utilities:** Clock (digital, analog, minimalist or in words), Quick Notes (with character count and 1-click copy), To-do list, Monthly Calendar, Pomodoro Timer, World Clock with city search, Countdown, Time Progress bar, Weekly Habit tracker, Unit Converter, Photo Album and Guided Breathing.
+  - **Deep Calculator:** clickable interactive history tape, `AC`, `⌫` and `Ans` buttons, floating-point precision fix and full physical keyboard support.
+  - **Google Drive & Google Calendar cards (100% local, no OAuth):** recent Drive files card (Docs, Sheets, Slides, Forms and PDFs opened in your browser, with expanded popup view `⤢`) and upcoming Calendar meetings card (via `.ics` iCal link, browser session or exported file, with *"In progress / In X min"* badges, direct **"Join meeting"** button for Meet/Zoom/Teams and quick-meeting creator).
+- **Your bookmarks bar** inside the page, with folders and submenus, plus customizable top-right links with **individual color pickers per link**.
+- **Right-click** icons, bookmarks and empty spots: open in a tab, window or incognito; edit; resize; reshape; move across screens…
+- **Mouse, touchscreen and pen.** Press and hold an icon to enter edit mode.
+- **Express Undo:** direct **“↶ Undo”** button in the edit toolbar, `Ctrl+Z` shortcut, and **automatic daily backups** (last 7 days) plus `.json` export/import.
 - **Spanish and English**, following Chrome's language.
 
-### Install from source
-1. Download the repository (**Code → Download ZIP**) and unzip it, or use `git clone`.
-2. Open `chrome://extensions` and turn on **Developer mode**.
-3. Click **Load unpacked** and pick the project folder.
+### How to install (in 30 seconds)
+1. **[Click here to download `mi-nueva-pestana-0.5.0.zip`](https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip)** and unzip it into a permanent folder on your computer (e.g. `Documents\MyNewTab`).
+2. Open `chrome://extensions` in Chrome and turn on **Developer mode** (top right).
+3. Click **Load unpacked** and pick the unzipped folder.
 4. Open a new tab. If Chrome asks whether this is the page you expected, choose **Keep it**.
 
 ### Privacy
-Everything is used and stored **only on your computer**: the extension sends no data to any server, has no
-ads or analytics, and loads nothing from the internet. Full details in [PRIVACY.md](PRIVACY.md).
+Everything is processed and stored **exclusively on your computer** (`localStorage`, `chrome.storage.local` and `IndexedDB`). The extension has no external servers, sends no telemetry or analytics, has no ads and requires no accounts. Extra permissions (`history` for Drive and `calendar.google.com` for Calendar) are **optional** and off by default. Full details in [PRIVACY.md](PRIVACY.md).
 
 ### For developers
-- **Handwritten HTML, CSS and JavaScript, with no libraries and no build step.** Edit, click ↻ in
-  `chrome://extensions`, done.
+- **Handwritten HTML, CSS and JavaScript, with no libraries and no build step.** Edit, click ↻ in `chrome://extensions`, done.
 - Architecture, data model and performance notes (in Spanish): [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
-- `python tools/build_zip.py` builds the store package in `dist/`.
-- `python tools/make_icons.py` regenerates the icons: the colorful one (`icons/icon.svg`) and the subtle tab icon (`icons/icon-small.svg`).
-- UI strings live in `js/i18n.js` (`key: [Spanish, English]`). Adding a language means adding a column.
+- `python tools/build_zip.py` builds the clean distribution package in `dist/mi-nueva-pestana-<version>.zip`.
+- `python tools/make_icons.py` regenerates the icons from `icons/icon.svg` (colorful) and `icons/icon-small.svg` (subtle monochrome tab icon).
+- UI strings live in `js/i18n.js` (`key: [Spanish, English]`).
 
 ---
 
