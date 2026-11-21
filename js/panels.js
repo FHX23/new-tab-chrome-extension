@@ -113,7 +113,7 @@ function openEditor(it, type = 'link') {
   $('#shapeHint').hidden = !editF.shape.value;
   $$('#editForm [data-for="link"]').forEach(n => { n.hidden = editType !== 'link'; });
   const itemPage = state.pages[it ? locate(it.id).pageIdx : current];
-  $$('#editForm [data-for="size"]').forEach(n => { n.hidden = inFolder || pageCfg(itemPage).layout !== 'grid'; });
+  $$('#editForm [data-for="size"]').forEach(n => { n.hidden = inFolder || pageCfg(itemPage).layout === 'list'; });
   updatePreview();
   $('#editDlg').showModal();
   (editType === 'link' && !it ? editF.url : editF.title).focus();
@@ -353,6 +353,34 @@ function renderKeysTable() {
     : el('small', { class: 'hint' }, t('keysEmpty')));
 }
 
+// Selector de color individual para cada enlace de arriba a la derecha.
+function renderTopLinksColors() {
+  const box = $('#topLinksPerColor');
+  if (!box) return;
+  const s = state.settings;
+  const links = parseLines(s.topLinks);
+  box.hidden = !links.length;
+  if (!links.length) { box.replaceChildren(); return; }
+  const tColors = s.topLinksColors ||= {};
+  box.replaceChildren(...links.map((l, i) => {
+    const curColor = (tColors[i] || tColors[l.name] || s.topLinksColor || s.textColor || '#ffffff').toLowerCase();
+    const inp = el('input', {
+      type: 'color',
+      value: curColor,
+      oninput: () => {
+        s.topLinksColors ||= {};
+        s.topLinksColors[i] = inp.value;
+        s.topLinksColors[l.name] = inp.value;
+        commit(false);
+      },
+    });
+    const lbl = el('label', {}, el('span', {}, t('topLinkColorFor', l.name)), inp);
+    colorPicker(inp);
+    syncSwatches(inp);
+    return lbl;
+  }));
+}
+
 function openSettings() {
   fillSettings();
   let tab = 'icons';
@@ -367,6 +395,7 @@ function showTab(name) {
   $$('#setForm [data-tabpanel]').forEach(p => { p.hidden = p.dataset.tabpanel !== name; });
   try { localStorage.setItem('ntp_tab', name); } catch {}
   if (name === 'data') renderBackups();
+  if (name === 'gcards') syncGCardsUi();
 }
 
 $('#setForm .tabs').addEventListener('click', e => {
@@ -383,6 +412,9 @@ function fillSettings() {
     if (inp._swatches) syncSwatches(inp);
   }
   renderKeysTable();
+  renderTopLinksColors();
+  syncBgPresets();
+  syncGCardsUi();
   syncNotes();
   syncSettingsUi();
 }
@@ -413,6 +445,19 @@ function onSetting(e) {
   syncSettingsUi();
   if (['navZone', 'navZoneH', 'navSize'].includes(tg.name)) peekZones();
   if (tg.name === 'searchKeys') renderKeysTable();
+  if (tg.name === 'topLinksColor') { state.settings.topLinksColors = {}; renderTopLinksColors(); }
+  if (tg.name === 'topLinks') renderTopLinksColors();
+  if (tg.name === 'bgRotate') {
+    if (v && (!state.settings.bgPool || state.settings.bgPool.length < 2)) {
+      state.settings.bgPool = [
+        ...BG_PRESETS.map(([u]) => u),
+        ...(state.settings.bgCustom || []).map(id => 'bgpool:' + id),
+      ];
+    }
+    syncBgPresets();
+    scheduleBgRotation();
+  }
+  if (tg.name === 'bgEvery') scheduleBgRotation();
   if (tg.name === 'showBookmarks' && v) refreshBookmarks();
   if (tg.name === 'folderStyle' && $('#folderDlg').open) $('#folderDlg').close();
   if (['xPages', 'xWidgets', 'clock24'].includes(tg.name)) commit(true);
@@ -455,6 +500,284 @@ function syncNotes() {
 setF.addEventListener('input', onSetting);
 setF.addEventListener('change', onSetting);
 
+// Fondos predefinidos incluidos en el paquete (100 % Dominio Público NASA/NPS + Vectores 4K propios)
+// + Fotos subidas por el usuario en IndexedDB ('bgpool:<id>') + Rotación automática optimizada.
+const BG_PRESETS = [
+  ['bg/cosmic-cliffs.webp', 'bg_cosmic_cliffs'],
+  ['bg/earth-aurora.webp', 'bg_earth_aurora'],
+  ['bg/grand-teton.webp', 'bg_grand_teton'],
+  ['bg/milky-way-dunes.webp', 'bg_milky_way_dunes'],
+  ['bg/starry-arch.webp', 'bg_starry_arch'],
+  ['bg/aurora-peaks.svg', 'bg_aurora_peaks'],
+  ['bg/sunset-dunes.svg', 'bg_sunset_dunes'],
+  ['bg/ocean-waves.svg', 'bg_ocean_waves'],
+  ['bg/misty-forest.svg', 'bg_misty_forest'],
+];
+
+const bgThumbUrls = new Map();
+async function bgThumbUrl(id) {
+  if (bgThumbUrls.has(id)) return bgThumbUrls.get(id);
+  const blob = await Store.getFile('bgpool:' + id).catch(() => null);
+  const url = blob ? URL.createObjectURL(blob) : '';
+  if (url) bgThumbUrls.set(id, url);
+  return url;
+}
+
+function blobToDataUrl(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+
+async function applyBgKey(key) {
+  if (!key) {
+    await Store.setBg('');
+    state.settings.bgImage = '';
+    commit(false);
+    applyBg();
+    syncBgPresets();
+    return;
+  }
+  let dataOrUrl = key;
+  if (key.startsWith('bgpool:')) {
+    const blob = await Store.getFile(key).catch(() => null);
+    if (!blob) return;
+    dataOrUrl = await blobToDataUrl(blob);
+  }
+  // Pre-decodifica la imagen antes de cambiar el fondo para evitar cualquier parpadeo
+  const pre = new Image();
+  pre.src = dataOrUrl;
+  await pre.decode().catch(() => {});
+  await Store.setBg(dataOrUrl);
+  state.settings.bgImage = key;
+  try { localStorage.setItem('ntp_bg_rot_ts', String(Date.now())); } catch {}
+  commit(false);
+  applyBg();
+  syncBgPresets();
+}
+
+function renderBgPresets() {
+  const box = $('#bgPresets');
+  if (!box || !state) return;
+  const customIds = state.settings.bgCustom ||= [];
+
+  const makeCard = (key, label, isCustom = false, customId = '') => {
+    const img = el('img', { alt: label, loading: 'lazy', decoding: 'async' });
+    if (isCustom) bgThumbUrl(customId).then(u => { if (u) img.src = u; });
+    else img.src = key;
+
+    const delBtn = isCustom && el('button', {
+      type: 'button',
+      class: 'ctrl bg-del',
+      title: t('delete'),
+      onclick: async e => {
+        e.stopPropagation();
+        await Store.delFile('bgpool:' + customId).catch(() => {});
+        state.settings.bgCustom = (state.settings.bgCustom || []).filter(x => x !== customId);
+        state.settings.bgPool = (state.settings.bgPool || []).filter(x => x !== key);
+        if (state.settings.bgImage === key) {
+          const next = state.settings.bgPool[0] || '';
+          await applyBgKey(next);
+        }
+        commit(false);
+        renderBgPresets();
+      },
+    }, '✕');
+
+    return el('button', {
+      type: 'button',
+      class: 'bg-card',
+      dataset: { bg: key },
+      title: label,
+      onclick: async () => {
+        const s = state.settings;
+        if (s.bgRotate) {
+          const pool = s.bgPool ||= [];
+          const idx = pool.indexOf(key);
+          if (idx >= 0) pool.splice(idx, 1);
+          else pool.push(key);
+          if (idx < 0 && s.bgImage !== key) await applyBgKey(key);
+          else { commit(false); syncBgPresets(); }
+        } else {
+          const off = s.bgImage === key || Store.getBg() === key;
+          await applyBgKey(off ? '' : key);
+        }
+      },
+    },
+      img,
+      el('i', { class: 'bg-check' }, '✓'),
+      delBtn,
+      el('span', {}, label)
+    );
+  };
+
+  const cards = [
+    ...BG_PRESETS.map(([url, labelKey]) => makeCard(url, t(labelKey), false)),
+    ...customIds.map((id, i) => makeCard('bgpool:' + id, t('bgMyPhoto', i + 1), true, id)),
+  ];
+  box.replaceChildren(...cards);
+  syncBgPresets();
+}
+
+function syncBgPresets() {
+  const box = $('#bgPresets');
+  if (!box || !state) return;
+  const s = state.settings;
+  const expectedCount = BG_PRESETS.length + (s.bgCustom?.length || 0);
+  if (box.children.length !== expectedCount) return renderBgPresets();
+  const curKey = s.bgImage || Store.getBg();
+  const pool = new Set(s.bgPool || []);
+  box.classList.toggle('rot-mode', !!s.bgRotate);
+  $$('#bgPresets .bg-card').forEach(b => {
+    const key = b.dataset.bg;
+    const isCur = key === curKey;
+    const inPool = s.bgRotate ? pool.has(key) : isCur;
+    b.classList.toggle('on', isCur);
+    b.classList.toggle('in-pool', inPool);
+    b.setAttribute('aria-pressed', inPool ? 'true' : 'false');
+  });
+}
+
+let bgRotTimer = null;
+async function advanceBgRotation(force = false) {
+  const s = state.settings;
+  if (!s.bgRotate) return;
+  const pool = (s.bgPool || []).filter(Boolean);
+  if (pool.length < 2) return;
+  const everyMs = Number(s.bgEvery || 0) * 1000;
+  const lastTs = Number(localStorage.getItem('ntp_bg_rot_ts') || 0);
+  if (!force && everyMs > 0 && Date.now() - lastTs < everyMs) return;
+  const curIdx = pool.indexOf(s.bgImage);
+  const nextKey = pool[(curIdx + 1) % pool.length];
+  await applyBgKey(nextKey);
+}
+
+function scheduleBgRotation() {
+  clearInterval(bgRotTimer);
+  const s = state.settings;
+  if (!s.bgRotate || !s.bgEvery || Number(s.bgEvery) <= 0) return;
+  const ms = Math.max(5000, Number(s.bgEvery) * 1000);
+  bgRotTimer = setInterval(() => {
+    if (!document.hidden) advanceBgRotation(true);
+  }, ms);
+}
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && state.settings.bgRotate && Number(state.settings.bgEvery) > 0) {
+    advanceBgRotation(false);
+  }
+});
+
+$('#bgSelectAll')?.addEventListener('click', () => {
+  const allKeys = [
+    ...BG_PRESETS.map(([u]) => u),
+    ...(state.settings.bgCustom || []).map(id => 'bgpool:' + id),
+  ];
+  const pool = state.settings.bgPool || [];
+  state.settings.bgPool = pool.length >= allKeys.length ? (state.settings.bgImage ? [state.settings.bgImage] : []) : allKeys;
+  commit(false);
+  syncBgPresets();
+});
+
+$('#bgNextNow')?.addEventListener('click', () => advanceBgRotation(true));
+
+// ---------- pestaña «Drive y Calendar» ----------
+const hasWidgetKind = kind => state.pages.some(p => p.items.some(it => it.type === 'widget' && it.kind === kind));
+
+async function syncGCardsUi() {
+  if (!$('#addGDriveCard')) return;
+  const hasDrive = hasWidgetKind('gdrive');
+  const hasCal = hasWidgetKind('gcal');
+  $('#gDriveStatus').textContent = t(hasDrive ? 'gStatusOnScreen' : 'gStatusNotAdded');
+  $('#gDriveStatus').classList.toggle('on', hasDrive);
+  $('#gCalStatus').textContent = t(hasCal ? 'gStatusOnScreen' : 'gStatusNotAdded');
+  $('#gCalStatus').classList.toggle('on', hasCal);
+
+  const calIcs = !!state.settings.gCalIcsUrl || readJsonCache(GCAL_CACHE_KEY, []).length > 0;
+  const cBadge = $('#gCalIcsBadge');
+  if (cBadge) {
+    cBadge.textContent = t(calIcs ? 'gBadgeActive' : 'gBadgePending');
+    cBadge.classList.toggle('on', calIcs);
+  }
+  if ($('#gCalClearBtn')) $('#gCalClearBtn').hidden = !calIcs;
+}
+
+$('#addGDriveCard')?.addEventListener('click', async () => {
+  state.settings.xWidgets = true;
+  if (!await hasHistPerm()) {
+    await chrome.permissions.request({ permissions: ['history'] }).catch(() => false);
+  }
+  await scanDriveHistory();
+  if (!hasWidgetKind('gdrive')) addItem(newWidget('gdrive'));
+  else commit();
+  fillSettings();
+  toast(t('gCardAddedToast'), true);
+});
+
+$('#gDriveRefreshBtn')?.addEventListener('click', async () => {
+  if (!await hasHistPerm()) {
+    const ok = await chrome.permissions.request({ permissions: ['history'] }).catch(() => false);
+    if (!ok) return toast(t('gPermDenied'));
+  }
+  const list = await scanDriveHistory();
+  syncGCardsUi();
+  toast(t('gDriveUpdated', list?.length || 0));
+});
+
+$('#addGCalCard')?.addEventListener('click', () => {
+  state.settings.xWidgets = true;
+  if (!hasWidgetKind('gcal')) addItem(newWidget('gcal'));
+  else commit();
+  fillSettings();
+  toast(t('gCardAddedToast'), true);
+});
+
+$('#gCalSyncIcsBtn')?.addEventListener('click', async () => {
+  const raw = setF.elements.gCalIcsUrl?.value.trim() || '';
+  const url = normalizeIcsInput(raw);
+  if (setF.elements.gCalIcsUrl && url) setF.elements.gCalIcsUrl.value = url;
+  state.settings.gCalIcsUrl = url;
+  Store.save(state);
+  const events = await syncCalendarIcs(url, true);
+  if (events) {
+    state.settings.xWidgets = true;
+    if (!hasWidgetKind('gcal')) addItem(newWidget('gcal'));
+    else commit();
+    fillSettings();
+    toast(t('gIcsSynced', events.length));
+  } else {
+    syncGCardsUi();
+    ask(t('gIcsError'), { cancel: null });
+  }
+});
+
+$('#gCalIcsFile')?.addEventListener('change', async e => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  const text = await readIcsOrZipFile(file);
+  if (!text.includes('BEGIN:VCALENDAR')) return ask(t('gIcsError'), { cancel: null });
+  const events = parseIcsText(text);
+  writeJsonCache(GCAL_CACHE_KEY, events);
+  state.settings.xWidgets = true;
+  if (!hasWidgetKind('gcal')) addItem(newWidget('gcal'));
+  else repaintGCalCards();
+  fillSettings();
+  toast(t('gIcsSynced', events.length));
+});
+
+$('#gCalClearBtn')?.addEventListener('click', () => {
+  state.settings.gCalIcsUrl = '';
+  if (setF.elements.gCalIcsUrl) setF.elements.gCalIcsUrl.value = '';
+  try { localStorage.removeItem(GCAL_CACHE_KEY); } catch {}
+  Store.save(state);
+  repaintGCalCards();
+  syncGCardsUi();
+  toast(t('gIcsCleared'));
+});
+
 // Fondo general: escalado al tamaño de tu pantalla y comprimido (carga y decodifica mucho más rápido).
 async function imageToDataUrl(file) {
   const c = await scaleImage(file, Math.round(Math.max(screen.width, screen.height) * Math.min(devicePixelRatio || 1, 2)));
@@ -464,24 +787,41 @@ async function imageToDataUrl(file) {
 }
 
 $('#bgFile').addEventListener('change', async e => {
-  const file = e.target.files[0];
+  const files = [...(e.target.files || [])].slice(0, 20);
   e.target.value = '';
-  if (!file) return;
+  if (!files.length) return;
   try {
-    await Store.setBg(await imageToDataUrl(file));
-    state.settings.bgImage = '1';
-    commit(false);
-    applyBg();
+    const maxDim = Math.round(Math.max(screen.width, screen.height) * Math.min(devicePixelRatio || 1, 2));
+    let lastKey = '';
+    for (const file of files) {
+      const c = await scaleImage(file, maxDim);
+      const blob = await new Promise(res => c.toBlob(res, 'image/webp', 0.85));
+      const id = uid();
+      await Store.putFile('bgpool:' + id, blob);
+      (state.settings.bgCustom ||= []).push(id);
+      lastKey = 'bgpool:' + id;
+      if (state.settings.bgRotate) (state.settings.bgPool ||= []).push(lastKey);
+    }
+    if (files.length > 1 && !state.settings.bgRotate) {
+      state.settings.bgRotate = true;
+      state.settings.bgPool = (state.settings.bgCustom || []).map(id => 'bgpool:' + id);
+      if (setF.elements.bgRotate) setF.elements.bgRotate.checked = true;
+      syncSettingsUi();
+      scheduleBgRotation();
+    }
+    await applyBgKey(lastKey);
+    renderBgPresets();
   } catch {
     ask(t('bgTooBig'), { cancel: null });
   }
 });
 
 $('#bgRemove').addEventListener('click', async () => {
-  await Store.setBg('');
-  state.settings.bgImage = '';
-  commit(false);
-  applyBg();
+  state.settings.bgRotate = false;
+  if (setF.elements.bgRotate) setF.elements.bgRotate.checked = false;
+  syncSettingsUi();
+  scheduleBgRotation();
+  await applyBgKey('');
 });
 
 $('#importTop').addEventListener('click', async () => {
@@ -499,10 +839,14 @@ $('#exportBtn').addEventListener('click', () => {
 });
 
 function loadState(data) {
-  state = normalize({ ...data, v: data.v || 3, seeded: true, welcomed: true, settings: { ...data.settings, bgImage: state.settings.bgImage } });
+  const incomingBg = data.settings?.bgImage;
+  const isPreset = typeof incomingBg === 'string' && incomingBg.startsWith('bg/');
+  if (isPreset) Store.setBg(incomingBg);
+  state = normalize({ ...data, v: data.v || 3, seeded: true, welcomed: true, settings: { ...data.settings, bgImage: isPreset ? incomingBg : state.settings.bgImage } });
   migrate();
   current = 0;
   commit();
+  applyBg();
   fillSettings();
 }
 
@@ -542,13 +886,21 @@ $('#backupNow').addEventListener('click', async () => {
 $('#resetBtn').addEventListener('click', async () => {
   if (!await ask(t('resetAsk'), { ok: t('reset'), danger: true })) return;
   await Store.setBg('');
+  try {
+    ['ntp_gdrive_cache', 'ntp_gdrive_hidden', 'ntp_gcal_cache', 'ntp_bg_rot_ts'].forEach(k => localStorage.removeItem(k));
+  } catch {}
+  Store.fileKeys().then(keys => {
+    for (const k of keys) if (String(k).startsWith('bgpool:') || String(k).startsWith('photo:')) Store.delFile(k);
+  }).catch(() => {});
   state = Store.defaultState();
   state.pages[0].items = await freshItems();
   state.seeded = state.welcomed = true;
   delete state.fresh;
   current = 0;
+  scheduleBgRotation();
   commit();
   fillSettings();
+  renderBgPresets();
   applyBg();
   toast(t('resetDone'), true);
 });
@@ -558,7 +910,8 @@ $('#editBtn').addEventListener('click', () => setEditing(!editing));
 $('#toolbar').addEventListener('click', async e => {
   const b = e.target.closest('button');
   const act = b?.dataset.act;
-  if (act === 'add-link') openEditor(null, 'link');
+  if (act === 'undo') undo();
+  else if (act === 'add-link') openEditor(null, 'link');
   else if (act === 'add-folder') openEditor(null, 'folder');
   else if (act === 'add-widget') openMenu(Object.keys(WIDGETS).map(k => entryEl({ label: `${WIDGETS[k].icon}  ${t('w_' + k)}`, act: () => addItem(newWidget(k)) })), b);
   else if (act === 'page') openPageDlg();

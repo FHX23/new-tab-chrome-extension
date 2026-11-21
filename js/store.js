@@ -27,8 +27,14 @@ const Store = (() => {
     logoColor: false,
     showSearch: true,
     topLinks: '',         // "Nombre = URL", uno por línea
+    topLinksColor: '#ffffff',
+    topLinksColors: {},   // color individual por cada enlace de arriba a la derecha
     bgColor: '#202124',
-    bgImage: '',          // '1' si hay imagen de fondo guardada
+    bgImage: '',          // '1', 'bg/...', o 'bgpool:<id>'
+    bgRotate: false,      // rotar entre varios fondos seleccionados
+    bgEvery: 300,         // cada cuántos segundos cambiar (0 = al abrir cada pestaña)
+    bgPool: [],           // claves seleccionadas para rotar ('bg/...' o 'bgpool:<id>')
+    bgCustom: [],         // ids de fondos subidos por el usuario guardados en IndexedDB
     bgDim: 0.15,
     textColor: '#ffffff',
     tileColor: '#35363a',
@@ -52,6 +58,7 @@ const Store = (() => {
     clock24: !hour12,
     xPages: false,
     xSearch: false,
+    gCalIcsUrl: '',        // enlace iCal (.ics) privado de Google Calendar
     searchKeys: [
       'yt = https://www.youtube.com/results?search_query=%s',
       'w = https://www.wikipedia.org/search-redirect.php?search=%s',
@@ -81,18 +88,29 @@ const Store = (() => {
     };
   }
 
+  const MIN2X2_WIDGETS = new Set(['calc', 'calendar', 'timer', 'todo', 'habits', 'gdrive', 'gcal', 'photos', 'breathe']);
+
   // Asegura ids y campos mínimos (estado antiguo o respaldo importado).
   function normalize(s) {
     const fix = it => {
       it.id ||= uid();
       it.w ||= 1;
       it.h ||= 1;
+      if (it.type === 'widget' && !(it.w === 1 && it.h === 1)) {
+        if (MIN2X2_WIDGETS.has(it.kind) && (it.w < 2 || it.h < 2)) { it.w = Math.max(2, it.w); it.h = Math.max(2, it.h); }
+        else if (it.kind !== 'notes' && it.w === 1 && it.h > 1) { it.w = 2; }
+      }
       if (it.type === 'folder') it.items = (it.items || []).filter(c => c.type === 'link').map(fix);
       return it;
     };
     return {
       ...s,
-      settings: { ...DEFAULT_SETTINGS, ...s.settings },
+      settings: {
+        ...DEFAULT_SETTINGS,
+        ...(s.settings?.textColor && !s.settings?.topLinksColor ? { topLinksColor: s.settings.textColor } : {}),
+        ...s.settings,
+        topLinksColors: { ...(s.settings?.topLinksColors || {}) },
+      },
       pages: (s.pages?.length ? s.pages : [newPage()]).map(p => ({ ...p, id: p.id || uid(), items: (p.items || []).map(fix) })),
     };
   }

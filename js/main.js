@@ -49,6 +49,14 @@ async function freshItems() {
 
 async function restoreBackground() {
   let url = await Store.restoreBg();
+  if (!url && String(state.settings.bgImage).startsWith('bg/')) {
+    url = state.settings.bgImage;
+    await Store.setBg(url).catch(() => {});
+  }
+  if (!url && String(state.settings.bgImage).startsWith('bgpool:')) {
+    await applyBgKey(state.settings.bgImage).catch(() => {});
+    return;
+  }
   if (!url) { // versión 0.1: la imagen estaba en IndexedDB
     const blob = await Store.getOldBg().catch(() => null);
     if (blob) {
@@ -97,6 +105,10 @@ whenIdleAfterLoad(async () => {
   undoStack.length = 0;
   lastJson = snap();
   if (state.settings.bgImage && !Store.getBg()) restoreBackground();
+  if (state.settings.bgRotate) {
+    scheduleBgRotation();
+    advanceBgRotation(Number(state.settings.bgEvery) === 0);
+  }
   if (state.settings.showBookmarks) refreshBookmarks();
   for (const ev of ['onCreated', 'onRemoved', 'onChanged', 'onMoved', 'onChildrenReordered']) {
     chrome.bookmarks[ev].addListener(() => { if (state.settings.showBookmarks) refreshBookmarks(); });
@@ -106,9 +118,17 @@ whenIdleAfterLoad(async () => {
   // Fotos de widgets eliminados: se borran de IndexedDB.
   // Se conservan las que usa el estado actual o alguna copia automática (para poder restaurarlas).
   Promise.all([Store.fileKeys(), Store.getBackups()]).then(([keys, backups]) => {
+    const allStates = [state, ...backups.map(b => b.state)];
     const photosOf = s => (s?.pages || []).flatMap(p => p.items || []).flatMap(it => it.photos || []);
-    const used = new Set([state, ...backups.map(b => b.state)].flatMap(photosOf).map(id => 'photo:' + id));
-    for (const k of keys) if (String(k).startsWith('photo:') && !used.has(k)) Store.delFile(k);
+    const bgPoolOf = s => (s?.settings?.bgCustom || []).map(id => 'bgpool:' + id);
+    const used = new Set([
+      ...allStates.flatMap(photosOf).map(id => 'photo:' + id),
+      ...allStates.flatMap(bgPoolOf),
+    ]);
+    for (const k of keys) {
+      const sk = String(k);
+      if ((sk.startsWith('photo:') || sk.startsWith('bgpool:')) && !used.has(sk)) Store.delFile(k);
+    }
   }).catch(() => {});
 });
 

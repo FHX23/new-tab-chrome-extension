@@ -43,6 +43,7 @@
   <nav id="dots"></nav>
 
   <div id="toolbar">
+    <button type="button" data-act="undo" id="undoBtn" data-i18n="undoBtn" data-i18n-title="undoTip" disabled></button>
     <button type="button" data-act="add-link" data-i18n="addLink"></button>
     <button type="button" data-act="add-folder" data-i18n="addFolder"></button>
     <button type="button" data-act="add-widget" class="x-widgets-only" data-i18n="addWidget"></button>
@@ -93,6 +94,11 @@
           <option value="2x1" data-i18n="size_2x1"></option>
           <option value="1x2" data-i18n="size_1x2"></option>
           <option value="2x2" data-i18n="size_2x2"></option>
+          <option value="3x2" data-i18n="size_3x2"></option>
+          <option value="2x3" data-i18n="size_2x3"></option>
+          <option value="3x3" data-i18n="size_3x3"></option>
+          <option value="4x2" data-i18n="size_4x2"></option>
+          <option value="4x3" data-i18n="size_4x3"></option>
         </select>
       </label>
       <label><span data-i18n="shape"></span><select name="shape" id="shapeSelect"><option value="" data-i18n="shapeDefault"></option></select></label>
@@ -195,6 +201,20 @@
   </form>
 </dialog>
 
+<!-- Agregar reunión rápida -->
+<dialog id="qevDlg">
+  <form id="qevForm" method="dialog">
+    <h2 data-i18n="gCalAddQuick"></h2>
+    <label><span data-i18n="gCalQuickPromptTitle"></span><input name="title" maxlength="80" required></label>
+    <label><span data-i18n="gCalQuickPromptTime"></span><input name="time" type="time" value="15:00" required></label>
+    <label><span data-i18n="gCalQuickPromptUrl"></span><input name="url" type="url" placeholder="https://meet.google.com/..."></label>
+    <div class="actions">
+      <button value="cancel" formnovalidate class="btn" data-i18n="cancel"></button>
+      <button value="ok" class="btn primary" data-i18n="save"></button>
+    </div>
+  </form>
+</dialog>
+
 <!-- Ajustes generales -->
 <dialog id="settingsDlg">
   <form id="setForm" method="dialog">
@@ -204,9 +224,10 @@
     </div>
     <nav class="tabs">
       <button type="button" data-tab="icons" data-i18n="tabIcons"></button>
-      <button type="button" data-tab="buttons" data-i18n="tabButtons"></button>
       <button type="button" data-tab="look" data-i18n="tabLook"></button>
+      <button type="button" data-tab="buttons" data-i18n="tabButtons"></button>
       <button type="button" data-tab="page" data-i18n="tabPage"></button>
+      <button type="button" data-tab="gcards" data-i18n="tabGCards"></button>
       <button type="button" data-tab="extras" data-i18n="tabExtras"></button>
       <button type="button" data-tab="data" data-i18n="tabData"></button>
     </nav>
@@ -274,36 +295,6 @@
       </fieldset>
     </section>
 
-    <!-- Botones -->
-    <section data-tabpanel="buttons" hidden>
-      <fieldset>
-        <legend data-i18n="navButtons"></legend>
-        <label class="check"><input name="showArrows" type="checkbox"><span data-i18n="showArrows"></span></label>
-        <label><span class="lr"><span data-i18n="arrowSize"></span><output data-for="navSize" data-unit="px"></output></span><input name="navSize" type="range" min="28" max="80"></label>
-        <label><span class="lr"><span data-i18n="arrowZoneW"></span><output data-for="navZone" data-unit="px"></output></span><input name="navZone" type="range" min="44" max="240"></label>
-        <label><span class="lr"><span data-i18n="arrowZoneH"></span><output data-for="navZoneH" data-unit="%"></output></span><input name="navZoneH" type="range" min="15" max="100"></label>
-        <small class="hint" data-i18n="arrowZoneTip"></small>
-        <div class="colors">
-          <label><span data-i18n="bgColor"></span><input name="navBg" type="color"></label>
-          <label><span class="lr"><span data-i18n="transparency"></span><output data-for="navBgTr" data-unit="%"></output></span><input name="navBgTr" type="range" min="0" max="100"></label>
-          <label><span data-i18n="symbolColor"></span><input name="navFg" type="color"></label>
-          <label><span class="lr"><span data-i18n="transparency"></span><output data-for="navFgTr" data-unit="%"></output></span><input name="navFgTr" type="range" min="0" max="100"></label>
-        </div>
-        <small class="hint" data-i18n="invisibleTip"></small>
-      </fieldset>
-      <fieldset>
-        <legend data-i18n="editMode"></legend>
-        <div class="opt">
-          <label class="check"><input name="longPress" type="checkbox"><span data-i18n="longPress"></span></label>
-          <small class="hint" data-i18n="longPressTip"></small>
-        </div>
-        <div class="opt">
-          <label class="check"><input name="wiggle" type="checkbox"><span data-i18n="wiggle"></span></label>
-          <small class="hint" data-i18n="wiggleTip"></small>
-        </div>
-      </fieldset>
-    </section>
-
     <!-- Fondo y colores -->
     <section data-tabpanel="look" hidden>
       <fieldset>
@@ -312,9 +303,33 @@
           <label><span data-i18n="bgColor"></span><input name="bgColor" type="color"></label>
           <label><span data-i18n="textColor"></span><input name="textColor" type="color"></label>
         </div>
-        <div class="iconrow">
-          <label class="btn"><span data-i18n="bgImage"></span><input type="file" id="bgFile" accept="image/*" hidden></label>
+        <div class="iconrow wrap">
+          <label class="btn"><span data-i18n="bgImage"></span><input type="file" id="bgFile" accept="image/*" multiple hidden></label>
           <button type="button" class="btn" id="bgRemove" data-i18n="removeImage"></button>
+        </div>
+        <div class="bg-rot-box">
+          <div class="bg-rot-top">
+            <label class="check"><input name="bgRotate" type="checkbox"><span data-i18n="bgRotateOn"></span></label>
+            <select name="bgEvery" data-show="bgRotate">
+              <option value="0" data-i18n="bgEveryTab"></option>
+              <option value="15" data-i18n="bgEvery15s"></option>
+              <option value="60" data-i18n="bgEvery1m"></option>
+              <option value="300" data-i18n="bgEvery5m"></option>
+              <option value="900" data-i18n="bgEvery15m"></option>
+              <option value="3600" data-i18n="bgEvery1h"></option>
+            </select>
+          </div>
+          <div class="bg-rot-actions" data-show="bgRotate">
+            <small class="hint" data-i18n="bgRotateTip"></small>
+            <div class="iconrow wrap">
+              <button type="button" class="btn" id="bgSelectAll" data-i18n="bgSelectAll"></button>
+              <button type="button" class="btn" id="bgNextNow" data-i18n="bgNextNow"></button>
+            </div>
+          </div>
+        </div>
+        <div class="stack bg-presets-wrap">
+          <span class="cfg-lbl" data-i18n="bgPresets"></span>
+          <div id="bgPresets" class="bg-presets" role="group"></div>
         </div>
         <p class="note" id="bgNote" hidden></p>
         <label><span class="lr"><span data-i18n="dim"></span><output data-for="bgDim" data-unit="%" data-scale="100"></output></span><input name="bgDim" type="range" min="0" max="0.8" step="0.05"></label>
@@ -331,6 +346,36 @@
       </fieldset>
     </section>
 
+    <!-- Botones -->
+    <section data-tabpanel="buttons" hidden>
+      <fieldset>
+        <legend data-i18n="navButtons"></legend>
+        <label class="check"><input name="showArrows" type="checkbox"><span data-i18n="showArrows"></span></label>
+        <label><span class="lr"><span data-i18n="arrowSize"></span><output data-for="navSize" data-unit="px"></output></span><input name="navSize" type="range" min="28" max="80"></label>
+        <label><span class="lr"><span data-i18n="arrowZoneW"></span><output data-for="navZone" data-unit="px"></output></span><input name="navZone" type="range" min="44" max="240"></label>
+        <label><span class="lr"><span data-i18n="arrowZoneH"></span><output data-for="navZoneH" data-unit="%"></output></span><input name="navZoneH" type="range" min="15" max="100"></label>
+        <small class="hint" data-i18n="arrowZoneTip"></small>
+        <div class="colors">
+          <label><span data-i18n="btnBgColor"></span><input name="navBg" type="color"></label>
+          <label><span class="lr"><span data-i18n="btnBgTr"></span><output data-for="navBgTr" data-unit="%"></output></span><input name="navBgTr" type="range" min="0" max="100"></label>
+          <label><span data-i18n="btnSymbolColor"></span><input name="navFg" type="color"></label>
+          <label><span class="lr"><span data-i18n="btnSymbolTr"></span><output data-for="navFgTr" data-unit="%"></output></span><input name="navFgTr" type="range" min="0" max="100"></label>
+        </div>
+        <small class="hint" data-i18n="invisibleTip"></small>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="editMode"></legend>
+        <div class="opt">
+          <label class="check"><input name="longPress" type="checkbox"><span data-i18n="longPress"></span></label>
+          <small class="hint" data-i18n="longPressTip"></small>
+        </div>
+        <div class="opt">
+          <label class="check"><input name="wiggle" type="checkbox"><span data-i18n="wiggle"></span></label>
+          <small class="hint" data-i18n="wiggleTip"></small>
+        </div>
+      </fieldset>
+    </section>
+
     <!-- Página -->
     <section data-tabpanel="page" hidden>
       <fieldset>
@@ -344,6 +389,10 @@
         <legend data-i18n="topLinks"></legend>
         <textarea name="topLinks" rows="3" spellcheck="false" placeholder="Gmail = https://mail.google.com/"></textarea>
         <small class="hint" data-i18n="topLinksTip"></small>
+        <div class="colors">
+          <label><span data-i18n="topLinksColor"></span><input name="topLinksColor" type="color"></label>
+        </div>
+        <div id="topLinksPerColor" class="colors" hidden></div>
       </fieldset>
       <fieldset>
         <legend data-i18n="bookmarksBar"></legend>
@@ -351,6 +400,59 @@
         <div class="colors">
           <label><span data-i18n="barColor"></span><input name="bmBg" type="color"></label>
           <label><span class="lr"><span data-i18n="transparency"></span><output data-for="bmTr" data-unit="%"></output></span><input name="bmTr" type="range" min="0" max="100"></label>
+        </div>
+      </fieldset>
+    </section>
+
+    <!-- Tarjetas de Google Drive y Calendar -->
+    <section data-tabpanel="gcards" hidden>
+      <fieldset>
+        <legend data-i18n="gdriveTitle"></legend>
+        <small class="hint" data-i18n="gdriveDesc"></small>
+        <div class="iconrow wrap">
+          <button type="button" class="btn primary" id="addGDriveCard" data-i18n="addGDriveBtn"></button>
+          <span class="gcard-status" id="gDriveStatus"></span>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend data-i18n="gcalTitle"></legend>
+        <small class="hint" data-i18n="gcalDesc"></small>
+        <div class="iconrow wrap">
+          <button type="button" class="btn primary" id="addGCalCard" data-i18n="addGCalBtn"></button>
+          <span class="gcard-status" id="gCalStatus"></span>
+        </div>
+
+        <label>
+          <span class="lr">
+            <span data-i18n="gcalIcsLabel"></span>
+            <span class="gbadge" id="gCalIcsBadge"></span>
+          </span>
+          <input name="gCalIcsUrl" type="text" placeholder="https://calendar.google.com/calendar/ical/.../basic.ics" spellcheck="false">
+        </label>
+        <div class="iconrow wrap">
+          <button type="button" class="btn primary" id="gCalSyncIcsBtn" data-i18n="gcalSyncBtn"></button>
+          <label class="btn"><span data-i18n="gcalUploadIcs"></span><input type="file" id="gCalIcsFile" accept=".ics,.zip,text/calendar,application/zip" hidden></label>
+          <button type="button" class="btn" id="gCalClearBtn" data-i18n="gcalDisconnectBtn" hidden></button>
+        </div>
+
+        <div class="gsteps-box">
+          <div class="gsteps-head">
+            <b data-i18n="gcalHowToTitle"></b>
+            <a class="btn gsteps-link" href="https://calendar.google.com/calendar/u/0/r/settings" target="_blank" rel="noopener" data-i18n="gcalOpenSettings"></a>
+          </div>
+          <ol class="gsteps-list">
+            <li data-i18n="gcalStep1"></li>
+            <li data-i18n="gcalStep2"></li>
+            <li data-i18n="gcalStep3"></li>
+            <li data-i18n="gcalStep4"></li>
+          </ol>
+          <div class="gsteps-which">
+            <div class="gwhich-row bad"><span class="gwhich-tag">✕</span><span data-i18n="gcalWhichNo1"></span></div>
+            <div class="gwhich-row bad"><span class="gwhich-tag">✕</span><span data-i18n="gcalWhichNo2"></span></div>
+            <div class="gwhich-row ok"><span class="gwhich-tag">✓</span><span data-i18n="gcalWhichYes"></span></div>
+          </div>
+          <small class="hint gsteps-note" data-i18n="gcalPublicNote"></small>
         </div>
       </fieldset>
     </section>
