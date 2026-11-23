@@ -10,8 +10,9 @@
 </p>
 
 <p align="center">
+  <a href="https://chromewebstore.google.com/detail/nacaekbeegbhbhianboflddghiophdpm"><img alt="Instalar en Chrome Web Store" src="https://img.shields.io/badge/Chrome%20Web%20Store-Instalar%20gratis-4285f4?style=for-the-badge&logo=googlechrome&logoColor=white"></a>
   <a href="https://mi-nueva-pestana.vercel.app"><img alt="Sitio Web Oficial" src="https://img.shields.io/badge/🌐%20Sitio%20Web-mi--nueva--pestana.vercel.app-93f1f7?style=for-the-badge&labelColor=000000"></a>
-  <a href="https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip"><img alt="Descargar v0.5.0 (.zip)" src="https://img.shields.io/badge/⬇%20Descargar-v0.5.0%20(.zip)-2ea44f?style=for-the-badge"></a>
+  <a href="https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip"><img alt="Descargar v0.5.0 (.zip)" src="https://img.shields.io/badge/⬇%20ZIP%20manual-v0.5.0-2ea44f?style=for-the-badge"></a>
 </p>
 
 <p align="center">
@@ -22,7 +23,7 @@
   <img alt="Licencia GPL-3.0" src="https://img.shields.io/badge/licencia-GPL--3.0-blue">
 </p>
 
-[Sitio Web](https://mi-nueva-pestana.vercel.app) · [Español](#español) · [English](#english) · [Descargar / Download](https://github.com/FHX23/new-tab-chrome-extension/releases/latest)
+[Chrome Web Store](https://chromewebstore.google.com/detail/nacaekbeegbhbhianboflddghiophdpm) · [Sitio Web](https://mi-nueva-pestana.vercel.app) · [Español](#español) · [English](#english) · [Descargar ZIP / Download ZIP](https://github.com/FHX23/new-tab-chrome-extension/releases/latest)
 
 ---
 
@@ -45,7 +46,13 @@
 - **Deshacer exprés:** botón directo **«↶ Deshacer»** en la barra de edición, atajo `Ctrl+Z` y **copias automáticas diarias** (las últimas 7) además de exportación/importación en `.json`.
 - **Español e inglés**, según el idioma de Chrome.
 
-### Cómo instalarla (en 30 segundos)
+### Cómo instalarla
+#### Opción recomendada: Chrome Web Store (en 1 clic)
+1. Abre la **[ficha oficial en Chrome Web Store](https://chromewebstore.google.com/detail/nacaekbeegbhbhianboflddghiophdpm)** y pulsa **Añadir a Chrome**.
+2. Abre una pestaña nueva. Si Chrome pregunta si es la página que esperabas, elige **Conservar**.
+3. Recibirás las futuras versiones automáticamente sin perder tus pantallas ni configuraciones.
+
+#### Opción manual (paquete `.zip`)
 1. **[Haz clic aquí para descargar `mi-nueva-pestana-0.5.0.zip`](https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip)** y descomprímelo en una carpeta fija de tu computador (por ejemplo, en `Documentos\MiNuevaPestana`).
 2. En Chrome, escribe `chrome://extensions` en la barra de direcciones y activa el interruptor **Modo de desarrollador** (arriba a la derecha).
 3. Pulsa **Cargar descomprimida** (*Load unpacked*) y selecciona la carpeta que descomprimiste.
@@ -89,7 +96,13 @@ tools/     scripts de íconos y empaquetado (.zip)
 - **Express Undo:** direct **“↶ Undo”** button in the edit toolbar, `Ctrl+Z` shortcut, and **automatic daily backups** (last 7 days) plus `.json` export/import.
 - **Spanish and English**, following Chrome's language.
 
-### How to install (in 30 seconds)
+### How to install
+#### Recommended: Chrome Web Store (1 click)
+1. Open the **[official Chrome Web Store listing](https://chromewebstore.google.com/detail/nacaekbeegbhbhianboflddghiophdpm)** and click **Add to Chrome**.
+2. Open a new tab. If Chrome asks whether this is the page you expected, choose **Keep it**.
+3. Future updates will install automatically without losing your screens or settings.
+
+#### Manual install (`.zip` package)
 1. **[Click here to download `mi-nueva-pestana-0.5.0.zip`](https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip)** and unzip it into a permanent folder on your computer (e.g. `Documents\MyNewTab`).
 2. Open `chrome://extensions` in Chrome and turn on **Developer mode** (top right).
 3. Click **Load unpacked** and pick the unzipped folder.
