@@ -1398,7 +1398,7 @@
     "message": "Enjoying My New Tab?"
   },
   "supportDesc": {
-    "message": "100% free, no ads and no accounts. If you find it useful, a quick review or an optional coffee helps keep improving it."
+    "message": "Free, no ads and no accounts. If you use it daily, a review or an optional coffee helps keep it maintained."
   },
   "rateStore": {
     "message": "★ Rate on Chrome Web Store"
@@ -1407,10 +1407,10 @@
     "message": "Buy me a coffee"
   },
   "kofiTip": {
-    "message": "Support the project on Ko-fi (100% optional)"
+    "message": "Support development on Ko-fi"
   },
   "reportIssue": {
-    "message": "Suggest a feature / report a bug"
+    "message": "Report bug or suggest feature ↗"
   },
   "dockBarEffect": {
     "message": "Translucent dock tray around the icon block"
@@ -1434,25 +1434,28 @@
     "message": "Support"
   },
   "kofiCardTitle": {
-    "message": "Buy me a coffee on Ko-fi"
+    "message": "Support on Ko-fi"
   },
   "kofiCardSub": {
-    "message": "100% optional support to keep building and improving this extension with no ads or paywalls."
+    "message": "Optional direct support to fund ongoing independent updates."
   },
   "rateCardTitle": {
-    "message": "Rate on Chrome Web Store"
+    "message": "Leave a review on Chrome Web Store"
   },
   "rateCardSub": {
-    "message": "Leaving a review takes a few seconds and helps more people discover My New Tab."
+    "message": "Your rating helps other people find the extension."
+  },
+  "rateShortBtn": {
+    "message": "Write review"
   },
   "feedbackTitle": {
     "message": "Ideas, feedback & open source"
   },
   "feedbackDesc": {
-    "message": "Found something to polish or have a feature idea? Share it directly on GitHub."
+    "message": "Open source & direct feedback:"
   },
   "sourceRepo": {
-    "message": "View GitHub repository ↗"
+    "message": "GitHub repository ↗"
   },
   "tipChromeFooter": {
     "message": "The top tab bar color and bottom bar (“Customize Chrome”) belong to the browser: you can match the top bar color or hide the bottom bar by right-clicking it or opening “Customize Chrome”."
@@ -1462,5 +1465,26 @@
   },
   "openChromeLook": {
     "message": "Open Chrome color & appearance settings ↗"
+  },
+  "navGroupLook": {
+    "message": "Appearance"
+  },
+  "navGroupControl": {
+    "message": "Controls & integrations"
+  },
+  "dangerZoneTip": {
+    "message": "Clears custom shortcuts, widgets and uploaded wallpapers in this browser."
+  },
+  "gcalHelpSummary": {
+    "message": "Where do I find the .ics link in Google Calendar?"
+  },
+  "gcalHelpPath": {
+    "message": "Settings for my calendars → your email → Integrate calendar"
+  },
+  "gcalHelpCopy": {
+    "message": "Copy the “Address in iCal format” field (ends in /basic.ics). Ignore “Public URL” and “Embed code”."
+  },
+  "gcalHelpPrivate": {
+    "message": "Your calendar stays private. On work accounts you can click Connect while signed into Google Calendar in Chrome, or export the .zip file from Google Calendar and upload it here."
   }
 }

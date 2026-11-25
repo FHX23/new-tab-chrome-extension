@@ -465,15 +465,24 @@ function renderTopLinksColors() {
 function openSettings() {
   ensureSettingsUi();
   fillSettings();
-  let tab = 'icons';
+  let tab = 'look';
   try { tab = localStorage.getItem('ntp_tab') || tab; } catch {}
   showTab(tab);
   $('#settingsDlg').showModal();
 }
 
 function showTab(name) {
-  if (!$(`#setForm [data-tabpanel="${name}"]`)) name = 'icons';
-  $$('#setForm [data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  if (!$(`#setForm [data-tabpanel="${name}"]`)) name = 'look';
+  let activeBtn = null;
+  $$('#setForm [data-tab]').forEach(b => {
+    const on = b.dataset.tab === name;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+    if (on) activeBtn = b;
+  });
+  if ($('#sPaneTitle') && activeBtn) {
+    $('#sPaneTitle').textContent = activeBtn.querySelector('span')?.textContent || activeBtn.textContent.trim();
+  }
   $$('#setForm [data-tabpanel]').forEach(p => { p.hidden = p.dataset.tabpanel !== name; });
   try { localStorage.setItem('ntp_tab', name); } catch {}
   if (name === 'look') syncBgPresets();
@@ -484,6 +493,16 @@ function showTab(name) {
 $('#setForm .tabs').addEventListener('click', e => {
   const b = e.target.closest('[data-tab]');
   if (b) showTab(b.dataset.tab);
+});
+$('#setForm .tabs').addEventListener('keydown', e => {
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+  const tabs = $$('#setForm [data-tab]');
+  const i = tabs.indexOf(e.target.closest('[data-tab]'));
+  if (i < 0) return;
+  e.preventDefault();
+  const next = tabs[(i + (e.key === 'ArrowDown' ? 1 : tabs.length - 1)) % tabs.length];
+  next.focus();
+  showTab(next.dataset.tab);
 });
 
 function fillSettings() {
@@ -954,7 +973,17 @@ async function syncGCardsUi() {
     cBadge.classList.toggle('on', calIcs);
   }
   if ($('#gCalClearBtn')) $('#gCalClearBtn').hidden = !calIcs;
+  const help = $('#gCalHelp');
+  if (help && (calIcs || !help.dataset.touched)) help.open = !calIcs;
 }
+
+$('#gCalHelp')?.addEventListener('toggle', e => { e.currentTarget.dataset.touched = '1'; });
+$('#gCalIcsInput')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    $('#gCalSyncIcsBtn')?.click();
+  }
+});
 
 $('#addGDriveCard')?.addEventListener('click', async () => {
   state.settings.xWidgets = true;

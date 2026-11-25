@@ -1398,19 +1398,19 @@
     "message": "¿Te gusta Mi Nueva Pestaña?"
   },
   "supportDesc": {
-    "message": "Es 100 % gratuita, sin anuncios ni cuentas. Si te resulta útil, una reseña o un café voluntario ayudan muchísimo a seguir mejorándola."
+    "message": "Gratuita, sin anuncios ni cuentas. Si la usas a diario, una reseña o un café opcional ayudan a mantenerla."
   },
   "rateStore": {
     "message": "★ Calificar en Chrome Web Store"
   },
   "kofiBtn": {
-    "message": "Invítame un café"
+    "message": "Invitar un café"
   },
   "kofiTip": {
-    "message": "Apoyar el proyecto en Ko-fi (100 % voluntario)"
+    "message": "Apoyar el desarrollo en Ko-fi"
   },
   "reportIssue": {
-    "message": "Sugerir mejora / reportar bug"
+    "message": "Reportar error o sugerencia ↗"
   },
   "dockBarEffect": {
     "message": "Bandeja translúcida alrededor del bloque de iconos (estilo dock)"
@@ -1434,25 +1434,28 @@
     "message": "Apoyar"
   },
   "kofiCardTitle": {
-    "message": "Invítame un café en Ko-fi"
+    "message": "Apoyar en Ko-fi"
   },
   "kofiCardSub": {
-    "message": "Apoyo 100 % voluntario para seguir dedicándole tiempo y mejoras sin anuncios ni muros de pago."
+    "message": "Aporte directo e independiente para dedicarle nuevas mejoras."
   },
   "rateCardTitle": {
-    "message": "Calificar en Chrome Web Store"
+    "message": "Dejar una reseña en Chrome Web Store"
   },
   "rateCardSub": {
-    "message": "Dejar una reseña toma segundos y ayuda muchísimo a que más personas descubran la extensión."
+    "message": "Tu valoración ayuda a que otras personas encuentren la extensión."
+  },
+  "rateShortBtn": {
+    "message": "Calificar"
   },
   "feedbackTitle": {
     "message": "Ideas, mejoras y código abierto"
   },
   "feedbackDesc": {
-    "message": "Si encontraste un detalle por pulir o se te ocurre una función útil, cuéntamelo directo en GitHub."
+    "message": "Código abierto y soporte directo:"
   },
   "sourceRepo": {
-    "message": "Ver repositorio en GitHub ↗"
+    "message": "Repositorio en GitHub ↗"
   },
   "tipChromeFooter": {
     "message": "El color de la barra superior de pestañas y la franja inferior («Personalizar Chrome») son propios del navegador: puedes combinar el color o esconder esa franja con clic derecho sobre ella o en «Personalizar Chrome»."
@@ -1462,5 +1465,26 @@
   },
   "openChromeLook": {
     "message": "Ajustar color y apariencia de Chrome ↗"
+  },
+  "navGroupLook": {
+    "message": "Apariencia"
+  },
+  "navGroupControl": {
+    "message": "Control e integraciones"
+  },
+  "dangerZoneTip": {
+    "message": "Borra accesos personalizados, widgets y fondos subidos en este navegador."
+  },
+  "gcalHelpSummary": {
+    "message": "¿Dónde encuentro el enlace .ics en Google Calendar?"
+  },
+  "gcalHelpPath": {
+    "message": "Configuración de mis calendarios → tu correo → Integrar calendario"
+  },
+  "gcalHelpCopy": {
+    "message": "Copia la casilla «Dirección en formato iCal» (termina en /basic.ics). Ignora «URL pública» e «Incorporar código»."
+  },
+  "gcalHelpPrivate": {
+    "message": "Tu calendario sigue siendo privado. En cuentas de empresa puedes pulsar Conectar teniendo Google Calendar abierto en Chrome, o exportar el archivo .zip desde Google Calendar y subirlo aquí."
   }
 }
