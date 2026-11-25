@@ -93,15 +93,26 @@ $('#folderDlg').addEventListener('close', () => {
 }); 
 
 // ---------- editor de acceso ----------
-let editId = null, editType = 'link', pendingIcon;
+let editId = null, editType = 'link', pendingIcon, editUiReady = false;
 const editF = $('#editForm').elements;
 
-for (const k of Object.keys(SHAPES)) $('#shapeSelect').append(el('option', { value: k }, t('shape_' + k)));
+function ensureEditUi() {
+  if (editUiReady) return;
+  editUiReady = true;
+  for (const k of Object.keys(SHAPES)) $('#shapeSelect').append(el('option', { value: k }, t('shape_' + k)));
+  colorPicker($('#editTileColor'));
+}
+
+function syncEditHint() {
+  $('#shapeHint').hidden = !(editF.shape.value || editF.tileGlass.value || editF.ownColor.checked);
+}
 
 function openEditor(it, type = 'link') {
+  ensureEditUi();
   editId = it?.id ?? null;
   editType = it?.type ?? type;
   pendingIcon = undefined;
+  const s = state.settings;
   const inFolder = it ? !!locate(it.id).folder : (editType === 'link' && !!activeFolder());
   $('#editTitle').textContent = t((it ? 'edit_' : 'add_') + editType);
   editF.title.value = it?.title ?? (editType === 'folder' ? t('folder') : '');
@@ -110,7 +121,16 @@ function openEditor(it, type = 'link') {
   editF.glyph.value = it?.glyph ?? '';
   editF.size.value = `${it?.w || 1}x${it?.h || 1}`;
   editF.shape.value = it?.shape || '';
-  $('#shapeHint').hidden = !editF.shape.value;
+  editF.tileGlass.value = it?.tileGlass || '';
+  const hasCol = !!(it?.tileColor || it?.tileTr != null);
+  editF.ownColor.checked = hasCol;
+  $('#editColorRow').hidden = !hasCol;
+  editF.tileColor.value = (it?.tileColor || s.tileColor || '#35363a').toLowerCase();
+  syncSwatches(editF.tileColor);
+  const tr = it?.tileTr ?? s.tileTr ?? 0;
+  editF.tileTr.value = tr;
+  $('#editTileTrOut').textContent = tr + '%';
+  syncEditHint();
   $$('#editForm [data-for="link"]').forEach(n => { n.hidden = editType !== 'link'; });
   const itemPage = state.pages[it ? locate(it.id).pageIdx : current];
   $$('#editForm [data-for="size"]').forEach(n => { n.hidden = inFolder || pageCfg(itemPage).layout === 'list'; });
@@ -122,8 +142,15 @@ function openEditor(it, type = 'link') {
 const currentIcon = () => (pendingIcon === undefined ? locate(editId)?.item.icon : pendingIcon);
 
 function updatePreview() {
-  const p = $('#iconPreview');
-  setVars(p.style, shapeVars(editF.shape.value || state.settings.shape));
+  const p = $('#iconPreview'), s = state.settings;
+  setVars(p.style, shapeVars(editF.shape.value || s.shape));
+  const gVal = editF.tileGlass.value;
+  const g = gVal === 'on' ? true : gVal === 'off' ? false : !!s.glass;
+  p.classList.toggle('pv-glass', g);
+  const col = editF.ownColor.checked ? editF.tileColor.value : s.tileColor;
+  const hasTr = editF.ownColor.checked;
+  const effTr = g && !hasTr && !s.tileTr ? 68 : (hasTr ? clampInt(editF.tileTr.value, 0, 100) : s.tileTr);
+  p.style.setProperty('--tile', mix(col, effTr));
   if (editType === 'folder') {
     const f = locate(editId)?.item;
     return p.replaceChildren(f?.items.length ? iconFor(f, 4, false) : el('div', { class: 'mini' }, [0, 1, 2, 3].map(() => el('i', { class: 'mini-dot' }))));
@@ -136,7 +163,18 @@ function updatePreview() {
 
 editF.url.addEventListener('change', updatePreview);
 editF.glyph.addEventListener('input', updatePreview);
-editF.shape.addEventListener('change', () => { $('#shapeHint').hidden = !editF.shape.value; updatePreview(); });
+editF.shape.addEventListener('change', () => { syncEditHint(); updatePreview(); });
+editF.tileGlass.addEventListener('change', () => { syncEditHint(); updatePreview(); });
+editF.ownColor.addEventListener('change', () => {
+  $('#editColorRow').hidden = !editF.ownColor.checked;
+  syncEditHint();
+  updatePreview();
+});
+editF.tileColor.addEventListener('input', updatePreview);
+editF.tileTr.addEventListener('input', () => {
+  $('#editTileTrOut').textContent = clampInt(editF.tileTr.value, 0, 100) + '%';
+  updatePreview();
+});
 
 // Reduce una imagen manteniendo proporción; devuelve el canvas.
 async function scaleImage(file, max) {
@@ -184,6 +222,15 @@ $('#editForm').addEventListener('submit', e => {
   else delete item.glyph;
   if (editF.shape.value) item.shape = editF.shape.value;
   else delete item.shape;
+  if (editF.tileGlass.value) item.tileGlass = editF.tileGlass.value;
+  else delete item.tileGlass;
+  if (editF.ownColor.checked) {
+    item.tileColor = editF.tileColor.value;
+    item.tileTr = clampInt(editF.tileTr.value, 0, 100);
+  } else {
+    delete item.tileColor;
+    delete item.tileTr;
+  }
   if (pendingIcon === null) delete item.icon;
   else if (pendingIcon) item.icon = pendingIcon;
 
@@ -209,6 +256,8 @@ function openPageDlg() {
   pageF.rows.value = cfg.rows;
   pageF.pattern.value = cfg.pattern.join(',');
   pageF.layout.value = cfg.layout;
+  pageF.gridY.value = cfg.gridY;
+  $('#pageGridYOut').textContent = cfg.gridY + '%';
   pageF.name.value = p.name || '';
   $('#pageBgState').textContent = p.bg ? t('hasOwnBg') : '';
   note($('#pageSpacesNote'), ownCfg(p) ? t('notePageOwn') : t('notePageGlobal'), ownCfg(p) ? t('backToGlobal') : null, () => {
@@ -225,6 +274,7 @@ const pageDraft = () => ({
   cols: clampInt(pageF.cols.value, 1, 12),
   rows: clampInt(pageF.rows.value, 1, 10),
   pattern: parsePattern(pageF.pattern.value).join(','),
+  gridY: clampInt(pageF.gridY.value, 0, 100),
 });
 
 // Dibujo de la pantalla con el tamaño elegido: un círculo por espacio, rellenos los ocupados.
@@ -241,7 +291,21 @@ function updatePagePreview() {
   $('#pageInfo').textContent = t('spacesInfo', cap, p.items.length) + (overflow ? ' · ' + t('willMove', overflow, current + 2) : '');
 }
 
-$('#pageForm').addEventListener('input', updatePagePreview);
+$('#pageForm').addEventListener('input', e => {
+  if (e.target.name === 'gridY') {
+    const gy = clampInt(pageF.gridY.value, 0, 100);
+    $('#pageGridYOut').textContent = gy + '%';
+    $$('#track > .page')[current]?.style.setProperty('--pos-y', String(gy));
+    peekPos($('#pageDlg'));
+    return;
+  }
+  updatePagePreview();
+});
+$('#pageDlg').addEventListener('close', () => {
+  $('#pageDlg').classList.remove('peek-pos');
+  const p = state.pages[current];
+  if (p) $$('#track > .page')[current]?.style.setProperty('--pos-y', String(clampInt(pageCfg(p).gridY, 0, 100)));
+});
 $('#pageForm').addEventListener('submit', async e => {
   const v = e.submitter?.value;
   if (v !== 'ok' && v !== 'all') { pendingPageBg = null; return; }
@@ -255,11 +319,11 @@ $('#pageForm').addEventListener('submit', async e => {
   }
   pendingPageBg = null;
   if (v === 'all') {
-    Object.assign(state.settings, { layout: d.layout, cols: d.cols, rows: d.rows, rowPattern: d.pattern });
+    Object.assign(state.settings, { layout: d.layout, cols: d.cols, rows: d.rows, rowPattern: d.pattern, gridY: d.gridY });
     for (const q of state.pages) for (const k of PAGE_KEYS) delete q[k];
   } else {
     // Solo queda «personalizada» lo que difiere de Ajustes; igual a Ajustes = sigue a Ajustes.
-    const s = state.settings, glob = { layout: s.layout, cols: s.cols, rows: s.rows, pattern: parsePattern(s.rowPattern).join(',') };
+    const s = state.settings, glob = { layout: s.layout, cols: s.cols, rows: s.rows, pattern: parsePattern(s.rowPattern).join(','), gridY: s.gridY ?? 0 };
     for (const k of PAGE_KEYS) {
       if (d[k] === glob[k]) delete p[k];
       else p[k] = d[k];
@@ -268,6 +332,7 @@ $('#pageForm').addEventListener('submit', async e => {
   const name = pageF.name.value.trim();
   if (name) p.name = name;
   else delete p.name;
+  markStyleCustom();
   commit();
 });
 
@@ -286,24 +351,20 @@ $('#pageBgRemove').addEventListener('click', () => {
   $('#pageBgState').textContent = pendingPageBg ? t('bgRemoveOnSave') : '';
 });
 
-// ---------- ajustes generales ----------
+// ---------- ajustes generales (se inicializa de forma diferida al abrir Ajustes por primera vez) ----------
 const setF = $('#setForm');
-
-for (const k of Object.keys(SHAPES)) {
-  const tile = el('span', { class: 'tile' });
-  setVars(tile.style, shapeVars(k));
-  $('#shapeChoices').append(el('label', { class: 'choice shape' }, el('input', { type: 'radio', name: 'shape', value: k }), tile, el('small', {}, t('shape_' + k))));
-}
+let settingsUiReady = false;
 
 // ---------- selector de color reutilizable ----------
 // Colores predefinidos (paleta de Tailwind CSS, la más usada en interfaces) + «Otro color…»,
-// que abre la rueda de colores del sistema. Se aplica a todos los <input type="color"> de Ajustes.
+// que abre la rueda de colores del sistema.
 const SWATCHES = [
   '#000000', '#030712', '#0f172a', '#1f2937', '#374151', '#6b7280', '#d1d5db', '#ffffff',
   '#ef4444', '#f97316', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899',
 ];
 
 function colorPicker(input) {
+  if (input._swatches) return;
   const box = el('div', { class: 'swatches', role: 'group' });
   const pick = hex => { input.value = hex; input.dispatchEvent(new Event('input', { bubbles: true })); syncSwatches(input); };
   for (const hex of SWATCHES) {
@@ -318,6 +379,7 @@ function colorPicker(input) {
 }
 
 function syncSwatches(input) {
+  if (!input?._swatches) return;
   const v = input.value.toLowerCase();
   let found = false;
   for (const b of input._swatches.querySelectorAll('.sw')) {
@@ -330,7 +392,17 @@ function syncSwatches(input) {
   custom.style.setProperty('--cur', v);
 }
 
-$$('#setForm input[type="color"]').forEach(colorPicker);
+function ensureSettingsUi() {
+  if (settingsUiReady) return;
+  settingsUiReady = true;
+  for (const k of Object.keys(SHAPES)) {
+    const tile = el('span', { class: 'tile' });
+    setVars(tile.style, shapeVars(k));
+    $('#shapeChoices').append(el('label', { class: 'choice shape' }, el('input', { type: 'radio', name: 'shape', value: k }), tile, el('small', {}, t('shape_' + k))));
+  }
+  $$('#setForm input[type="color"]').forEach(colorPicker);
+  renderThemePresets($('#themePresets'));
+}
 
 // Mientras se ajustan las flechas, la zona de clic se marca en la página (y el fondo del diálogo se aclara).
 let peekTimer = null;
@@ -343,6 +415,15 @@ function peekZones() {
     $('#settingsDlg').classList.remove('peek');
   }, 1500);
 }
+
+// Mientras se mueve la altura vertical, el diálogo se vuelve semitransparente para ver las filas detrás.
+let peekPosTimer = null;
+function peekPos(dlg) {
+  dlg.classList.add('peek-pos');
+  clearTimeout(peekPosTimer);
+  peekPosTimer = setTimeout(() => dlg.classList.remove('peek-pos'), 1100);
+}
+$('#settingsDlg').addEventListener('close', () => $('#settingsDlg').classList.remove('peek-pos'));
 
 // Tabla legible de los sitios para buscar (la lista editable queda plegada debajo).
 function renderKeysTable() {
@@ -382,6 +463,7 @@ function renderTopLinksColors() {
 }
 
 function openSettings() {
+  ensureSettingsUi();
   fillSettings();
   let tab = 'icons';
   try { tab = localStorage.getItem('ntp_tab') || tab; } catch {}
@@ -394,6 +476,7 @@ function showTab(name) {
   $$('#setForm [data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
   $$('#setForm [data-tabpanel]').forEach(p => { p.hidden = p.dataset.tabpanel !== name; });
   try { localStorage.setItem('ntp_tab', name); } catch {}
+  if (name === 'look') syncBgPresets();
   if (name === 'data') renderBackups();
   if (name === 'gcards') syncGCardsUi();
 }
@@ -404,6 +487,7 @@ $('#setForm .tabs').addEventListener('click', e => {
 });
 
 function fillSettings() {
+  if (!settingsUiReady) return;
   for (const [k, v] of Object.entries(state.settings)) {
     const inp = setF.elements[k];
     if (!inp || inp.type === 'file') continue;
@@ -413,7 +497,8 @@ function fillSettings() {
   }
   renderKeysTable();
   renderTopLinksColors();
-  syncBgPresets();
+  syncThemePresetButtons();
+  if ($('#bgPresets')?.children.length) syncBgPresets();
   syncGCardsUi();
   syncNotes();
   syncSettingsUi();
@@ -441,9 +526,13 @@ function onSetting(e) {
   let v = tg.type === 'checkbox' ? tg.checked : (tg.type === 'number' || tg.type === 'range') ? Number(tg.value) : tg.value;
   if (tg.name === 'cols') v = clampInt(v, 1, 12);
   if (tg.name === 'rows') v = clampInt(v, 1, 10);
+  if (tg.name === 'gridY') v = clampInt(v, 0, 100);
+  if (tg.name === 'gapX' || tg.name === 'gapY') v = clampInt(v, 0, 40);
   state.settings[tg.name] = v;
+  if (STYLE_KEY_SET.has(tg.name)) markStyleCustom();
   syncSettingsUi();
   if (['navZone', 'navZoneH', 'navSize'].includes(tg.name)) peekZones();
+  if (['gridY', 'gapX', 'gapY'].includes(tg.name)) peekPos($('#settingsDlg'));
   if (tg.name === 'searchKeys') renderKeysTable();
   if (tg.name === 'topLinksColor') { state.settings.topLinksColors = {}; renderTopLinksColors(); }
   if (tg.name === 'topLinks') renderTopLinksColors();
@@ -475,8 +564,8 @@ function note(box, text, action, onAction) {
   if (action) box.append(el('button', { type: 'button', class: 'note-btn', onclick: onAction }, action));
 }
 
-// ¿La pantalla tiene configuración propia (disposición o espacios que se usen con su disposición)?
-const ownCfg = pg => !!pg.layout || (pageCfg(pg).layout === 'rows' ? !!pg.pattern : !!(pg.cols || pg.rows));
+// ¿La pantalla tiene configuración propia (disposición, espacios o altura)?
+const ownCfg = pg => !!pg.layout || pg.gridY != null || (pageCfg(pg).layout === 'rows' ? !!pg.pattern : !!(pg.cols || pg.rows));
 const allItems = () => state.pages.flatMap(pg => pg.items.flatMap(it => it.type === 'folder' ? [it, ...it.items] : [it]));
 
 function syncNotes() {
@@ -487,9 +576,14 @@ function syncNotes() {
     syncNotes();
     toast(t('appliedAllScreens'), true);
   });
-  const shaped = allItems().filter(it => it.shape).length;
-  note($('#shapeNote'), shaped && t(shaped === 1 ? 'noteShape1' : 'noteShape', shaped), t('removeOwnShapes'), () => {
-    for (const it of allItems()) delete it.shape;
+  const customized = allItems().filter(it => it.shape || hasOwnLook(it)).length;
+  note($('#shapeNote'), customized && t(customized === 1 ? 'noteShape1' : 'noteShape', customized), t('removeOwnShapes'), () => {
+    for (const it of allItems()) {
+      delete it.shape;
+      delete it.tileColor;
+      delete it.tileTr;
+      delete it.tileGlass;
+    }
     commit();
     syncNotes();
     toast(t('appliedAllIcons'), true);
@@ -499,6 +593,118 @@ function syncNotes() {
 }
 setF.addEventListener('input', onSetting);
 setF.addEventListener('change', onSetting);
+
+// ---------- estilos rápidos en 1 clic (con guardado automático de tu estilo anterior) ----------
+const STYLE_KEYS = [
+  'bgImage', 'bgColor', 'bgDim', 'bgRotate', 'bgEvery', 'bgPool',
+  'textColor', 'tileColor', 'tileTr', 'shape', 'glass', 'dockBar',
+  'logoColor', 'logoGreeting', 'cell', 'icon', 'gridY', 'gapX', 'gapY',
+];
+const STYLE_KEY_SET = new Set(STYLE_KEYS);
+
+const THEME_PRESETS = [
+  {
+    id: 'aurora',
+    previewBg: 'url("bg/aurora-peaks.svg") center / cover',
+    cfg: { bgImage: 'bg/aurora-peaks.svg', bgColor: '#131826', bgDim: 0.15, bgRotate: false, textColor: '#ffffff', tileColor: '#35363a', tileTr: 0, shape: 'circle', glass: true, dockBar: false, logoColor: true, logoGreeting: false, cell: 112, icon: 48, gridY: 0, gapX: 0, gapY: 0, xWidgets: true },
+  },
+  {
+    id: 'minimal',
+    previewBg: 'linear-gradient(135deg, #181a1f, #232730)',
+    cfg: { bgImage: '', bgColor: '#181a1f', bgDim: 0, bgRotate: false, textColor: '#f1f3f4', tileColor: '#282b33', tileTr: 0, shape: 'rounded', glass: false, dockBar: false, logoColor: false, logoGreeting: false, cell: 108, icon: 46, gridY: 45, gapX: 8, gapY: 8, xWidgets: true },
+  },
+  {
+    id: 'focus',
+    previewBg: 'url("bg/cosmic-cliffs.webp") center / cover',
+    cfg: { bgImage: 'bg/cosmic-cliffs.webp', bgColor: '#14161f', bgDim: 0.22, bgRotate: false, textColor: '#ffffff', tileColor: '#232734', tileTr: 0, shape: 'rounded', glass: true, dockBar: false, logoColor: false, logoGreeting: true, cell: 108, icon: 46, gridY: 30, gapX: 10, gapY: 10, xWidgets: true },
+  },
+  {
+    id: 'dock',
+    previewBg: 'url("bg/sakura-lake.svg") center / cover',
+    cfg: { bgImage: 'bg/sakura-lake.svg', bgColor: '#1a1829', bgDim: 0.08, bgRotate: false, textColor: '#ffffff', tileColor: '#1f2433', tileTr: 0, shape: 'rounded', glass: true, dockBar: true, logoColor: false, logoGreeting: true, cell: 88, icon: 44, gridY: 100, gapX: 6, gapY: 0, xWidgets: true },
+  },
+];
+
+function captureStyle() {
+  const s = state.settings, snap = {};
+  for (const k of STYLE_KEYS) snap[k] = Array.isArray(s[k]) ? [...s[k]] : s[k];
+  const p = state.pages[current];
+  return { settings: snap, pageGridY: p?.gridY ?? null };
+}
+
+function markStyleCustom() {
+  if (state?.activePreset) {
+    state.activePreset = '';
+    syncThemePresetButtons();
+  }
+}
+
+async function applyThemePreset(id) {
+  const preset = THEME_PRESETS.find(p => p.id === id);
+  if (!preset) return;
+  if (state.activePreset === id && state.prevStyle) return restorePrevStyle();
+  // Guarda automáticamente el estilo personalizado del usuario la primera vez (o tras editar detalles),
+  // sin sobrescribirlo mientras solo está probando presets entre sí.
+  if (!state.activePreset) state.prevStyle = captureStyle();
+  Object.assign(state.settings, preset.cfg);
+  if (state.pages[current]?.gridY != null) delete state.pages[current].gridY;
+  state.activePreset = id;
+  await Store.setBg(preset.cfg.bgImage || '');
+  scheduleBgRotation();
+  commit(true);
+  applyBg();
+  fillSettings();
+  syncThemePresetButtons();
+  toast(t('themeApplied', t('preset_' + id)), true);
+}
+
+async function restorePrevStyle() {
+  const prev = state.prevStyle;
+  if (!prev?.settings) return;
+  for (const k of STYLE_KEYS) {
+    if (k in prev.settings) state.settings[k] = Array.isArray(prev.settings[k]) ? [...prev.settings[k]] : prev.settings[k];
+  }
+  const p = state.pages[current];
+  if (p) {
+    if (prev.pageGridY != null) p.gridY = prev.pageGridY;
+    else delete p.gridY;
+  }
+  state.activePreset = '';
+  delete state.prevStyle;
+  await applyBgKey(state.settings.bgImage || '');
+  scheduleBgRotation();
+  commit(true);
+  applyBg();
+  fillSettings();
+  syncThemePresetButtons();
+  toast(t('styleRestored'), true);
+}
+
+function syncThemePresetButtons() {
+  const activeId = state?.activePreset || '';
+  for (const btn of $$('.theme-card')) {
+    btn.classList.toggle('on', !!activeId && btn.dataset.preset === activeId);
+  }
+  if ($('#presetRevertWrap')) $('#presetRevertWrap').hidden = !state?.prevStyle;
+}
+
+$('#presetRevertBtn')?.addEventListener('click', restorePrevStyle);
+
+function renderThemePresets(container) {
+  if (!container) return;
+  container.replaceChildren(...THEME_PRESETS.map(p => el('button', {
+    type: 'button',
+    class: 'theme-card',
+    dataset: { preset: p.id },
+    onclick: () => applyThemePreset(p.id),
+  },
+    el('span', { class: 'theme-swatch', style: { background: p.previewBg } }),
+    el('span', { class: 'theme-meta' },
+      el('b', {}, t('preset_' + p.id)),
+      el('small', {}, t('preset_' + p.id + '_tip'))
+    )
+  )));
+}
 
 // Fondos predefinidos incluidos en el paquete (100 % Dominio Público NASA/NPS + Vectores 4K propios)
 // + Fotos subidas por el usuario en IndexedDB ('bgpool:<id>') + Rotación automática optimizada.
@@ -524,12 +730,33 @@ const BG_PRESETS = [
 ];
 
 const bgThumbUrls = new Map();
+const bgFullUrls = new Map();
 async function bgThumbUrl(id) {
   if (bgThumbUrls.has(id)) return bgThumbUrls.get(id);
   const blob = await Store.getFile('bgpool:' + id).catch(() => null);
   const url = blob ? URL.createObjectURL(blob) : '';
   if (url) bgThumbUrls.set(id, url);
   return url;
+}
+
+// Reemplaza la copia ligera de arranque por el blob QHD/4K nativo de IndexedDB (sin Base64).
+async function upgradeFullResBg(key) {
+  if (!String(key || '').startsWith('bgpool:')) return;
+  let objUrl = bgFullUrls.get(key);
+  if (!objUrl) {
+    const blob = await Store.getFile(key).catch(() => null);
+    if (!blob) return;
+    objUrl = URL.createObjectURL(blob);
+    bgFullUrls.set(key, objUrl);
+  }
+  if (state.settings.bgImage !== key) return;
+  const pre = new Image();
+  pre.src = objUrl;
+  await pre.decode().catch(() => {});
+  if (state.settings.bgImage === key) {
+    document.documentElement.style.backgroundImage = `url("${objUrl}")`;
+    document.documentElement.classList.add('has-bg');
+  }
 }
 
 function blobToDataUrl(blob) {
@@ -541,31 +768,45 @@ function blobToDataUrl(blob) {
   });
 }
 
-async function applyBgKey(key) {
+// Versión compacta (~300-500 KB) para localStorage: boot.js la lee en < 0.5 ms en el <head>,
+// y luego upgradeFullResBg() pasa al blob QHD completo en reposo.
+async function blobToCacheDataUrl(blob) {
+  if (blob.size <= 380_000) return blobToDataUrl(blob);
+  const c = await scaleImage(blob, 1600);
+  let q = 0.78, url;
+  do { url = c.toDataURL('image/webp', q); q -= 0.12; } while (url.length > 550_000 && q > 0.3);
+  return url;
+}
+
+async function applyBgKey(key, paintNow = true) {
   if (!key) {
     await Store.setBg('');
     state.settings.bgImage = '';
     commit(false);
-    applyBg();
-    syncBgPresets();
+    if (paintNow) applyBg();
+    if ($('#bgPresets')?.children.length) syncBgPresets();
     return;
   }
   let dataOrUrl = key;
   if (key.startsWith('bgpool:')) {
     const blob = await Store.getFile(key).catch(() => null);
     if (!blob) return;
-    dataOrUrl = await blobToDataUrl(blob);
+    dataOrUrl = await blobToCacheDataUrl(blob);
   }
-  // Pre-decodifica la imagen antes de cambiar el fondo para evitar cualquier parpadeo
-  const pre = new Image();
-  pre.src = dataOrUrl;
-  await pre.decode().catch(() => {});
+  if (paintNow && !key.startsWith('bgpool:')) {
+    const pre = new Image();
+    pre.src = dataOrUrl;
+    await pre.decode().catch(() => {});
+  }
   await Store.setBg(dataOrUrl);
   state.settings.bgImage = key;
   try { localStorage.setItem('ntp_bg_rot_ts', String(Date.now())); } catch {}
   commit(false);
-  applyBg();
-  syncBgPresets();
+  if (paintNow) {
+    if (key.startsWith('bgpool:')) await upgradeFullResBg(key);
+    else applyBg();
+  }
+  if ($('#bgPresets')?.children.length) syncBgPresets();
 }
 
 function renderBgPresets() {
@@ -602,6 +843,7 @@ function renderBgPresets() {
       dataset: { bg: key },
       title: label,
       onclick: async () => {
+        markStyleCustom();
         const s = state.settings;
         if (s.bgRotate) {
           const pool = s.bgPool ||= [];
@@ -651,7 +893,7 @@ function syncBgPresets() {
 }
 
 let bgRotTimer = null;
-async function advanceBgRotation(force = false) {
+async function advanceBgRotation(force = false, paintNow = true) {
   const s = state.settings;
   if (!s.bgRotate) return;
   const pool = (s.bgPool || []).filter(Boolean);
@@ -661,7 +903,7 @@ async function advanceBgRotation(force = false) {
   if (!force && everyMs > 0 && Date.now() - lastTs < everyMs) return;
   const curIdx = pool.indexOf(s.bgImage);
   const nextKey = pool[(curIdx + 1) % pool.length];
-  await applyBgKey(nextKey);
+  await applyBgKey(nextKey, paintNow);
 }
 
 function scheduleBgRotation() {
@@ -691,6 +933,7 @@ $('#bgSelectAll')?.addEventListener('click', () => {
 });
 
 $('#bgNextNow')?.addEventListener('click', () => advanceBgRotation(true));
+$('#openChromeLook')?.addEventListener('click', () => chrome.tabs.create({ url: 'chrome://settings/appearance' }));
 
 // ---------- pestaña «Drive y Calendar» ----------
 const hasWidgetKind = kind => state.pages.some(p => p.items.some(it => it.type === 'widget' && it.kind === kind));
@@ -746,6 +989,9 @@ $('#addGCalCard')?.addEventListener('click', () => {
 $('#gCalSyncIcsBtn')?.addEventListener('click', async () => {
   const raw = setF.elements.gCalIcsUrl?.value.trim() || '';
   const url = normalizeIcsInput(raw);
+  if (url && !isGoogleCalUrl(url)) {
+    return ask(t('gIcsNonGoogle'), { cancel: null });
+  }
   if (setF.elements.gCalIcsUrl && url) setF.elements.gCalIcsUrl.value = url;
   state.settings.gCalIcsUrl = url;
   Store.save(state);
@@ -818,6 +1064,7 @@ $('#bgFile').addEventListener('change', async e => {
       syncSettingsUi();
       scheduleBgRotation();
     }
+    markStyleCustom();
     await applyBgKey(lastKey);
     renderBgPresets();
   } catch {
@@ -826,6 +1073,7 @@ $('#bgFile').addEventListener('change', async e => {
 });
 
 $('#bgRemove').addEventListener('click', async () => {
+  markStyleCustom();
   state.settings.bgRotate = false;
   if (setF.elements.bgRotate) setF.elements.bgRotate.checked = false;
   syncSettingsUi();
@@ -847,11 +1095,27 @@ $('#exportBtn').addEventListener('click', () => {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 });
 
-function loadState(data) {
+async function loadState(data) {
   const incomingBg = data.settings?.bgImage;
   const isPreset = typeof incomingBg === 'string' && incomingBg.startsWith('bg/');
-  if (isPreset) Store.setBg(incomingBg);
+  if (isPreset) await Store.setBg(incomingBg).catch(() => {});
   state = normalize({ ...data, v: data.v || 3, seeded: true, welcomed: true, settings: { ...data.settings, bgImage: isPreset ? incomingBg : state.settings.bgImage } });
+  // Al importar un respaldo en otro equipo, limpia referencias a fotos/fondos de IndexedDB que no existan localmente.
+  try {
+    const existing = new Set((await Store.fileKeys()).map(String));
+    state.settings.bgCustom = (state.settings.bgCustom || []).filter(id => existing.has('bgpool:' + id));
+    state.settings.bgPool = (state.settings.bgPool || []).filter(k => !String(k).startsWith('bgpool:') || existing.has(String(k)));
+    if (String(state.settings.bgImage).startsWith('bgpool:') && !existing.has(String(state.settings.bgImage))) {
+      state.settings.bgImage = '';
+      await Store.setBg('').catch(() => {});
+    }
+    for (const p of state.pages) {
+      if (p.bg && !existing.has('page:' + p.id)) delete p.bg;
+      for (const it of p.items) {
+        if (Array.isArray(it.photos)) it.photos = it.photos.filter(id => existing.has('photo:' + id));
+      }
+    }
+  } catch {}
   migrate();
   current = 0;
   commit();
@@ -866,7 +1130,7 @@ $('#importFile').addEventListener('change', async e => {
   try {
     const data = JSON.parse(await file.text());
     if (!Array.isArray(data.pages)) throw new Error(t('noScreens'));
-    loadState(data);
+    await loadState(data);
     toast(t('imported'), true);
   } catch (err) {
     ask(t('badBackup', err.message), { cancel: null });
@@ -881,7 +1145,7 @@ async function renderBackups() {
     el('small', {}, t('backupCount', b.state.pages?.length || 0, b.state.pages?.reduce((n, p) => n + p.items.length, 0) || 0)),
     el('button', { type: 'button', class: 'btn', onclick: async () => {
       if (!await ask(t('restoreAsk', fmt.format(b.t)), { ok: t('restore') })) return;
-      loadState(b.state);
+      await loadState(b.state);
       toast(t('restored'), true);
     } }, t('restore')))) : [el('small', { class: 'hint' }, t('noBackups'))]));
 }
@@ -906,6 +1170,7 @@ $('#resetBtn').addEventListener('click', async () => {
   state.seeded = state.welcomed = true;
   delete state.fresh;
   current = 0;
+  await Store.setBg(state.settings.bgImage || '');
   scheduleBgRotation();
   commit();
   fillSettings();
@@ -1002,6 +1267,8 @@ $('#search').addEventListener('submit', e => {
 
 // ---------- bienvenida (solo la primera vez) ----------
 function showWelcome() {
+  renderThemePresets($('#welcomeStyles'));
+  syncThemePresetButtons();
   $('#welcome').hidden = false;
   $('#welcomeOk').focus();
 }

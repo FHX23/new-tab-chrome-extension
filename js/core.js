@@ -118,14 +118,20 @@ function locate(id) {
 
 // ---------- espacios de cada pantalla y colocación libre ----------
 // Configuración de una pantalla: la propia si la tiene; si no, la de Ajustes.
-const PAGE_KEYS = ['layout', 'cols', 'rows', 'pattern'];
+const PAGE_KEYS = ['layout', 'cols', 'rows', 'pattern', 'gridY'];
 function pageCfg(p) {
   const s = state.settings;
-  return { layout: p.layout || s.layout, cols: p.cols || s.cols, rows: p.rows || s.rows, pattern: parsePattern(p.pattern || s.rowPattern) };
+  return {
+    layout: p.layout || s.layout,
+    cols: p.cols || s.cols,
+    rows: p.rows || s.rows,
+    pattern: parsePattern(p.pattern || s.rowPattern),
+    gridY: p.gridY ?? s.gridY ?? 0,
+  };
 }
 
 const copyCfg = (from, to) => {
-  for (const k of PAGE_KEYS) if (from[k]) to[k] = from[k];
+  for (const k of PAGE_KEYS) if (from[k] != null) to[k] = from[k];
   return to;
 };
 
@@ -250,7 +256,7 @@ function canSwap(p, a, b) {
 // ---------- avisos, confirmaciones y deshacer ----------
 const undoStack = [];
 let lastJson = '';
-const snap = () => JSON.stringify(state, (k, v) => (k === 'rev' ? undefined : v));
+const snap = () => JSON.stringify(state, (k, v) => (k === 'rev' || k === 'savedAt' ? undefined : v));
 
 let toastTimer = null;
 function toast(msg, withUndo = false) {
@@ -321,11 +327,23 @@ function ask(msg, { ok = t('accept'), cancel = t('cancel'), danger = false } = {
 // Chrome devuelve un globo para los sitios que nunca visitaste. Lo detectamos comparando píxeles
 // con el globo de un dominio inexistente (las imágenes son del mismo origen, el canvas se puede leer).
 const GEN_KEY = 'ntp_generic';
+const FAV_OK_KEY = 'ntp_fav_ok';
 const DAY = 864e5;
-let generic = {};
+let generic = {}, favOk = {};
 try { generic = JSON.parse(localStorage.getItem(GEN_KEY)) || {}; } catch {}
+try { favOk = JSON.parse(localStorage.getItem(FAV_OK_KEY)) || {}; } catch {}
 const isGeneric = host => generic[host] && Date.now() - generic[host] < DAY;
+const isFavOk = host => favOk[host] && Date.now() - favOk[host] < 7 * DAY;
 const saveGeneric = () => { try { localStorage.setItem(GEN_KEY, JSON.stringify(generic)); } catch {} };
+let favOkTimer = null;
+const saveFavOk = () => {
+  clearTimeout(favOkTimer);
+  favOkTimer = setTimeout(() => {
+    const entries = Object.entries(favOk);
+    if (entries.length > 300) favOk = Object.fromEntries(entries.sort((a, b) => b[1] - a[1]).slice(0, 250));
+    try { localStorage.setItem(FAV_OK_KEY, JSON.stringify(favOk)); } catch {}
+  }, 400);
+};
 
 let hashCanvas = null;
 function pixelHash(img) {
@@ -351,8 +369,11 @@ async function checkGeneric(img, host, size) {
   const mine = pixelHash(img);
   if (mine !== await defaultFavHash(size)) {
     if (generic[host]) { delete generic[host]; saveGeneric(); }
+    favOk[host] = Date.now();
+    saveFavOk();
     return;
   }
+  if (favOk[host]) { delete favOk[host]; saveFavOk(); }
   generic[host] = Date.now();
   saveGeneric();
   if (img.isConnected) img.replaceWith(letterFor(host));
@@ -367,7 +388,7 @@ function favImg(url, size, lazy) {
   const host = hostOf(url);
   if (isGeneric(host)) return letterFor(host);
   const img = el('img', { src: faviconUrl(url, size), alt: '', draggable: 'false', decoding: 'async', loading: lazy ? 'lazy' : null });
-  img.addEventListener('load', () => checkGeneric(img, host, size), { once: true });
+  if (!isFavOk(host)) img.addEventListener('load', () => checkGeneric(img, host, size), { once: true });
   return img;
 }
 
@@ -384,14 +405,36 @@ function renderAll() {
 }
 
 let logoKey = '', topKey = '';
+function logoTextFor(s) {
+  if (!s.logoGreeting) return s.logoText || t('logoDefault');
+  const hr = new Date().getHours();
+  const greet = t(hr >= 5 && hr < 12 ? 'greetMorning' : hr >= 12 && hr < 20 ? 'greetAfternoon' : 'greetEvening');
+  const name = (s.logoText || '').trim();
+  return name ? `${greet}, ${name}` : greet;
+}
+
+function renderLogo() {
+  const s = state.settings;
+  const text = logoTextFor(s);
+  if (text + s.logoColor !== logoKey) {
+    logoKey = text + s.logoColor;
+    $('#logo').replaceChildren(...[...text].map((ch, i) =>
+      el('span', { style: s.logoColor ? { color: LOGO_COLORS[i % LOGO_COLORS.length] } : null }, ch)));
+  }
+}
+
 function applySettings() {
   const s = state.settings;
   const root = document.documentElement, r = root.style;
+  const effTileTr = s.glass && !s.tileTr ? 68 : s.tileTr;
   setVars(r, {
     '--cell': s.cell + 'px',
     '--icon': s.icon + 'px',
+    '--pos-y': String(clampInt(s.gridY ?? 0, 0, 100)),
+    '--gap-x': clampInt(s.gapX ?? 0, 0, 40) + 'px',
+    '--gap-y': clampInt(s.gapY ?? 0, 0, 40) + 'px',
     '--text': s.textColor,
-    '--tile': mix(s.tileColor, s.tileTr),
+    '--tile': mix(s.tileColor, effTileTr),
     '--dim': s.bgDim,
     '--nav-size': s.navSize + 'px',
     '--nav-zone': Math.max(s.navZone, s.navSize) + 'px',
@@ -408,6 +451,9 @@ function applySettings() {
   root.dataset.panel = s.panelTheme;
   const b = document.body.classList;
   b.toggle('no-logo', !s.showLogo);
+  b.toggle('logo-greeting', !!s.logoGreeting);
+  b.toggle('glass', !!s.glass);
+  b.toggle('dock-bar', !!s.dockBar);
   b.toggle('no-search', !s.showSearch);
   b.toggle('no-labels', !s.showLabels);
   b.toggle('no-arrows', !s.showArrows);
@@ -417,12 +463,7 @@ function applySettings() {
   b.toggle('x-pages', s.xPages);
   b.toggle('x-search', s.xSearch);
 
-  const text = s.logoText || t('logoDefault');
-  if (text + s.logoColor !== logoKey) {
-    logoKey = text + s.logoColor;
-    $('#logo').replaceChildren(...[...text].map((ch, i) =>
-      el('span', { style: s.logoColor ? { color: LOGO_COLORS[i % LOGO_COLORS.length] } : null }, ch)));
-  }
+  renderLogo();
   const tColors = s.topLinksColors || {};
   const tKey = s.topLinks + '\0' + (s.topLinksColor || '') + '\0' + JSON.stringify(tColors);
   if (tKey !== topKey) {
@@ -526,8 +567,8 @@ function fitPages() {
   const els = $$('#track > .page');
   if (!els.length) return;
   const cs = getComputedStyle(els[0]);
-  const W = els[0].clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-  const H0 = els[0].clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  const W = els[0].clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (s.dockBar ? 36 : 0);
+  const H0 = els[0].clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - (s.dockBar ? 24 : 0);
   if (W <= 0 || H0 <= 0) return;
   els.forEach((node, i) => {
     const p = state.pages[i];
@@ -549,14 +590,16 @@ function fitPages() {
         rowsH += rh;
       }
     }
+    const gx = clampInt(s.gapX ?? 0, 0, 40), gy = clampInt(s.gapY ?? 0, 0, 40);
     const [natW, natH] =
-      sp.layout === 'grid' ? [sp.cols * s.cell, sp.rows * s.cell]
-      : sp.layout === 'rows' ? [rowsW * s.cell, Math.max(sp.rows, rowsH) * s.cell]
-      : [sp.cols * LIST_W + (sp.cols - 1) * 12, sp.rows * LIST_H];
+      sp.layout === 'grid' ? [sp.cols * s.cell + Math.max(0, sp.cols - 1) * gx, sp.rows * s.cell + Math.max(0, sp.rows - 1) * gy]
+      : sp.layout === 'rows' ? [rowsW * s.cell + Math.max(0, rowsW - 1) * gx, Math.max(sp.rows, rowsH) * s.cell + Math.max(0, sp.rows - 1) * gy]
+      : [sp.cols * LIST_W + Math.max(0, sp.cols - 1) * (12 + gx), sp.rows * LIST_H + Math.max(0, sp.rows - 1) * gy];
     const k = Math.max(0.3, Math.min(1, W / natW, H / natH));
     setVars(node.style, {
       '--cell': s.cell * k + 'px', '--icon': s.icon * k + 'px',
       '--lw': LIST_W * k + 'px', '--lh': LIST_H * k + 'px', '--k': k,
+      '--pos-y': String(clampInt(pageCfg(p).gridY, 0, 100)),
     });
   });
 }
@@ -569,6 +612,20 @@ function buildFolderContainer(items, folderId) {
   return box;
 }
 
+const hasOwnLook = it => !!(it.tileColor || it.tileTr != null || it.tileGlass);
+
+function applyItemLook(node, it) {
+  if (!hasOwnLook(it)) return;
+  const s = state.settings;
+  const g = it.tileGlass === 'on' ? true : it.tileGlass === 'off' ? false : !!s.glass;
+  if (it.tileGlass === 'on') node.classList.add('glass-on');
+  else if (it.tileGlass === 'off') node.classList.add('glass-off');
+  const col = it.tileColor || s.tileColor;
+  const hasTr = it.tileTr != null;
+  const effTr = g && !hasTr && !s.tileTr ? 68 : (hasTr ? it.tileTr : s.tileTr);
+  node.style.setProperty('--tile', mix(col, effTr));
+}
+
 function renderItem(it, { inFolder, layout, lazy, w = 1, h = 1 }) {
   const isLink = it.type === 'link';
   const node = el(isLink ? 'a' : 'div', {
@@ -578,6 +635,7 @@ function renderItem(it, { inFolder, layout, lazy, w = 1, h = 1 }) {
     draggable: editing ? 'false' : null,
     dataset: { id: it.id },
   });
+  applyItemLook(node, it);
   if (it.type === 'widget') {
     const isRoomy = !inFolder;
     node.append(...renderWidget(it, w, h, isRoomy));
@@ -611,7 +669,7 @@ function ctrlsFor(it, inFolder, layout) {
   const curIdx = list.indexOf(`${it.w || 1}x${it.h || 1}`);
   return el('div', { class: 'ctrls' },
     it.type !== 'widget' && btn('✎', t('edit'), () => openEditor(it)),
-    it.type === 'widget' && WIDGETS[it.kind]?.cfg && btn('⚙', t('configure'), () => openWidgetCfg(it)),
+    it.type === 'widget' && WIDGETS[it.kind] && btn('⚙', t('configure'), () => openWidgetCfg(it)),
     canResize && btn('−', t('shrinkSize'), () => stepSize(it, -1), curIdx === 0),
     canResize && btn('+', t('growSize'), () => stepSize(it, 1), curIdx === list.length - 1),
     inFolder && btn('⇱', t('takeOut'), () => takeOut(it.id)),

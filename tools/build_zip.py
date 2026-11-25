@@ -6,6 +6,7 @@ Uso:  python tools/build_zip.py
 """
 import json
 import os
+import re
 import zipfile
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -29,12 +30,43 @@ def files():
 
 def check(manifest):
     problems = []
-    for lang in os.listdir(os.path.join(ROOT, '_locales')):
-        msgs = json.load(open(os.path.join(ROOT, '_locales', lang, 'messages.json'), encoding='utf-8'))
+    locales_dir = os.path.join(ROOT, '_locales')
+    locales = {}
+    for lang in sorted(os.listdir(locales_dir)):
+        msgs = json.load(open(os.path.join(locales_dir, lang, 'messages.json'), encoding='utf-8'))
+        locales[lang] = msgs
         if len(msgs['extName']['message']) > 75:
             problems.append(f'{lang}: el nombre supera 75 caracteres')
         if len(msgs['extDesc']['message']) > 132:
             problems.append(f'{lang}: la descripción supera 132 caracteres')
+        seen_lower = set()
+        for k, v in msgs.items():
+            if not re.match(r'^[a-zA-Z0-9_]+$', k):
+                problems.append(f'{lang}: clave inválida "{k}" (solo letras, números y _)')
+            lk = k.lower()
+            if lk in seen_lower:
+                problems.append(f'{lang}: clave duplicada sin distinguir mayúsculas "{k}"')
+            seen_lower.add(lk)
+            if not isinstance(v, dict) or not v.get('message'):
+                problems.append(f'{lang}: clave "{k}" vacía')
+    base_lang = manifest.get('default_locale', 'en')
+    if base_lang in locales:
+        base_keys = set(locales[base_lang])
+        for lang, msgs in locales.items():
+            if lang == base_lang:
+                continue
+            keys = set(msgs)
+            missing = sorted(base_keys - keys)
+            extra = sorted(keys - base_keys)
+            if missing:
+                problems.append(f'{lang}: faltan claves respecto a {base_lang}: {", ".join(missing[:10])}')
+            if extra:
+                problems.append(f'{lang}: sobran claves respecto a {base_lang}: {", ".join(extra[:10])}')
+            for k in base_keys & keys:
+                p_base = sorted(set(re.findall(r'\$\d+', locales[base_lang][k]['message'])))
+                p_cur = sorted(set(re.findall(r'\$\d+', msgs[k]['message'])))
+                if p_base != p_cur:
+                    problems.append(f'{lang}: placeholders distintos en "{k}" ({p_cur} vs {p_base})')
     for size, path in manifest.get('icons', {}).items():
         if not os.path.isfile(os.path.join(ROOT, path)):
             problems.append(f'falta el ícono {path}')

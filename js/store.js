@@ -17,14 +17,20 @@ const Store = (() => {
     cols: 5,              // espacios por defecto de cada pantalla (cada una puede tener los suyos)
     rows: 3,
     rowPattern: '3,4',
+    gridY: 0,             // posición vertical 0–100 % dentro del área de pantalla (0 = arriba, 50 = centro, 100 = abajo)
+    gapX: 0,              // separación horizontal entre columnas (0–40 px)
+    gapY: 0,              // separación vertical entre filas (0–40 px)
     cell: 112,
     icon: 48,
     shape: 'circle',
+    glass: false,         // efecto vidrio esmerilado (blur) en iconos y tarjetas
+    dockBar: false,       // bandeja translúcida estilo dock alrededor de los iconos
     folderStyle: 'panel', // 'panel' (centrada, como iPhone) | 'bubble' (junto a la carpeta) | 'screen' (como una pantalla)
     showLabels: true,
     showLogo: true,
     logoText: '',         // vacío = nombre neutro según idioma
     logoColor: false,
+    logoGreeting: false,  // saludo dinámico según hora (Buenos días / tardes / noches)
     showSearch: true,
     topLinks: '',         // "Nombre = URL", uno por línea
     topLinksColor: '#ffffff',
@@ -81,9 +87,17 @@ const Store = (() => {
 
   function defaultState() {
     return {
-      v: 6,
+      v: 7,
       fresh: true,        // instalación nueva: al iniciar se reemplaza por tus sitios más visitados
-      settings: { ...DEFAULT_SETTINGS },
+      activePreset: 'aurora',
+      settings: {
+        ...DEFAULT_SETTINGS,
+        bgImage: 'bg/aurora-peaks.svg',
+        bgDim: 0.15,
+        logoColor: true,
+        glass: true,
+        xWidgets: true,
+      },
       pages: [{ id: uid(), items: DEFAULT_LINKS.map(([t, u]) => link(t, u)) }],
     };
   }
@@ -139,7 +153,15 @@ const Store = (() => {
     if (!pending) return;
     clearTimeout(timer);
     pending.rev = uid();
-    try { localStorage.setItem(KEY, JSON.stringify(pending)); } catch {}
+    pending.savedAt = Date.now();
+    const raw = JSON.stringify(pending);
+    try {
+      localStorage.setItem(KEY, raw);
+    } catch {
+      // Si localStorage está lleno (p. ej. por un fondo pesado), libera la caché del fondo
+      // para garantizar que el estado del usuario siempre quede al día.
+      try { localStorage.removeItem(BG); localStorage.setItem(KEY, raw); } catch {}
+    }
     chrome.storage.local.set({ [KEY]: pending });
     pending = null;
   }
@@ -155,9 +177,12 @@ const Store = (() => {
   const getBg = () => { try { return localStorage.getItem(BG) || ''; } catch { return ''; } };
 
   async function setBg(dataUrl) {
-    if (dataUrl) localStorage.setItem(BG, dataUrl); // lanza error si no cabe
-    else localStorage.removeItem(BG);
     await chrome.storage.local.set({ [BG]: dataUrl || '' });
+    if (dataUrl) {
+      try { localStorage.setItem(BG, dataUrl); } catch { try { localStorage.removeItem(BG); } catch {} }
+    } else {
+      try { localStorage.removeItem(BG); } catch {}
+    }
   }
 
   async function restoreBg() {
@@ -177,6 +202,7 @@ const Store = (() => {
     if (!force && list[0] && Date.now() - list[0].t < 20 * 3600e3) return false;
     const copy = JSON.parse(JSON.stringify(state));
     delete copy.rev;
+    delete copy.savedAt;
     list.unshift({ t: Date.now(), state: copy });
     await chrome.storage.local.set({ [BACKUPS]: list.slice(0, 7) });
     return true;

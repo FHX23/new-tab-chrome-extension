@@ -67,82 +67,95 @@ const CONVERSIONS = {
   'c-f': v => v * 9 / 5 + 32, 'f-c': v => (v - 32) * 5 / 9, 'l-gal': v => v / 3.78541, 'gal-l': v => v * 3.78541,
 };
 
+const regionFmt = (() => { try { return new Intl.DisplayNames([LANG], { type: 'region' }); } catch { return null; } })();
+const countryOf = cc => { try { return regionFmt?.of(cc) || cc; } catch { return cc; } };
+
 const WORLD_CITIES = [
   // América del Sur
-  { name: ['Santiago', 'Santiago'], country: 'Chile', tz: 'America/Santiago' },
-  { name: ['Buenos Aires', 'Buenos Aires'], country: 'Argentina', tz: 'America/Argentina/Buenos_Aires' },
-  { name: ['Bogotá', 'Bogota'], country: 'Colombia', tz: 'America/Bogota' },
-  { name: ['Lima', 'Lima'], country: 'Perú', tz: 'America/Lima' },
-  { name: ['São Paulo', 'Sao Paulo'], country: 'Brasil', tz: 'America/Sao_Paulo' },
-  { name: ['Río de Janeiro', 'Rio de Janeiro'], country: 'Brasil', tz: 'America/Sao_Paulo' },
-  { name: ['Montevideo', 'Montevideo'], country: 'Uruguay', tz: 'America/Montevideo' },
-  { name: ['Asunción', 'Asuncion'], country: 'Paraguay', tz: 'America/Asuncion' },
-  { name: ['La Paz', 'La Paz'], country: 'Bolivia', tz: 'America/La_Paz' },
-  { name: ['Quito', 'Quito'], country: 'Ecuador', tz: 'America/Guayaquil' },
-  { name: ['Caracas', 'Caracas'], country: 'Venezuela', tz: 'America/Caracas' },
+  { name: ['Santiago', 'Santiago'], cc: 'CL', tz: 'America/Santiago' },
+  { name: ['Buenos Aires', 'Buenos Aires'], cc: 'AR', tz: 'America/Argentina/Buenos_Aires' },
+  { name: ['Bogotá', 'Bogota'], cc: 'CO', tz: 'America/Bogota' },
+  { name: ['Lima', 'Lima'], cc: 'PE', tz: 'America/Lima' },
+  { name: ['São Paulo', 'Sao Paulo'], cc: 'BR', tz: 'America/Sao_Paulo' },
+  { name: ['Río de Janeiro', 'Rio de Janeiro'], cc: 'BR', tz: 'America/Sao_Paulo' },
+  { name: ['Montevideo', 'Montevideo'], cc: 'UY', tz: 'America/Montevideo' },
+  { name: ['Asunción', 'Asuncion'], cc: 'PY', tz: 'America/Asuncion' },
+  { name: ['La Paz', 'La Paz'], cc: 'BO', tz: 'America/La_Paz' },
+  { name: ['Quito', 'Quito'], cc: 'EC', tz: 'America/Guayaquil' },
+  { name: ['Caracas', 'Caracas'], cc: 'VE', tz: 'America/Caracas' },
   // América del Norte y Central
-  { name: ['Ciudad de México', 'Mexico City'], country: 'México', tz: 'America/Mexico_City' },
-  { name: ['Guadalajara', 'Guadalajara'], country: 'México', tz: 'America/Mexico_City' },
-  { name: ['Monterrey', 'Monterrey'], country: 'México', tz: 'America/Monterrey' },
-  { name: ['Tijuana', 'Tijuana'], country: 'México', tz: 'America/Tijuana' },
-  { name: ['Cancún', 'Cancun'], country: 'México', tz: 'America/Cancun' },
-  { name: ['Nueva York', 'New York'], country: 'EE.UU.', tz: 'America/New_York' },
-  { name: ['Los Ángeles', 'Los Angeles'], country: 'EE.UU.', tz: 'America/Los_Angeles' },
-  { name: ['Miami', 'Miami'], country: 'EE.UU.', tz: 'America/New_York' },
-  { name: ['Chicago', 'Chicago'], country: 'EE.UU.', tz: 'America/Chicago' },
-  { name: ['San Francisco', 'San Francisco'], country: 'EE.UU.', tz: 'America/Los_Angeles' },
-  { name: ['Washington D.C.', 'Washington D.C.'], country: 'EE.UU.', tz: 'America/New_York' },
-  { name: ['Toronto', 'Toronto'], country: 'Canadá', tz: 'America/Toronto' },
-  { name: ['Vancouver', 'Vancouver'], country: 'Canadá', tz: 'America/Vancouver' },
-  { name: ['Montreal', 'Montreal'], country: 'Canadá', tz: 'America/Toronto' },
-  { name: ['San José', 'San Jose'], country: 'Costa Rica', tz: 'America/Costa_Rica' },
-  { name: ['Ciudad de Panamá', 'Panama City'], country: 'Panamá', tz: 'America/Panama' },
-  { name: ['Santo Domingo', 'Santo Domingo'], country: 'Rep. Dominicana', tz: 'America/Santo_Domingo' },
-  { name: ['San Juan', 'San Juan'], country: 'Puerto Rico', tz: 'America/Puerto_Rico' },
-  { name: ['La Habana', 'Havana'], country: 'Cuba', tz: 'America/Havana' },
+  { name: ['Ciudad de México', 'Mexico City'], cc: 'MX', tz: 'America/Mexico_City' },
+  { name: ['Guadalajara', 'Guadalajara'], cc: 'MX', tz: 'America/Mexico_City' },
+  { name: ['Monterrey', 'Monterrey'], cc: 'MX', tz: 'America/Monterrey' },
+  { name: ['Tijuana', 'Tijuana'], cc: 'MX', tz: 'America/Tijuana' },
+  { name: ['Cancún', 'Cancun'], cc: 'MX', tz: 'America/Cancun' },
+  { name: ['Nueva York', 'New York'], cc: 'US', tz: 'America/New_York' },
+  { name: ['Los Ángeles', 'Los Angeles'], cc: 'US', tz: 'America/Los_Angeles' },
+  { name: ['Miami', 'Miami'], cc: 'US', tz: 'America/New_York' },
+  { name: ['Chicago', 'Chicago'], cc: 'US', tz: 'America/Chicago' },
+  { name: ['San Francisco', 'San Francisco'], cc: 'US', tz: 'America/Los_Angeles' },
+  { name: ['Washington D.C.', 'Washington D.C.'], cc: 'US', tz: 'America/New_York' },
+  { name: ['Toronto', 'Toronto'], cc: 'CA', tz: 'America/Toronto' },
+  { name: ['Vancouver', 'Vancouver'], cc: 'CA', tz: 'America/Vancouver' },
+  { name: ['Montreal', 'Montreal'], cc: 'CA', tz: 'America/Toronto' },
+  { name: ['San José', 'San Jose'], cc: 'CR', tz: 'America/Costa_Rica' },
+  { name: ['Ciudad de Panamá', 'Panama City'], cc: 'PA', tz: 'America/Panama' },
+  { name: ['Santo Domingo', 'Santo Domingo'], cc: 'DO', tz: 'America/Santo_Domingo' },
+  { name: ['San Juan', 'San Juan'], cc: 'PR', tz: 'America/Puerto_Rico' },
+  { name: ['La Habana', 'Havana'], cc: 'CU', tz: 'America/Havana' },
   // Europa
-  { name: ['Madrid', 'Madrid'], country: 'España', tz: 'Europe/Madrid' },
-  { name: ['Barcelona', 'Barcelona'], country: 'España', tz: 'Europe/Madrid' },
-  { name: ['Londres', 'London'], country: 'Reino Unido', tz: 'Europe/London' },
-  { name: ['París', 'Paris'], country: 'Francia', tz: 'Europe/Paris' },
-  { name: ['Roma', 'Rome'], country: 'Italia', tz: 'Europe/Rome' },
-  { name: ['Berlín', 'Berlin'], country: 'Alemania', tz: 'Europe/Berlin' },
-  { name: ['Lisboa', 'Lisbon'], country: 'Portugal', tz: 'Europe/Lisbon' },
-  { name: ['Ámsterdam', 'Amsterdam'], country: 'Países Bajos', tz: 'Europe/Amsterdam' },
-  { name: ['Bruselas', 'Brussels'], country: 'Bélgica', tz: 'Europe/Brussels' },
-  { name: ['Viena', 'Vienna'], country: 'Austria', tz: 'Europe/Vienna' },
-  { name: ['Zúrich', 'Zurich'], country: 'Suiza', tz: 'Europe/Zurich' },
-  { name: ['Atenas', 'Athens'], country: 'Grecia', tz: 'Europe/Athens' },
-  { name: ['Dublín', 'Dublin'], country: 'Irlanda', tz: 'Europe/Dublin' },
-  { name: ['Estocolmo', 'Stockholm'], country: 'Suecia', tz: 'Europe/Stockholm' },
-  { name: ['Oslo', 'Oslo'], country: 'Noruega', tz: 'Europe/Oslo' },
-  { name: ['Copenhague', 'Copenhagen'], country: 'Dinamarca', tz: 'Europe/Copenhagen' },
-  { name: ['Varsovia', 'Warsaw'], country: 'Polonia', tz: 'Europe/Warsaw' },
-  { name: ['Praga', 'Prague'], country: 'Rep. Checa', tz: 'Europe/Prague' },
-  { name: ['Moscú', 'Moscow'], country: 'Rusia', tz: 'Europe/Moscow' },
-  { name: ['Estambul', 'Istanbul'], country: 'Turquía', tz: 'Europe/Istanbul' },
+  { name: ['Madrid', 'Madrid'], cc: 'ES', tz: 'Europe/Madrid' },
+  { name: ['Barcelona', 'Barcelona'], cc: 'ES', tz: 'Europe/Madrid' },
+  { name: ['Londres', 'London'], cc: 'GB', tz: 'Europe/London' },
+  { name: ['París', 'Paris'], cc: 'FR', tz: 'Europe/Paris' },
+  { name: ['Roma', 'Rome'], cc: 'IT', tz: 'Europe/Rome' },
+  { name: ['Berlín', 'Berlin'], cc: 'DE', tz: 'Europe/Berlin' },
+  { name: ['Lisboa', 'Lisbon'], cc: 'PT', tz: 'Europe/Lisbon' },
+  { name: ['Ámsterdam', 'Amsterdam'], cc: 'NL', tz: 'Europe/Amsterdam' },
+  { name: ['Bruselas', 'Brussels'], cc: 'BE', tz: 'Europe/Brussels' },
+  { name: ['Viena', 'Vienna'], cc: 'AT', tz: 'Europe/Vienna' },
+  { name: ['Zúrich', 'Zurich'], cc: 'CH', tz: 'Europe/Zurich' },
+  { name: ['Atenas', 'Athens'], cc: 'GR', tz: 'Europe/Athens' },
+  { name: ['Dublín', 'Dublin'], cc: 'IE', tz: 'Europe/Dublin' },
+  { name: ['Estocolmo', 'Stockholm'], cc: 'SE', tz: 'Europe/Stockholm' },
+  { name: ['Oslo', 'Oslo'], cc: 'NO', tz: 'Europe/Oslo' },
+  { name: ['Copenhague', 'Copenhagen'], cc: 'DK', tz: 'Europe/Copenhagen' },
+  { name: ['Varsovia', 'Warsaw'], cc: 'PL', tz: 'Europe/Warsaw' },
+  { name: ['Praga', 'Prague'], cc: 'CZ', tz: 'Europe/Prague' },
+  { name: ['Moscú', 'Moscow'], cc: 'RU', tz: 'Europe/Moscow' },
+  { name: ['Estambul', 'Istanbul'], cc: 'TR', tz: 'Europe/Istanbul' },
   // Asia y Oceanía
-  { name: ['Tokio', 'Tokyo'], country: 'Japón', tz: 'Asia/Tokyo' },
-  { name: ['Seúl', 'Seoul'], country: 'Corea del Sur', tz: 'Asia/Seoul' },
-  { name: ['Pekín', 'Beijing'], country: 'China', tz: 'Asia/Shanghai' },
-  { name: ['Shanghái', 'Shanghai'], country: 'China', tz: 'Asia/Shanghai' },
-  { name: ['Hong Kong', 'Hong Kong'], country: 'Hong Kong', tz: 'Asia/Hong_Kong' },
-  { name: ['Singapur', 'Singapore'], country: 'Singapur', tz: 'Asia/Singapore' },
-  { name: ['Bangkok', 'Bangkok'], country: 'Tailandia', tz: 'Asia/Bangkok' },
-  { name: ['Nueva Delhi', 'New Delhi'], country: 'India', tz: 'Asia/Kolkata' },
-  { name: ['Dubái', 'Dubai'], country: 'EAU', tz: 'Asia/Dubai' },
-  { name: ['Doha', 'Doha'], country: 'Catar', tz: 'Asia/Qatar' },
-  { name: ['Sídney', 'Sydney'], country: 'Australia', tz: 'Australia/Sydney' },
-  { name: ['Melbourne', 'Melbourne'], country: 'Australia', tz: 'Australia/Melbourne' },
-  { name: ['Auckland', 'Auckland'], country: 'Nueva Zelanda', tz: 'Pacific/Auckland' },
-  { name: ['Honolulu', 'Honolulu'], country: 'Hawái', tz: 'Pacific/Honolulu' },
+  { name: ['Tokio', 'Tokyo'], cc: 'JP', tz: 'Asia/Tokyo' },
+  { name: ['Seúl', 'Seoul'], cc: 'KR', tz: 'Asia/Seoul' },
+  { name: ['Pekín', 'Beijing'], cc: 'CN', tz: 'Asia/Shanghai' },
+  { name: ['Shanghái', 'Shanghai'], cc: 'CN', tz: 'Asia/Shanghai' },
+  { name: ['Hong Kong', 'Hong Kong'], cc: 'HK', tz: 'Asia/Hong_Kong' },
+  { name: ['Singapur', 'Singapore'], cc: 'SG', tz: 'Asia/Singapore' },
+  { name: ['Bangkok', 'Bangkok'], cc: 'TH', tz: 'Asia/Bangkok' },
+  { name: ['Nueva Delhi', 'New Delhi'], cc: 'IN', tz: 'Asia/Kolkata' },
+  { name: ['Dubái', 'Dubai'], cc: 'AE', tz: 'Asia/Dubai' },
+  { name: ['Doha', 'Doha'], cc: 'QA', tz: 'Asia/Qatar' },
+  { name: ['Sídney', 'Sydney'], cc: 'AU', tz: 'Australia/Sydney' },
+  { name: ['Melbourne', 'Melbourne'], cc: 'AU', tz: 'Australia/Melbourne' },
+  { name: ['Auckland', 'Auckland'], cc: 'NZ', tz: 'Pacific/Auckland' },
+  { name: ['Honolulu', 'Honolulu'], cc: 'US', tz: 'Pacific/Honolulu' },
   // África
-  { name: ['El Cairo', 'Cairo'], country: 'Egipto', tz: 'Africa/Cairo' },
-  { name: ['Johannesburgo', 'Johannesburg'], country: 'Sudáfrica', tz: 'Africa/Johannesburg' },
-  { name: ['Casablanca', 'Casablanca'], country: 'Marruecos', tz: 'Africa/Casablanca' },
+  { name: ['El Cairo', 'Cairo'], cc: 'EG', tz: 'Africa/Cairo' },
+  { name: ['Johannesburgo', 'Johannesburg'], cc: 'ZA', tz: 'Africa/Johannesburg' },
+  { name: ['Casablanca', 'Casablanca'], cc: 'MA', tz: 'Africa/Casablanca' },
 ];
 
-function friendlyCity(tz) {
+const zoneTz = entry => (typeof entry === 'string' ? entry.split('|')[0] : (entry?.tz || ''));
+
+function friendlyCity(entry) {
+  const raw = String(entry || '');
+  const sep = raw.indexOf('|');
+  const tz = sep >= 0 ? raw.slice(0, sep) : raw;
+  const label = sep >= 0 ? raw.slice(sep + 1) : '';
+  if (label) {
+    const exact = WORLD_CITIES.find(c => c.tz === tz && (c.name[1] === label || c.name[0] === label));
+    return exact ? (LANG === 'es' ? exact.name[0] : exact.name[1]) : label;
+  }
   const found = WORLD_CITIES.find(c => c.tz === tz);
   if (found) return LANG === 'es' ? found.name[0] : found.name[1];
   return cityOf(tz);
@@ -293,7 +306,7 @@ const WIDGETS = {
       return { zones: [here, ...['America/New_York', 'Europe/Madrid', 'Asia/Tokyo'].filter(z => z !== here)].slice(0, 3) };
     },
     cfg: [{ k: 'zones', type: 'zones' }],
-    mini: it => el('span', { class: 'clock-mini' }, fmtTime(new Date(), it.zones?.[0])),
+    mini: it => el('span', { class: 'clock-mini' }, fmtTime(new Date(), zoneTz(it.zones?.[0]))),
     full(it, b, w = 2, h = 1) {
       const draw = () => {
         const zones = (it.zones || []).filter(Boolean);
@@ -306,12 +319,13 @@ const WIDGETS = {
         }
         const now = new Date(), today = fmtWith('ymd', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
         b.replaceChildren(...zones.map(z => {
+          const tz = zoneTz(z);
           let other = '';
           try {
-            const there = new Intl.DateTimeFormat(LANG, { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: z }).format(now);
+            const there = new Intl.DateTimeFormat(LANG, { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: tz }).format(now);
             if (there !== today) other = there > today ? t('tomorrow') : t('yesterday');
-          } catch { return el('div', { class: 'wz' }, el('span', {}, z), el('b', {}, '—')); }
-          return el('div', { class: 'wz' }, el('span', {}, friendlyCity(z), other ? el('small', {}, ' · ' + other) : null), el('b', {}, fmtTime(now, z)));
+          } catch { return el('div', { class: 'wz' }, el('span', {}, friendlyCity(z)), el('b', {}, '—')); }
+          return el('div', { class: 'wz' }, el('span', {}, friendlyCity(z), other ? el('small', {}, ' · ' + other) : null), el('b', {}, fmtTime(now, tz)));
         }));
       };
       draw();
@@ -488,6 +502,7 @@ const WIDGETS = {
       };
       b.append(img);
       show();
+      if (it.photos.length > 1) ensurePhotosTicker();
     },
   },
 
@@ -673,11 +688,10 @@ async function hasHistPerm() {
   try { return await chrome.permissions.contains({ permissions: ['history'] }); } catch { return false; }
 }
 
-function hideDriveFile(id, url) {
+function hideDriveFile(id) {
   const hidden = new Set(readJsonCache(GDRIVE_HIDDEN_KEY, []));
   hidden.add(id);
   writeJsonCache(GDRIVE_HIDDEN_KEY, [...hidden]);
-  if (url && chrome.history?.deleteUrl) chrome.history.deleteUrl({ url }).catch(() => {});
   const cur = readJsonCache(GDRIVE_CACHE_KEY, []).filter(x => x.id !== id);
   writeJsonCache(GDRIVE_CACHE_KEY, cur);
   repaintGDriveCards();
@@ -824,7 +838,7 @@ function parseIcsText(ics) {
         const meetUrl = extractMeetUrl(cur.conf, cur.location, cur.desc, cur.url);
         const makeEv = (sTs, eTs) => ({
           id: (cur.uid || uid()) + '_' + sTs,
-          title: cur.summary || '(Sin título)',
+          title: cur.summary || t('untitled'),
           start: sTs,
           end: eTs,
           allDay: !!cur.start.allDay,
@@ -950,12 +964,19 @@ function normalizeIcsInput(raw) {
   return s;
 }
 
+function isGoogleCalUrl(u) {
+  if (!u) return true;
+  try {
+    const h = new URL(u).hostname.toLowerCase();
+    return h === 'calendar.google.com' || h.endsWith('.calendar.google.com');
+  } catch { return false; }
+}
+
 async function syncCalendarIcs(url, askPerm = true) {
   const u = normalizeIcsInput(url || state.settings.gCalIcsUrl || '');
+  if (u && !isGoogleCalUrl(u)) return null;
   if (askPerm) {
-    let origin = 'https://calendar.google.com/*';
-    if (u) try { origin = new URL(u).origin + '/*'; } catch {}
-    const ok = await chrome.permissions.request({ origins: [origin, 'https://calendar.google.com/*'] }).catch(() => false);
+    const ok = await chrome.permissions.request({ origins: ['https://calendar.google.com/*'] }).catch(() => false);
     if (!ok) { toast(t('gPermDenied')); return null; }
   }
   const tryFetchText = async target => {
@@ -1231,7 +1252,15 @@ async function photoUrl(id) {
   photoUrls.set(id, url);
   return url;
 }
-setInterval(() => { if (!document.hidden) for (const b of $$('.w-photos')) b._next?.(); }, 1000);
+let photosTicker = null;
+function ensurePhotosTicker() {
+  if (photosTicker) return;
+  photosTicker = setInterval(() => {
+    const boxes = $$('.w-photos');
+    if (!boxes.length) { clearInterval(photosTicker); photosTicker = null; return; }
+    if (!document.hidden) for (const b of boxes) b._next?.();
+  }, 1000);
+}
 
 // ---------- creación, etiquetas y dibujo ----------
 function newWidget(kind) {
@@ -1261,6 +1290,7 @@ let tickTimer = null;
 function tickClocks() {
   clearTimeout(tickTimer);
   if (document.hidden) return;
+  if (state?.settings?.logoGreeting) renderLogo();
   for (const n of $$('.wbody, .wmini')) n._tick?.();
   tickTimer = setTimeout(tickClocks, 60000 - (Date.now() % 60000) + 50);
 }
@@ -1277,7 +1307,7 @@ function openWidget(it) {
   const wide = Math.max(2, w);
   const tall = it.kind === 'world' ? ((it.zones?.length || 0) > 3 ? 2 : 1) : Math.max(2, h);
   $('#widgetTitle').textContent = widgetTitle(it);
-  $('#widgetCfgBtn').hidden = !def.cfg && !isGCard;
+  $('#widgetCfgBtn').hidden = false;
   const body = $('#widgetBody');
   body.style.width = (isGCard ? 440 : wide * 150) + 'px';
   body.style.height = (isGCard ? 420 : tall * 150) + 'px';
@@ -1289,24 +1319,87 @@ $('#widgetClose').addEventListener('click', () => $('#widgetDlg').close());
 $('#widgetCfgBtn').addEventListener('click', () => {
   const it = locate(widgetOpenId)?.item;
   if (!it) return;
-  if (it.kind === 'gcal' || it.kind === 'gdrive') { openSettings(); showTab('gcards'); }
-  else openWidgetCfg(it);
+  openWidgetCfg(it);
 });
 $('#widgetDlg').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 $('#widgetDlg').addEventListener('close', () => { widgetOpenId = null; renderAll(); }); // refresca la vista compacta
 
-// ---------- «Configurar…»: formulario armado a partir de def.cfg ----------
+// ---------- «Configurar…»: formulario armado a partir de def.cfg + apariencia individual ----------
 let cfgId = null, cfgDraft = null;
 let tzList = null;
 
+function buildOwnLookSection(draft, onChange) {
+  const s = state.settings;
+  const hasCustom = !!(draft.tileColor || draft.tileTr != null);
+  const chk = el('input', { type: 'checkbox', checked: hasCustom || null });
+  const colorInp = el('input', { type: 'color', value: (draft.tileColor || s.tileColor || '#35363a').toLowerCase() });
+  const trVal = draft.tileTr ?? s.tileTr ?? 0;
+  const trOut = el('output', {}, trVal + '%');
+  const trInp = el('input', { type: 'range', min: 0, max: 100, value: trVal });
+  const colorRow = el('div', { class: 'colors own-look-colors', hidden: !hasCustom },
+    el('label', {}, el('span', {}, t('iconColor')), colorInp),
+    el('label', {}, el('span', { class: 'lr' }, el('span', {}, t('transparency')), trOut), trInp)
+  );
+  colorPicker(colorInp);
+  syncSwatches(colorInp);
+
+  const glassSel = el('select', {},
+    el('option', { value: '' }, t('shapeDefault')),
+    el('option', { value: 'on' }, t('glassOn')),
+    el('option', { value: 'off' }, t('glassOff'))
+  );
+  glassSel.value = draft.tileGlass || '';
+
+  const sync = () => {
+    colorRow.hidden = !chk.checked;
+    if (chk.checked) {
+      draft.tileColor = colorInp.value;
+      draft.tileTr = clampInt(trInp.value, 0, 100);
+      trOut.textContent = draft.tileTr + '%';
+      if (draft.kind === 'notes' && draft.color && draft.color !== 'glass') draft.color = 'glass';
+    } else {
+      delete draft.tileColor;
+      delete draft.tileTr;
+    }
+    if (glassSel.value) {
+      draft.tileGlass = glassSel.value;
+      if (draft.kind === 'notes' && glassSel.value === 'on' && draft.color && draft.color !== 'glass') draft.color = 'glass';
+    } else {
+      delete draft.tileGlass;
+    }
+    onChange?.();
+  };
+
+  chk.addEventListener('change', sync);
+  colorInp.addEventListener('input', sync);
+  trInp.addEventListener('input', sync);
+  glassSel.addEventListener('change', sync);
+
+  return el('fieldset', { class: 'own-look-box' },
+    el('legend', {}, t('ownLookTitle')),
+    el('label', {}, el('span', {}, t('glassLabel')), glassSel),
+    el('label', { class: 'check' }, chk, el('span', {}, t('ownColorCheck'))),
+    colorRow
+  );
+}
+
 function openWidgetCfg(it) {
   const def = WIDGETS[it.kind];
-  if (!def?.cfg) return;
+  if (!def) return;
   cfgId = it.id;
   cfgDraft = JSON.parse(JSON.stringify(it));
   $('#wcfgTitle').textContent = t('configureW', widgetTitle(it));
   const box = $('#wcfgFields');
-  box.replaceChildren(...def.cfg.map(f => cfgField(it.kind, f)));
+  const fields = (def.cfg || []).map(f => cfgField(it.kind, f));
+  if (it.kind === 'gcal' || it.kind === 'gdrive') {
+    fields.push(el('button', {
+      type: 'button',
+      class: 'btn',
+      onclick: () => { $('#wcfgDlg').close(); openSettings(); showTab('gcards'); },
+    }, t('tabGCards') + '…'));
+  }
+  fields.push(buildOwnLookSection(cfgDraft));
+  box.replaceChildren(...fields);
   $('#wcfgDlg').showModal();
 }
 
@@ -1335,7 +1428,7 @@ function cfgField(kind, f) {
         zones.forEach((z, i) => {
           const row = el('div', { class: 'cfg-zone-row' },
             el('span', {}, friendlyCity(z)),
-            el('time', {}, fmtTime(now, z)),
+            el('time', {}, fmtTime(now, zoneTz(z))),
             el('button', {
               type: 'button', class: 'cfg-zone-del', title: t('delete'),
               onclick: () => { zones.splice(i, 1); drawList(); }
@@ -1363,9 +1456,11 @@ function cfgField(kind, f) {
 
           const matches = [];
           for (const c of WORLD_CITIES) {
-            const nameEs = norm(c.name[0]), nameEn = norm(c.name[1]), country = norm(c.country), tz = norm(c.tz);
+            const countryLabel = countryOf(c.cc);
+            const nameEs = norm(c.name[0]), nameEn = norm(c.name[1]), country = norm(countryLabel), tz = norm(c.tz);
             if (nameEs.includes(nq) || nameEn.includes(nq) || country.includes(nq) || tz.includes(nq)) {
-              matches.push({ title: LANG === 'es' ? c.name[0] : c.name[1], subtitle: c.country, tz: c.tz });
+              const entry = `${c.tz}|${c.name[1]}`;
+              matches.push({ title: LANG === 'es' ? c.name[0] : c.name[1], subtitle: countryLabel, tz: c.tz, entry });
             }
           }
 
@@ -1374,7 +1469,7 @@ function cfgField(kind, f) {
               if (matches.some(m => m.tz === z)) continue;
               const nz = norm(z);
               if (nz.includes(nq)) {
-                matches.push({ title: cityOf(z), subtitle: z.split('/')[0] || '', tz: z });
+                matches.push({ title: cityOf(z), subtitle: z.split('/')[0] || '', tz: z, entry: z });
                 if (matches.length >= 8) break;
               }
             }
@@ -1386,8 +1481,9 @@ function cfgField(kind, f) {
             type: 'button',
             class: 'cfg-zone-item',
             onclick: () => {
-              if (!zones.includes(m.tz)) {
-                zones.push(m.tz);
+              const dup = zones.some(z => z === m.entry || (z === m.tz && friendlyCity(z) === m.title));
+              if (!dup) {
+                zones.push(m.entry);
                 drawList();
               } else {
                 input.value = '';
@@ -1454,11 +1550,14 @@ $('#wcfgForm').addEventListener('submit', e => {
   const it = locate(cfgId)?.item;
   if (!it) return;
   if (cfgDraft.zones) {
-    const bad = cfgDraft.zones.filter(z => z && !validTz(z));
-    cfgDraft.zones = cfgDraft.zones.filter(z => z && validTz(z));
+    const bad = cfgDraft.zones.filter(z => z && !validTz(zoneTz(z)));
+    cfgDraft.zones = cfgDraft.zones.filter(z => z && validTz(zoneTz(z)));
     if (bad.length) toast(t('zonesInvalid', bad.join(', ')));
   }
   Object.assign(it, cfgDraft);
+  for (const k of ['tileColor', 'tileTr', 'tileGlass']) {
+    if (cfgDraft[k] == null || cfgDraft[k] === '') delete it[k];
+  }
   if (it.kind === 'timer') disposeWidget(it.id); // aplica los minutos nuevos (y detiene el que corría)
   commit();
   if ($('#widgetDlg').open && widgetOpenId === it.id) openWidget(it);

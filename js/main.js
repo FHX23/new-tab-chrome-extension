@@ -73,6 +73,10 @@ const cached = Store.readCache();
 state = cached || Store.defaultState();
 migrate();
 reflow();
+if (!Store.getBg() && String(state.settings.bgImage || '').startsWith('bg/')) {
+  document.documentElement.style.backgroundImage = `url("${state.settings.bgImage}")`;
+  document.documentElement.classList.add('has-bg');
+}
 if (state.settings.showBookmarks) loadBmCache();
 renderAll();
 renderBookmarks();
@@ -88,9 +92,13 @@ function whenIdleAfterLoad(fn) {
 }
 
 whenIdleAfterLoad(async () => {
-  if (!cached) {
-    const durable = await Store.loadDurable();
-    if (durable) { state = durable; migrate(); reflow(); Store.save(state); renderAll(); }
+  const durable = await Store.loadDurable();
+  if (durable && (!cached || (durable.savedAt || 0) > (cached.savedAt || 0))) {
+    state = durable;
+    migrate();
+    reflow();
+    Store.save(state);
+    renderAll();
   }
   if (state.fresh) {
     state.pages[0].items = await freshItems();
@@ -105,9 +113,13 @@ whenIdleAfterLoad(async () => {
   undoStack.length = 0;
   lastJson = snap();
   if (state.settings.bgImage && !Store.getBg()) restoreBackground();
+  else if (String(state.settings.bgImage || '').startsWith('bgpool:')) upgradeFullResBg(state.settings.bgImage);
   if (state.settings.bgRotate) {
     scheduleBgRotation();
-    advanceBgRotation(Number(state.settings.bgEvery) === 0);
+    const perTab = Number(state.settings.bgEvery) === 0;
+    // Si rota «Al abrir cada pestaña», pre-prepara el siguiente fondo para la próxima pestaña
+    // sin provocar un salto visual sobre la que acaba de abrirse.
+    advanceBgRotation(perTab, !perTab);
   }
   if (state.settings.showBookmarks) refreshBookmarks();
   for (const ev of ['onCreated', 'onRemoved', 'onChanged', 'onMoved', 'onChildrenReordered']) {

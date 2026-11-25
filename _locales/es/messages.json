@@ -1,4 +1,1466 @@
 {
-  "extName": { "message": "Mi Nueva Pestaña" },
-  "extDesc": { "message": "Nueva pestaña personalizable: accesos ilimitados en pantallas, tamaños, formas, carpetas y widgets. Todo queda en tu equipo." }
+  "extName": {
+    "message": "Mi Nueva Pestaña"
+  },
+  "extDesc": {
+    "message": "Nueva pestaña personalizable: accesos ilimitados en pantallas, tamaños, formas, carpetas y widgets. Todo queda en tu equipo."
+  },
+  "tabTitle": {
+    "message": "Nueva pestaña"
+  },
+  "logoDefault": {
+    "message": "Inicio"
+  },
+  "searchPh": {
+    "message": "Busca o escribe una URL"
+  },
+  "images": {
+    "message": "Imágenes"
+  },
+  "moreBookmarks": {
+    "message": "Más marcadores"
+  },
+  "allBookmarks": {
+    "message": "Todos los favoritos"
+  },
+  "empty": {
+    "message": "(vacío)"
+  },
+  "prevScreen": {
+    "message": "Pantalla anterior"
+  },
+  "nextScreen": {
+    "message": "Pantalla siguiente"
+  },
+  "screen": {
+    "message": "Pantalla"
+  },
+  "screenN": {
+    "message": "Pantalla $1"
+  },
+  "addLink": {
+    "message": "+ Enlace"
+  },
+  "addFolder": {
+    "message": "+ Carpeta"
+  },
+  "addWidget": {
+    "message": "+ Widget"
+  },
+  "addScreen": {
+    "message": "+ Pantalla"
+  },
+  "delScreen": {
+    "message": "Borrar pantalla"
+  },
+  "settings": {
+    "message": "Ajustes"
+  },
+  "done": {
+    "message": "Listo"
+  },
+  "customize": {
+    "message": "Personalizar"
+  },
+  "screenSettings": {
+    "message": "Ajustes de esta pantalla…"
+  },
+  "newScreen": {
+    "message": "Pantalla nueva"
+  },
+  "newScreenAsk": {
+    "message": "¿Crear una pantalla nueva? Será la número $1."
+  },
+  "keepOneScreen": {
+    "message": "Debe quedar al menos una pantalla."
+  },
+  "delScreenAsk": {
+    "message": "¿Borrar $1?"
+  },
+  "delScreenItemsAsk": {
+    "message": "¿Borrar $1 y sus $2 elementos?"
+  },
+  "screenDeleted": {
+    "message": "Pantalla borrada."
+  },
+  "pageCreated": {
+    "message": "No cabía todo: se creó la pantalla $1."
+  },
+  "pagesCreated": {
+    "message": "No cabía todo: se crearon $1 pantallas."
+  },
+  "addedOn": {
+    "message": "Pantalla llena: se agregó en $1."
+  },
+  "movedTo": {
+    "message": "Movido a $1."
+  },
+  "welcomeTitle": {
+    "message": "¡Bienvenido a tu nueva pestaña!"
+  },
+  "tip1": {
+    "message": "Toca el botón redondo ✎ (abajo a la derecha) o mantén presionado un icono para editar."
+  },
+  "tip2": {
+    "message": "Arrastra un icono a cualquier hueco. Suéltalo sobre otro para crear una carpeta."
+  },
+  "tip3": {
+    "message": "Clic derecho en un icono, un marcador o un espacio vacío para ver más opciones."
+  },
+  "tip4": {
+    "message": "Cada pantalla tiene sus propios espacios. Cambia de pantalla con las flechas, la rueda o los puntos."
+  },
+  "tip5": {
+    "message": "En Ajustes → Extras hay widgets, buscador avanzado y más."
+  },
+  "tipPrivacy": {
+    "message": "Tus accesos iniciales vienen de tus sitios más visitados y la barra muestra tus marcadores. Todo se guarda solo en este computador: nada se envía a internet."
+  },
+  "gotIt": {
+    "message": "Entendido"
+  },
+  "undo": {
+    "message": "Deshacer"
+  },
+  "undoBtn": {
+    "message": "↶ Deshacer"
+  },
+  "undoTip": {
+    "message": "Anular última acción (Ctrl+Z)"
+  },
+  "undone": {
+    "message": "Cambio deshecho."
+  },
+  "folderCreated": {
+    "message": "Carpeta creada."
+  },
+  "nothingToUndo": {
+    "message": "No hay nada que deshacer."
+  },
+  "deleted": {
+    "message": "Se eliminó «$1»."
+  },
+  "accept": {
+    "message": "Aceptar"
+  },
+  "cancel": {
+    "message": "Cancelar"
+  },
+  "save": {
+    "message": "Guardar"
+  },
+  "create": {
+    "message": "Crear"
+  },
+  "close": {
+    "message": "Cerrar"
+  },
+  "delete": {
+    "message": "Eliminar"
+  },
+  "linkAdded": {
+    "message": "Acceso agregado."
+  },
+  "edit": {
+    "message": "Editar…"
+  },
+  "open": {
+    "message": "Abrir"
+  },
+  "changeSize": {
+    "message": "Cambiar tamaño"
+  },
+  "shrinkSize": {
+    "message": "Achicar"
+  },
+  "growSize": {
+    "message": "Agrandar"
+  },
+  "takeOut": {
+    "message": "Sacar de la carpeta"
+  },
+  "moveTo": {
+    "message": "Mover a"
+  },
+  "openNewTab": {
+    "message": "Abrir en pestaña nueva"
+  },
+  "openNewWindow": {
+    "message": "Abrir en ventana nueva"
+  },
+  "openIncognito": {
+    "message": "Abrir en ventana de incógnito"
+  },
+  "openAll": {
+    "message": "Abrir todo ($1)"
+  },
+  "openAllWindow": {
+    "message": "Abrir todo en ventana nueva"
+  },
+  "addHere": {
+    "message": "Agregar a esta pantalla"
+  },
+  "addFolderHere": {
+    "message": "Agregar como carpeta a esta pantalla"
+  },
+  "folder": {
+    "message": "Carpeta"
+  },
+  "folderName": {
+    "message": "Nombre de la carpeta"
+  },
+  "size": {
+    "message": "Tamaño"
+  },
+  "size_1x1": {
+    "message": "Normal (1×1)"
+  },
+  "size_2x1": {
+    "message": "Ancho (2×1)"
+  },
+  "size_1x2": {
+    "message": "Alto (1×2)"
+  },
+  "size_2x2": {
+    "message": "Grande (2×2)"
+  },
+  "size_3x2": {
+    "message": "Extra ancho (3×2)"
+  },
+  "size_2x3": {
+    "message": "Extra alto (2×3)"
+  },
+  "size_3x3": {
+    "message": "Muy grande (3×3)"
+  },
+  "size_4x2": {
+    "message": "Panorámico (4×2)"
+  },
+  "size_4x3": {
+    "message": "Gigante (4×3)"
+  },
+  "shape": {
+    "message": "Forma"
+  },
+  "shapeDefault": {
+    "message": "Como todos"
+  },
+  "shape_circle": {
+    "message": "Círculo"
+  },
+  "shape_rounded": {
+    "message": "Redondeado"
+  },
+  "shape_square": {
+    "message": "Cuadrado"
+  },
+  "shape_hexagon": {
+    "message": "Hexágono"
+  },
+  "shape_star": {
+    "message": "Estrella"
+  },
+  "shape_triangle": {
+    "message": "Triángulo"
+  },
+  "shape_heart": {
+    "message": "Corazón"
+  },
+  "add_link": {
+    "message": "Agregar acceso"
+  },
+  "add_folder": {
+    "message": "Agregar carpeta"
+  },
+  "edit_link": {
+    "message": "Editar acceso"
+  },
+  "edit_folder": {
+    "message": "Editar carpeta"
+  },
+  "name": {
+    "message": "Nombre"
+  },
+  "uploadIcon": {
+    "message": "Subir icono"
+  },
+  "glyph": {
+    "message": "Emoji o letra"
+  },
+  "useFavicon": {
+    "message": "Usar el del sitio"
+  },
+  "preview": {
+    "message": "Vista previa"
+  },
+  "screenName": {
+    "message": "Nombre de la pantalla"
+  },
+  "screenNamePh": {
+    "message": "Trabajo, Juegos…"
+  },
+  "ownBg": {
+    "message": "Fondo propio"
+  },
+  "removeBg": {
+    "message": "Quitar fondo"
+  },
+  "hasOwnBg": {
+    "message": "Tiene fondo propio."
+  },
+  "bgOnSave": {
+    "message": "El fondo nuevo se aplicará al guardar."
+  },
+  "bgRemoveOnSave": {
+    "message": "El fondo se quitará al guardar."
+  },
+  "cols": {
+    "message": "Columnas"
+  },
+  "rows": {
+    "message": "Filas"
+  },
+  "rowPattern": {
+    "message": "Iconos por fila, separados por coma"
+  },
+  "spacesInfo": {
+    "message": "$1 espacios · $2 elementos en esta pantalla"
+  },
+  "willMove": {
+    "message": "$1 pasarán a la pantalla $2"
+  },
+  "applyAll": {
+    "message": "Aplicar a todas"
+  },
+  "applyAllTip": {
+    "message": "Usar estos espacios en todas las pantallas"
+  },
+  "tabIcons": {
+    "message": "Iconos"
+  },
+  "tabButtons": {
+    "message": "Botones"
+  },
+  "tabLook": {
+    "message": "Fondo"
+  },
+  "tabPage": {
+    "message": "Página"
+  },
+  "tabGCards": {
+    "message": "Drive y Calendar"
+  },
+  "tabExtras": {
+    "message": "Extras"
+  },
+  "tabData": {
+    "message": "Datos"
+  },
+  "layout": {
+    "message": "Disposición"
+  },
+  "layoutGrid": {
+    "message": "Cuadrícula"
+  },
+  "layoutGridTip": {
+    "message": "Tipo celular: tamaños y posición libre"
+  },
+  "layoutRows": {
+    "message": "Filas a medida"
+  },
+  "layoutRowsTip": {
+    "message": "Ej.: 3 arriba y 4 abajo"
+  },
+  "layoutList": {
+    "message": "Lista"
+  },
+  "layoutListTip": {
+    "message": "Un icono bajo otro, con su nombre"
+  },
+  "defaultSpacesTip": {
+    "message": "Vale para todas las pantallas, salvo las que tengan su propia configuración (botón «⚙ Pantalla» del modo edición)."
+  },
+  "noteSpaces1": {
+    "message": "«$1» tiene su propia configuración, así que este ajuste no la cambia."
+  },
+  "noteSpaces": {
+    "message": "Estas pantallas tienen su propia configuración y no cambian: $1."
+  },
+  "useOnAll": {
+    "message": "Usar en todas"
+  },
+  "noteShape1": {
+    "message": "1 elemento tiene apariencia o forma propia: no cambia con las opciones generales."
+  },
+  "noteShape": {
+    "message": "$1 elementos tienen apariencia o forma propia: no cambian con las opciones generales."
+  },
+  "removeOwnShapes": {
+    "message": "Restablecer apariencias propias"
+  },
+  "appliedAllIcons": {
+    "message": "Todos los elementos usan ahora la apariencia general."
+  },
+  "noteBg1": {
+    "message": "$1 tiene fondo propio: el fondo general no la cambia."
+  },
+  "noteBg": {
+    "message": "Estas pantallas tienen fondo propio y no cambian: $1."
+  },
+  "notePageOwn": {
+    "message": "Esta pantalla tiene su propia configuración: lo que cambies en Ajustes no la afecta."
+  },
+  "notePageGlobal": {
+    "message": "Usa la misma configuración que Ajustes. Si la cambias aquí, solo cambiará esta pantalla."
+  },
+  "backToGlobal": {
+    "message": "Volver a la de Ajustes"
+  },
+  "shapeOwnHint": {
+    "message": "Con forma, color o vidrio propio elegido aquí, este elemento no cambia al modificar el estilo general."
+  },
+  "appliedAllScreens": {
+    "message": "Aplicado a todas las pantallas."
+  },
+  "cellSize": {
+    "message": "Tamaño máximo de celda"
+  },
+  "iconSize": {
+    "message": "Tamaño de icono"
+  },
+  "gridY": {
+    "message": "Posición vertical (altura)"
+  },
+  "showLabels": {
+    "message": "Mostrar nombres"
+  },
+  "iconColor": {
+    "message": "Color del icono"
+  },
+  "transparency": {
+    "message": "Transparencia"
+  },
+  "customColor": {
+    "message": "Otro color…"
+  },
+  "navButtons": {
+    "message": "Botones de pantalla (flechas, puntos y lápiz)"
+  },
+  "showArrows": {
+    "message": "Mostrar botones de flechas a los lados"
+  },
+  "arrowSize": {
+    "message": "Tamaño del botón de flecha"
+  },
+  "arrowZoneW": {
+    "message": "Ancho de la zona de clic del botón"
+  },
+  "arrowZoneH": {
+    "message": "Alto de la zona de clic del botón"
+  },
+  "arrowZoneTip": {
+    "message": "Un clic en cualquier parte de esa zona cambia de pantalla, aunque la flecha sea pequeña o invisible. Mientras mueves estos controles, la zona se marca en la página."
+  },
+  "bgColor": {
+    "message": "Color de fondo"
+  },
+  "symbolColor": {
+    "message": "Color del símbolo"
+  },
+  "btnBgColor": {
+    "message": "Cambiar color de fondo del botón"
+  },
+  "btnBgTr": {
+    "message": "Transparencia del fondo del botón"
+  },
+  "btnSymbolColor": {
+    "message": "Cambiar color del símbolo del botón"
+  },
+  "btnSymbolTr": {
+    "message": "Transparencia del símbolo del botón"
+  },
+  "invisibleTip": {
+    "message": "Al 100 % de transparencia los botones son invisibles, pero siguen funcionando y aparecen al pasar el mouse."
+  },
+  "editMode": {
+    "message": "Modo edición"
+  },
+  "longPress": {
+    "message": "Mantener presionado un icono para editar"
+  },
+  "longPressTip": {
+    "message": "Encendido: dejas el dedo o el clic medio segundo sobre un icono y entras a editar, como en el celular. Apagado: solo se entra con el lápiz ✎."
+  },
+  "wiggle": {
+    "message": "Temblor de iconos al editar"
+  },
+  "wiggleTip": {
+    "message": "Encendido: en modo edición los iconos tiemblan un poco, para que se note que puedes moverlos. Apagado: se quedan quietos."
+  },
+  "background": {
+    "message": "Fondo"
+  },
+  "textColor": {
+    "message": "Color del texto"
+  },
+  "bgImage": {
+    "message": "+ Subir imágenes propias"
+  },
+  "removeImage": {
+    "message": "Quitar imagen"
+  },
+  "bgRotateOn": {
+    "message": "Rotar automáticamente entre varios fondos"
+  },
+  "bgEveryTab": {
+    "message": "Al abrir cada pestaña"
+  },
+  "bgEvery15s": {
+    "message": "Cada 15 segundos"
+  },
+  "bgEvery1m": {
+    "message": "Cada 1 minuto"
+  },
+  "bgEvery5m": {
+    "message": "Cada 5 minutos"
+  },
+  "bgEvery15m": {
+    "message": "Cada 15 minutos"
+  },
+  "bgEvery1h": {
+    "message": "Cada 1 hora"
+  },
+  "bgRotateTip": {
+    "message": "Toca las imágenes de abajo para marcarlas (✓) o quitarlas de la rotación. Puedes mezclar los fondos incluidos con las fotos que tú subas."
+  },
+  "bgSelectAll": {
+    "message": "Marcar / desmarcar todos"
+  },
+  "bgNextNow": {
+    "message": "Siguiente fondo ↻"
+  },
+  "bgMyPhoto": {
+    "message": "Mi foto $1"
+  },
+  "bgPresets": {
+    "message": "Galería de fondos (Incluidos + Tus fotos subidas)"
+  },
+  "bg_cosmic_cliffs": {
+    "message": "Nebulosa Carina (NASA)"
+  },
+  "bg_pillars_creation": {
+    "message": "Pilares de la Creación (NASA)"
+  },
+  "bg_earth_aurora": {
+    "message": "Aurora espacial (NASA)"
+  },
+  "bg_grand_teton": {
+    "message": "Montañas Grand Teton"
+  },
+  "bg_grand_canyon": {
+    "message": "Amanecer en el Gran Cañón"
+  },
+  "bg_olympic_coast": {
+    "message": "Costa del Pacífico"
+  },
+  "bg_redwood_forest": {
+    "message": "Bosque de coníferas"
+  },
+  "bg_rainier_meadow": {
+    "message": "Pradera alpina en flor"
+  },
+  "bg_autumn_tundra": {
+    "message": "Valle y montañas en otoño"
+  },
+  "bg_milky_way_dunes": {
+    "message": "Vía Láctea y dunas"
+  },
+  "bg_starry_arch": {
+    "message": "Arco bajo las estrellas"
+  },
+  "bg_great_wave": {
+    "message": "La Gran Ola (Hokusai)"
+  },
+  "bg_aurora_peaks": {
+    "message": "Cordillera y aurora (4K)"
+  },
+  "bg_sunset_dunes": {
+    "message": "Atardecer andino (4K)"
+  },
+  "bg_ocean_waves": {
+    "message": "Ondas nocturnas (4K)"
+  },
+  "bg_misty_forest": {
+    "message": "Colinas en la niebla (4K)"
+  },
+  "bg_cyber_city": {
+    "message": "Ciudad nocturna (4K)"
+  },
+  "bg_sakura_lake": {
+    "message": "Lago y cerezos (4K)"
+  },
+  "dim": {
+    "message": "Oscurecer imagen"
+  },
+  "bgTooBig": {
+    "message": "No se pudo guardar la imagen (es demasiado grande)."
+  },
+  "panels": {
+    "message": "Paneles"
+  },
+  "panelTheme": {
+    "message": "Tema de menús y ventanas"
+  },
+  "themeAuto": {
+    "message": "Automático (como el sistema)"
+  },
+  "themeDark": {
+    "message": "Oscuro"
+  },
+  "themeLight": {
+    "message": "Claro"
+  },
+  "logoAndSearch": {
+    "message": "Logo y buscador"
+  },
+  "showLogo": {
+    "message": "Mostrar logo"
+  },
+  "logoText": {
+    "message": "Texto del logo"
+  },
+  "logoColor": {
+    "message": "Logo a colores"
+  },
+  "showSearch": {
+    "message": "Mostrar buscador"
+  },
+  "topLinks": {
+    "message": "Enlaces de arriba a la derecha"
+  },
+  "topLinksTip": {
+    "message": "Uno por línea: Nombre = URL. Déjalo vacío para no mostrar ninguno."
+  },
+  "topLinksColor": {
+    "message": "Color general de los enlaces"
+  },
+  "topLinkColorFor": {
+    "message": "Color de «$1»"
+  },
+  "bookmarksBar": {
+    "message": "Barra de marcadores"
+  },
+  "showBookmarks": {
+    "message": "Mostrar marcadores"
+  },
+  "barColor": {
+    "message": "Color de la barra"
+  },
+  "extrasIntro": {
+    "message": "Funciones opcionales. Vienen apagadas para que la página quede simple."
+  },
+  "xWidgets": {
+    "message": "Widgets"
+  },
+  "xWidgetsOn": {
+    "message": "Activar widgets: reloj, notas y tareas"
+  },
+  "xWidgetsTip": {
+    "message": "Agrégalos con «+ Widget» en el modo edición o con clic derecho. Al apagar esto no se borran los que ya pusiste."
+  },
+  "clock24": {
+    "message": "Reloj de 24 horas"
+  },
+  "w_clock": {
+    "message": "Reloj"
+  },
+  "w_notes": {
+    "message": "Notas"
+  },
+  "w_todo": {
+    "message": "Tareas"
+  },
+  "notesPh": {
+    "message": "Escribe una nota…"
+  },
+  "todoPh": {
+    "message": "Agregar tarea y Enter"
+  },
+  "xPages": {
+    "message": "Personalizar cada pantalla"
+  },
+  "xPagesOn": {
+    "message": "Nombre y fondo propio para cada pantalla"
+  },
+  "xPagesTip": {
+    "message": "Se configuran con el botón «⚙ Pantalla» del modo edición."
+  },
+  "xSearch": {
+    "message": "Buscar en otros sitios"
+  },
+  "xSearchWhat": {
+    "message": "El buscador de la página siempre usa el buscador de Chrome. Con esta opción también puedes buscar directo en otros sitios, como YouTube o Wikipedia, sin entrar primero a ellos."
+  },
+  "xSearchOn": {
+    "message": "Activar la búsqueda en otros sitios"
+  },
+  "xSearchEx1": {
+    "message": "Escribe el atajo, un espacio y lo que buscas: esto busca «gatos» en YouTube."
+  },
+  "xSearchEx2": {
+    "message": "O pulsa el botón ⌄ del buscador y elige el sitio solo para esa búsqueda."
+  },
+  "keysShortcut": {
+    "message": "Atajo"
+  },
+  "keysSite": {
+    "message": "Busca en"
+  },
+  "keysEmpty": {
+    "message": "No hay sitios en la lista."
+  },
+  "editList": {
+    "message": "Editar la lista de sitios"
+  },
+  "searchKeys": {
+    "message": "Lista de sitios"
+  },
+  "searchKeysTip": {
+    "message": "Una línea por sitio: atajo = dirección de búsqueda, con %s donde va lo que escribes. Tip: la tecla / lleva al buscador."
+  },
+  "engineChrome": {
+    "message": "Buscador de Chrome"
+  },
+  "engineChoose": {
+    "message": "Elegir buscador solo para esta búsqueda"
+  },
+  "engineBack": {
+    "message": "Volver al buscador de Chrome"
+  },
+  "privacyNote": {
+    "message": "Tus accesos, ajustes, marcadores y sitios más visitados se usan y guardan solo en este computador. La extensión no envía datos a ningún servidor."
+  },
+  "importTop": {
+    "message": "Agregar mis más visitados"
+  },
+  "addedN": {
+    "message": "Se agregaron $1 accesos."
+  },
+  "haveAllTop": {
+    "message": "Ya tienes todos tus sitios más visitados."
+  },
+  "exportBackup": {
+    "message": "Exportar respaldo"
+  },
+  "importBackup": {
+    "message": "Importar respaldo"
+  },
+  "backupFile": {
+    "message": "nueva-pestana-respaldo"
+  },
+  "noScreens": {
+    "message": "no tiene pantallas"
+  },
+  "badBackup": {
+    "message": "El archivo no es un respaldo válido: $1"
+  },
+  "imported": {
+    "message": "Respaldo importado."
+  },
+  "autoBackups": {
+    "message": "Copias automáticas"
+  },
+  "autoBackupsTip": {
+    "message": "Se guarda una copia al día (las últimas 7), solo en este computador."
+  },
+  "backupCount": {
+    "message": "$1 pantallas · $2 elementos"
+  },
+  "backupNow": {
+    "message": "Crear copia ahora"
+  },
+  "backupDone": {
+    "message": "Copia creada."
+  },
+  "noBackups": {
+    "message": "Todavía no hay copias."
+  },
+  "restore": {
+    "message": "Restaurar"
+  },
+  "restoreAsk": {
+    "message": "¿Restaurar la copia del $1? Podrás deshacerlo."
+  },
+  "restored": {
+    "message": "Copia restaurada."
+  },
+  "dangerZone": {
+    "message": "Zona peligrosa"
+  },
+  "reset": {
+    "message": "Restablecer todo"
+  },
+  "resetAsk": {
+    "message": "¿Borrar todos tus accesos y ajustes? Podrás deshacerlo justo después."
+  },
+  "resetDone": {
+    "message": "Todo restablecido."
+  },
+  "back": {
+    "message": "Volver"
+  },
+  "configure": {
+    "message": "Configurar"
+  },
+  "configureW": {
+    "message": "Configurar: $1"
+  },
+  "start": {
+    "message": "Empezar"
+  },
+  "pause": {
+    "message": "Pausar"
+  },
+  "restart": {
+    "message": "Reiniciar"
+  },
+  "tomorrow": {
+    "message": "mañana"
+  },
+  "yesterday": {
+    "message": "ayer"
+  },
+  "folderStyle": {
+    "message": "Cómo se abren las carpetas"
+  },
+  "folderPanel": {
+    "message": "Al centro"
+  },
+  "folderPanelTip": {
+    "message": "Como en el iPhone: crece desde la carpeta"
+  },
+  "folderBubble": {
+    "message": "Burbuja"
+  },
+  "folderBubbleTip": {
+    "message": "Pegada a la carpeta, sin tapar la página"
+  },
+  "folderScreen": {
+    "message": "Como pantalla"
+  },
+  "folderScreenTip": {
+    "message": "Ocupa el lugar de los iconos, con «‹ volver»"
+  },
+  "w_calendar": {
+    "message": "Calendario"
+  },
+  "w_countdown": {
+    "message": "Cuenta regresiva"
+  },
+  "w_timer": {
+    "message": "Temporizador"
+  },
+  "w_world": {
+    "message": "Reloj mundial"
+  },
+  "w_progress": {
+    "message": "Progreso"
+  },
+  "w_calc": {
+    "message": "Calculadora"
+  },
+  "w_photos": {
+    "message": "Fotos"
+  },
+  "w_habits": {
+    "message": "Hábitos"
+  },
+  "w_convert": {
+    "message": "Conversor"
+  },
+  "w_breathe": {
+    "message": "Respirar"
+  },
+  "clock_design": {
+    "message": "Diseño"
+  },
+  "clock_design_digital": {
+    "message": "Digital"
+  },
+  "clock_design_analog": {
+    "message": "Analógico"
+  },
+  "clock_design_minimal": {
+    "message": "Minimalista"
+  },
+  "clock_design_words": {
+    "message": "En palabras"
+  },
+  "notes_color": {
+    "message": "Color de la nota"
+  },
+  "notes_color_yellow": {
+    "message": "Amarillo"
+  },
+  "notes_color_pink": {
+    "message": "Rosado"
+  },
+  "notes_color_green": {
+    "message": "Verde"
+  },
+  "notes_color_blue": {
+    "message": "Azul"
+  },
+  "notes_color_purple": {
+    "message": "Lila"
+  },
+  "notes_color_glass": {
+    "message": "Como los iconos"
+  },
+  "notes_copy": {
+    "message": "Copiar nota"
+  },
+  "notes_copied": {
+    "message": "Nota copiada al portapapeles"
+  },
+  "notes_clear": {
+    "message": "Limpiar texto"
+  },
+  "notes_add": {
+    "message": "Nueva nota"
+  },
+  "notes_del": {
+    "message": "Eliminar nota"
+  },
+  "notes_chars": {
+    "message": "$1 caracteres"
+  },
+  "calPrev": {
+    "message": "Mes anterior"
+  },
+  "calNext": {
+    "message": "Mes siguiente"
+  },
+  "countdown_label": {
+    "message": "¿Para qué es?"
+  },
+  "countdown_date": {
+    "message": "Fecha"
+  },
+  "cdEmpty": {
+    "message": "Elige una fecha para empezar la cuenta."
+  },
+  "cdThatDay": {
+    "message": "el gran día"
+  },
+  "cdLeft": {
+    "message": "días para $1"
+  },
+  "cdLeft1": {
+    "message": "día para $1"
+  },
+  "cdAgo": {
+    "message": "días desde $1"
+  },
+  "cdAgo1": {
+    "message": "día desde $1"
+  },
+  "cdToday": {
+    "message": "¡Hoy es $1!"
+  },
+  "tm_work": {
+    "message": "Foco"
+  },
+  "tm_rest": {
+    "message": "Descanso"
+  },
+  "timer_work": {
+    "message": "Concentración (min)"
+  },
+  "timer_rest": {
+    "message": "Descanso (min)"
+  },
+  "timerWorkDone": {
+    "message": "¡Tiempo! Toma un descanso."
+  },
+  "timerRestDone": {
+    "message": "Se terminó el descanso."
+  },
+  "zonesInvalid": {
+    "message": "No se reconoció esta zona horaria y se quitó: $1"
+  },
+  "world_zones": {
+    "message": "Ciudades del reloj"
+  },
+  "world_search_ph": {
+    "message": "Buscar ciudad (ej. Santiago, Tokio, Madrid)..."
+  },
+  "world_add": {
+    "message": "Añadir ciudad"
+  },
+  "world_max": {
+    "message": "Máximo 6 ciudades"
+  },
+  "world_empty": {
+    "message": "Añade ciudades desde Configurar"
+  },
+  "zonesTip": {
+    "message": "Busca y añade las ciudades que quieras mostrar (hasta 6)."
+  },
+  "progress_scope": {
+    "message": "Medir"
+  },
+  "progress_scope_day": {
+    "message": "El día"
+  },
+  "progress_scope_week": {
+    "message": "La semana"
+  },
+  "progress_scope_month": {
+    "message": "El mes"
+  },
+  "progress_scope_year": {
+    "message": "El año"
+  },
+  "prog_day": {
+    "message": "del día ya pasó"
+  },
+  "prog_week": {
+    "message": "de la semana ya pasó"
+  },
+  "prog_month": {
+    "message": "del mes ya pasó"
+  },
+  "prog_year": {
+    "message": "del año ya pasó"
+  },
+  "photos_photos": {
+    "message": "Fotos"
+  },
+  "photos_every": {
+    "message": "Cambiar cada (segundos)"
+  },
+  "photosAdd": {
+    "message": "Agregar fotos"
+  },
+  "photosEmpty": {
+    "message": "Agrega tus fotos y van cambiando solas."
+  },
+  "photosTip": {
+    "message": "Se guardan solo en este computador, reducidas para que carguen rápido."
+  },
+  "habits_habits": {
+    "message": "Hábitos"
+  },
+  "habits_habitsTip": {
+    "message": "Uno por línea (hasta 6). Marca cada día que lo cumplas."
+  },
+  "habitsDefault": {
+    "message": "Tomar agua\nLeer\nEjercicio"
+  },
+  "habitsEmpty": {
+    "message": "Configura tus hábitos para empezar."
+  },
+  "cvValue": {
+    "message": "Valor"
+  },
+  "cvUnits": {
+    "message": "Unidades"
+  },
+  "cv_km_mi": {
+    "message": "km → mi"
+  },
+  "cv_mi_km": {
+    "message": "mi → km"
+  },
+  "cv_m_ft": {
+    "message": "m → pies"
+  },
+  "cv_ft_m": {
+    "message": "pies → m"
+  },
+  "cv_cm_in": {
+    "message": "cm → pulgadas"
+  },
+  "cv_in_cm": {
+    "message": "pulgadas → cm"
+  },
+  "cv_kg_lb": {
+    "message": "kg → lb"
+  },
+  "cv_lb_kg": {
+    "message": "lb → kg"
+  },
+  "cv_c_f": {
+    "message": "°C → °F"
+  },
+  "cv_f_c": {
+    "message": "°F → °C"
+  },
+  "cv_l_gal": {
+    "message": "litros → galones"
+  },
+  "cv_gal_l": {
+    "message": "galones → litros"
+  },
+  "brStart": {
+    "message": "Toca para empezar"
+  },
+  "brIn": {
+    "message": "Inhala…"
+  },
+  "brHold": {
+    "message": "Sostén…"
+  },
+  "brOut": {
+    "message": "Exhala…"
+  },
+  "calcAC": {
+    "message": "Borrar todo (AC)"
+  },
+  "calcDel": {
+    "message": "Borrar 1 dígito"
+  },
+  "calcAns": {
+    "message": "Usar último resultado (Ans)"
+  },
+  "calcSign": {
+    "message": "Cambiar signo (±)"
+  },
+  "calcPct": {
+    "message": "Porcentaje (%)"
+  },
+  "calcHistEmpty": {
+    "message": "Sin historial todavía"
+  },
+  "calcHistUse": {
+    "message": "Clic para usar este resultado"
+  },
+  "calcHistClear": {
+    "message": "Limpiar historial"
+  },
+  "w_gdrive": {
+    "message": "Google Drive"
+  },
+  "w_gcal": {
+    "message": "Calendario de Google"
+  },
+  "gdriveTitle": {
+    "message": "Google Drive (Archivos recientes)"
+  },
+  "gdriveDesc": {
+    "message": "Muestra automáticamente los últimos Documentos, Hojas de cálculo, Presentaciones y archivos de Drive que abriste en tu navegador. No requiere iniciar sesión ni pegar enlaces."
+  },
+  "addGDriveBtn": {
+    "message": "+ Mostrar Google Drive en mi pantalla"
+  },
+  "gcardRefresh": {
+    "message": "Actualizar lista"
+  },
+  "gcalTitle": {
+    "message": "Calendario de Google (Próximas reuniones)"
+  },
+  "gcalDesc": {
+    "message": "Muestra tus reuniones del día, cuánto falta («En 4 min», «En curso») y el botón «Unirse a la reunión» para Google Meet, Zoom o Teams."
+  },
+  "addGCalBtn": {
+    "message": "+ Mostrar Calendario en mi pantalla"
+  },
+  "gcalIcsLabel": {
+    "message": "Dirección en formato iCal (.ics) de tu Google Calendar"
+  },
+  "gcalSyncBtn": {
+    "message": "Conectar calendario"
+  },
+  "gcalUploadIcs": {
+    "message": "Subir archivo .ics / .zip exportado"
+  },
+  "gcalDisconnectBtn": {
+    "message": "Desconectar calendario"
+  },
+  "gcalHowToTitle": {
+    "message": "¿Cuál enlace debes copiar en «Integrar calendario»?"
+  },
+  "gcalOpenSettings": {
+    "message": "Abrir ajustes de Google Calendar ↗"
+  },
+  "gcalStep1": {
+    "message": "Haz clic en «Abrir ajustes de Google Calendar ↗» arriba a la derecha."
+  },
+  "gcalStep2": {
+    "message": "En la columna izquierda, bajo «Configuración de mis calendarios», haz clic en tu correo / calendario."
+  },
+  "gcalStep3": {
+    "message": "Baja hasta la sección «Integrar calendario». Verás varias casillas: copia la última que dice «en formato iCal» (termina en /basic.ics)."
+  },
+  "gcalStep4": {
+    "message": "Pégala arriba y pulsa «Conectar calendario»."
+  },
+  "gcalWhichNo1": {
+    "message": "URL pública de este calendario (…/calendar/embed?src=…) → NO copiar esta"
+  },
+  "gcalWhichNo2": {
+    "message": "Incorporar código (<iframe src=\"…\">) → NO copiar esta"
+  },
+  "gcalWhichYes": {
+    "message": "Dirección (secreta o pública) en formato iCal (…/calendar/ical/…/basic.ics) → ¡COPIA ESTA!"
+  },
+  "gcalPublicNote": {
+    "message": "🔒 Nunca marques «Compartir de forma pública»: mantén tu calendario 100 % privado. En cuentas de trabajo/empresa (donde no aparece «Dirección secreta»), basta con pulsar «Conectar calendario» teniendo tu sesión de Google Calendar abierta en Chrome, o pulsar «Exportar calendario» en Google Calendar y subir el archivo .zip aquí."
+  },
+  "gStatusOnScreen": {
+    "message": "✓ Ya está en tu pantalla"
+  },
+  "gStatusNotAdded": {
+    "message": "No está en la pantalla"
+  },
+  "gBadgeActive": {
+    "message": "✓ Conectado"
+  },
+  "gBadgePending": {
+    "message": "Sin conectar"
+  },
+  "gCardAddedToast": {
+    "message": "Tarjeta agregada a tu pantalla."
+  },
+  "gPermDenied": {
+    "message": "No se concedió el permiso."
+  },
+  "gIcsSynced": {
+    "message": "Calendario conectado ($1 eventos próximos)."
+  },
+  "gIcsCleared": {
+    "message": "Calendario desconectado."
+  },
+  "gIcsError": {
+    "message": "No se pudo leer ese calendario. Si usaste la «Dirección pública en formato iCal» (cuenta de trabajo/empresa), Google exige que actives más arriba «Compartir públicamente» o que uses el botón «Exportar calendario» de esa página y lo subas aquí con «Subir archivo .ics / .zip exportado»."
+  },
+  "gIcsNonGoogle": {
+    "message": "Por privacidad, la sincronización directa por enlace solo permite direcciones de Google Calendar (calendar.google.com). Para otros calendarios (Outlook, iCloud, universidad, etc.), descarga el archivo .ics y súbelo con «Subir archivo .ics / .zip exportado»."
+  },
+  "gDriveUpdated": {
+    "message": "Lista de Google Drive actualizada ($1 archivos)."
+  },
+  "gDriveEmpty": {
+    "message": "No se encontraron documentos recientes de Drive. Abre un Google Doc/Sheet o pulsa activar."
+  },
+  "gDriveEnableBtn": {
+    "message": "Activar archivos recientes"
+  },
+  "gDriveOpen": {
+    "message": "Abrir Google Drive"
+  },
+  "gCalEmpty": {
+    "message": "No hay reuniones próximas por ahora."
+  },
+  "gCalSetupBtn": {
+    "message": "Conectar calendario"
+  },
+  "gCalJoin": {
+    "message": "Unirse a la reunión"
+  },
+  "gCalMore": {
+    "message": "Ver más"
+  },
+  "gCalNow": {
+    "message": "En curso"
+  },
+  "gCalInMin": {
+    "message": "En $1 min"
+  },
+  "gCalInHr": {
+    "message": "En $1 h"
+  },
+  "gCalToday": {
+    "message": "Hoy"
+  },
+  "gCalTomorrow": {
+    "message": "Mañana"
+  },
+  "gCalAllDay": {
+    "message": "Todo el día"
+  },
+  "gCalVirtual": {
+    "message": "Virtual"
+  },
+  "gCalAddQuick": {
+    "message": "+ Reunión rápida"
+  },
+  "gCalQuickPromptTitle": {
+    "message": "Título de la reunión o evento"
+  },
+  "gCalQuickPromptTime": {
+    "message": "Hora (ej. 14:30 o 20:30)"
+  },
+  "gCalQuickPromptUrl": {
+    "message": "Enlace de Google Meet / Zoom (opcional)"
+  },
+  "gOpenedJustNow": {
+    "message": "Lo abriste recién"
+  },
+  "gOpenedMinAgo": {
+    "message": "Lo abriste hace $1 min"
+  },
+  "gOpenedHrAgo": {
+    "message": "Lo abriste hace $1 h"
+  },
+  "gOpenedYesterday": {
+    "message": "Lo abriste ayer"
+  },
+  "gOpenedDaysAgo": {
+    "message": "Lo abriste hace $1 días"
+  },
+  "gOpenedLastMonth": {
+    "message": "Lo abriste el mes pasado"
+  },
+  "gOpenedMonthsAgo": {
+    "message": "Lo abriste hace $1 meses"
+  },
+  "gOpenedLastYear": {
+    "message": "Lo abriste el año pasado"
+  },
+  "untitled": {
+    "message": "(Sin título)"
+  },
+  "xSearchEx1Code": {
+    "message": "yt gatos"
+  },
+  "welcomePickStyle": {
+    "message": "Elige un estilo rápido para empezar (puedes cambiarlo cuando quieras):"
+  },
+  "gapX": {
+    "message": "Espacio entre columnas"
+  },
+  "gapY": {
+    "message": "Espacio entre filas"
+  },
+  "glassEffect": {
+    "message": "Efecto vidrio esmerilado (blur en iconos y tarjetas)"
+  },
+  "themePresets": {
+    "message": "Estilos rápidos (1 clic)"
+  },
+  "themePresetsTip": {
+    "message": "Prueba un estilo al instante sin tocar tus accesos ni widgets. Tu estilo anterior se guarda solo para volver en 1 clic."
+  },
+  "themeApplied": {
+    "message": "Estilo «$1» aplicado."
+  },
+  "revertStyle": {
+    "message": "↩ Volver a mi estilo anterior"
+  },
+  "styleRestored": {
+    "message": "Volviste a tu estilo anterior."
+  },
+  "preset_aurora": {
+    "message": "Aurora"
+  },
+  "preset_aurora_tip": {
+    "message": "Fondo 4K + iconos translúcidos"
+  },
+  "preset_minimal": {
+    "message": "Minimalista"
+  },
+  "preset_minimal_tip": {
+    "message": "Oscuro mate, sin fondo y centrado"
+  },
+  "preset_focus": {
+    "message": "Enfoque"
+  },
+  "preset_focus_tip": {
+    "message": "Nebulosa + saludo según la hora"
+  },
+  "preset_dock": {
+    "message": "Dock inferior"
+  },
+  "preset_dock_tip": {
+    "message": "Paisaje libre + iconos abajo en barra"
+  },
+  "logoGreeting": {
+    "message": "Saludo según la hora (Buenos días / tardes / noches)"
+  },
+  "logoGreetingTip": {
+    "message": "Si escribes tu nombre en «Texto del logo», mostrará «Buenos días, TuNombre»."
+  },
+  "greetMorning": {
+    "message": "Buenos días"
+  },
+  "greetAfternoon": {
+    "message": "Buenas tardes"
+  },
+  "greetEvening": {
+    "message": "Buenas noches"
+  },
+  "changeBg": {
+    "message": "Cambiar fondo…"
+  },
+  "supportTitle": {
+    "message": "¿Te gusta Mi Nueva Pestaña?"
+  },
+  "supportDesc": {
+    "message": "Es 100 % gratuita, sin anuncios ni cuentas. Si te resulta útil, una reseña o un café voluntario ayudan muchísimo a seguir mejorándola."
+  },
+  "rateStore": {
+    "message": "★ Calificar en Chrome Web Store"
+  },
+  "kofiBtn": {
+    "message": "Invítame un café"
+  },
+  "kofiTip": {
+    "message": "Apoyar el proyecto en Ko-fi (100 % voluntario)"
+  },
+  "reportIssue": {
+    "message": "Sugerir mejora / reportar bug"
+  },
+  "dockBarEffect": {
+    "message": "Bandeja translúcida alrededor del bloque de iconos (estilo dock)"
+  },
+  "ownLookTitle": {
+    "message": "Apariencia propia de este widget"
+  },
+  "glassLabel": {
+    "message": "Efecto vidrio"
+  },
+  "glassOn": {
+    "message": "Activado"
+  },
+  "glassOff": {
+    "message": "Apagado"
+  },
+  "ownColorCheck": {
+    "message": "Usar color y transparencia propios"
+  },
+  "tabSupport": {
+    "message": "Apoyar"
+  },
+  "kofiCardTitle": {
+    "message": "Invítame un café en Ko-fi"
+  },
+  "kofiCardSub": {
+    "message": "Apoyo 100 % voluntario para seguir dedicándole tiempo y mejoras sin anuncios ni muros de pago."
+  },
+  "rateCardTitle": {
+    "message": "Calificar en Chrome Web Store"
+  },
+  "rateCardSub": {
+    "message": "Dejar una reseña toma segundos y ayuda muchísimo a que más personas descubran la extensión."
+  },
+  "feedbackTitle": {
+    "message": "Ideas, mejoras y código abierto"
+  },
+  "feedbackDesc": {
+    "message": "Si encontraste un detalle por pulir o se te ocurre una función útil, cuéntamelo directo en GitHub."
+  },
+  "sourceRepo": {
+    "message": "Ver repositorio en GitHub ↗"
+  },
+  "tipChromeFooter": {
+    "message": "El color de la barra superior de pestañas y la franja inferior («Personalizar Chrome») son propios del navegador: puedes combinar el color o esconder esa franja con clic derecho sobre ella o en «Personalizar Chrome»."
+  },
+  "chromeUiTitle": {
+    "message": "Barra superior y pie de página de Chrome"
+  },
+  "openChromeLook": {
+    "message": "Ajustar color y apariencia de Chrome ↗"
+  }
 }

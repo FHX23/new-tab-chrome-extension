@@ -87,7 +87,7 @@ function itemMenu(loc) {
   }
   if (it.type === 'widget' && WIDGETS[it.kind]) {
     if (it.kind !== 'notes') E.push({ label: t('open'), act: () => openWidget(it) });
-    if (WIDGETS[it.kind].cfg) E.push({ label: t('configure') + '…', act: () => openWidgetCfg(it) });
+    E.push({ label: t('configure') + '…', act: () => openWidgetCfg(it) });
   }
   if (it.type !== 'widget') E.push({ label: t('edit'), act: () => openEditor(it) });
   if (!inFolder && (sp.sized || sp.layout === 'rows' || it.type === 'widget')) E.push({ label: t('size'), sub: sizesFor(it).map(sz => ({ label: sizeLabel(sz), checked: `${it.w || 1}x${it.h || 1}` === sz, act: () => setSize(it, sz) })) });
@@ -122,11 +122,15 @@ function bmMenu(b) {
 
 function pageMenu() {
   const s = state.settings;
+  const canNextBg = s.bgRotate && (s.bgPool?.length || 0) >= 2;
   return [
     { label: t('addLink'), act: () => openEditor(null, 'link') },
     { label: t('addFolder'), act: () => openEditor(null, 'folder') },
     s.xWidgets && { label: t('addWidget'), sub: Object.keys(WIDGETS).map(k => ({ label: `${WIDGETS[k].icon}  ${t('w_' + k)}`, act: () => addItem(newWidget(k)) })) },
     { label: t('screenSettings'), act: openPageDlg },
+    '-',
+    { label: t('changeBg'), act: () => { openSettings(); showTab('look'); } },
+    canNextBg && { label: t('bgNextNow'), act: () => advanceBgRotation(true, true) },
     '-',
     { label: editing ? t('done') : t('customize'), act: () => setEditing(!editing) },
     { label: t('settings'), act: openSettings },
@@ -273,7 +277,10 @@ function cellAt(x, y) {
     }
     return null;
   }
-  const xx = Math.floor((x - r.left) / (r.width / sp.cols)), yy = Math.floor((y - r.top) / (r.height / sp.rows));
+  const cs = getComputedStyle(box);
+  const gx = parseFloat(cs.columnGap) || 0, gy = parseFloat(cs.rowGap) || 0;
+  const stepX = (r.width + gx) / sp.cols, stepY = (r.height + gy) / sp.rows;
+  const xx = Math.floor((x - r.left) / stepX), yy = Math.floor((y - r.top) / stepY);
   return xx >= 0 && xx < sp.cols && yy >= 0 && yy < sp.rows ? { x: xx, y: yy } : null;
 }
 
@@ -287,8 +294,15 @@ function cellsRect(x, y, w, h) {
     const cell = r.height / sp.rows, left = r.left + (r.width - sp.rowLen(y) * cell) / 2;
     return { left: left + x * cell, top: r.top + y * cell, width: cell, height: cell };
   }
-  const cw = r.width / sp.cols, ch = r.height / sp.rows;
-  return { left: r.left + x * cw, top: r.top + y * ch, width: cw * w, height: ch * h };
+  const cs = getComputedStyle(box);
+  const gx = parseFloat(cs.columnGap) || 0, gy = parseFloat(cs.rowGap) || 0;
+  const stepX = (r.width + gx) / sp.cols, stepY = (r.height + gy) / sp.rows;
+  return {
+    left: r.left + x * stepX,
+    top: r.top + y * stepY,
+    width: stepX * w - gx,
+    height: stepY * h - gy,
+  };
 }
 
 function hitTest(x, y) {
@@ -666,7 +680,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') goToPage(current + 1);
   else if (e.key === 'ArrowLeft') goToPage(current - 1);
   else if (e.key === 'Escape' && editing) setEditing(false);
-  else if (e.key === '/' && state.settings.xSearch && state.settings.showSearch) { e.preventDefault(); $('#q').focus(); }
+  else if (e.key === '/' && state.settings.showSearch) { e.preventDefault(); $('#q').focus(); }
 });
 
 let fitRaf = 0;

@@ -1,4 +1,1466 @@
 {
-  "extName": { "message": "My New Tab" },
-  "extDesc": { "message": "Customizable new tab: unlimited shortcuts across screens, sizes, shapes, folders and widgets. Everything stays on your PC." }
+  "extName": {
+    "message": "My New Tab"
+  },
+  "extDesc": {
+    "message": "Customizable new tab: unlimited shortcuts across screens, sizes, shapes, folders and widgets. Everything stays on your PC."
+  },
+  "tabTitle": {
+    "message": "New Tab"
+  },
+  "logoDefault": {
+    "message": "Home"
+  },
+  "searchPh": {
+    "message": "Search or type a URL"
+  },
+  "images": {
+    "message": "Images"
+  },
+  "moreBookmarks": {
+    "message": "More bookmarks"
+  },
+  "allBookmarks": {
+    "message": "All bookmarks"
+  },
+  "empty": {
+    "message": "(empty)"
+  },
+  "prevScreen": {
+    "message": "Previous screen"
+  },
+  "nextScreen": {
+    "message": "Next screen"
+  },
+  "screen": {
+    "message": "Screen"
+  },
+  "screenN": {
+    "message": "Screen $1"
+  },
+  "addLink": {
+    "message": "+ Link"
+  },
+  "addFolder": {
+    "message": "+ Folder"
+  },
+  "addWidget": {
+    "message": "+ Widget"
+  },
+  "addScreen": {
+    "message": "+ Screen"
+  },
+  "delScreen": {
+    "message": "Delete screen"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "done": {
+    "message": "Done"
+  },
+  "customize": {
+    "message": "Customize"
+  },
+  "screenSettings": {
+    "message": "This screen’s settings…"
+  },
+  "newScreen": {
+    "message": "New screen"
+  },
+  "newScreenAsk": {
+    "message": "Create a new screen? It will be number $1."
+  },
+  "keepOneScreen": {
+    "message": "At least one screen must remain."
+  },
+  "delScreenAsk": {
+    "message": "Delete $1?"
+  },
+  "delScreenItemsAsk": {
+    "message": "Delete $1 and its $2 items?"
+  },
+  "screenDeleted": {
+    "message": "Screen deleted."
+  },
+  "pageCreated": {
+    "message": "Not everything fit: screen $1 was created."
+  },
+  "pagesCreated": {
+    "message": "Not everything fit: $1 screens were created."
+  },
+  "addedOn": {
+    "message": "Screen full: added to $1."
+  },
+  "movedTo": {
+    "message": "Moved to $1."
+  },
+  "welcomeTitle": {
+    "message": "Welcome to your new tab!"
+  },
+  "tip1": {
+    "message": "Click the round ✎ button (bottom-right corner) or press and hold an icon to customize."
+  },
+  "tip2": {
+    "message": "Drag an icon to any empty spot. Drop it on another to make a folder."
+  },
+  "tip3": {
+    "message": "Right-click an icon, a bookmark or an empty spot for more options."
+  },
+  "tip4": {
+    "message": "Each screen has its own spaces. Switch screens with the arrows, the wheel or the dots."
+  },
+  "tip5": {
+    "message": "Settings → Extras has widgets, an advanced search box and more."
+  },
+  "tipPrivacy": {
+    "message": "Your first shortcuts come from your most visited sites, and the bar shows your bookmarks. Everything is stored only on this computer: nothing is sent to the internet."
+  },
+  "gotIt": {
+    "message": "Got it"
+  },
+  "undo": {
+    "message": "Undo"
+  },
+  "undoBtn": {
+    "message": "↶ Undo"
+  },
+  "undoTip": {
+    "message": "Undo last action (Ctrl+Z)"
+  },
+  "undone": {
+    "message": "Change undone."
+  },
+  "folderCreated": {
+    "message": "Folder created."
+  },
+  "nothingToUndo": {
+    "message": "Nothing to undo."
+  },
+  "deleted": {
+    "message": "“$1” deleted."
+  },
+  "accept": {
+    "message": "OK"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "create": {
+    "message": "Create"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "linkAdded": {
+    "message": "Shortcut added."
+  },
+  "edit": {
+    "message": "Edit…"
+  },
+  "open": {
+    "message": "Open"
+  },
+  "changeSize": {
+    "message": "Change size"
+  },
+  "shrinkSize": {
+    "message": "Shrink"
+  },
+  "growSize": {
+    "message": "Enlarge"
+  },
+  "takeOut": {
+    "message": "Remove from folder"
+  },
+  "moveTo": {
+    "message": "Move to"
+  },
+  "openNewTab": {
+    "message": "Open in new tab"
+  },
+  "openNewWindow": {
+    "message": "Open in new window"
+  },
+  "openIncognito": {
+    "message": "Open in incognito window"
+  },
+  "openAll": {
+    "message": "Open all ($1)"
+  },
+  "openAllWindow": {
+    "message": "Open all in new window"
+  },
+  "addHere": {
+    "message": "Add to this screen"
+  },
+  "addFolderHere": {
+    "message": "Add as a folder to this screen"
+  },
+  "folder": {
+    "message": "Folder"
+  },
+  "folderName": {
+    "message": "Folder name"
+  },
+  "size": {
+    "message": "Size"
+  },
+  "size_1x1": {
+    "message": "Normal (1×1)"
+  },
+  "size_2x1": {
+    "message": "Wide (2×1)"
+  },
+  "size_1x2": {
+    "message": "Tall (1×2)"
+  },
+  "size_2x2": {
+    "message": "Large (2×2)"
+  },
+  "size_3x2": {
+    "message": "Extra wide (3×2)"
+  },
+  "size_2x3": {
+    "message": "Extra tall (2×3)"
+  },
+  "size_3x3": {
+    "message": "Extra large (3×3)"
+  },
+  "size_4x2": {
+    "message": "Panoramic (4×2)"
+  },
+  "size_4x3": {
+    "message": "Giant (4×3)"
+  },
+  "shape": {
+    "message": "Shape"
+  },
+  "shapeDefault": {
+    "message": "Same as all"
+  },
+  "shape_circle": {
+    "message": "Circle"
+  },
+  "shape_rounded": {
+    "message": "Rounded"
+  },
+  "shape_square": {
+    "message": "Square"
+  },
+  "shape_hexagon": {
+    "message": "Hexagon"
+  },
+  "shape_star": {
+    "message": "Star"
+  },
+  "shape_triangle": {
+    "message": "Triangle"
+  },
+  "shape_heart": {
+    "message": "Heart"
+  },
+  "add_link": {
+    "message": "Add shortcut"
+  },
+  "add_folder": {
+    "message": "Add folder"
+  },
+  "edit_link": {
+    "message": "Edit shortcut"
+  },
+  "edit_folder": {
+    "message": "Edit folder"
+  },
+  "name": {
+    "message": "Name"
+  },
+  "uploadIcon": {
+    "message": "Upload icon"
+  },
+  "glyph": {
+    "message": "Emoji or letter"
+  },
+  "useFavicon": {
+    "message": "Use site icon"
+  },
+  "preview": {
+    "message": "Preview"
+  },
+  "screenName": {
+    "message": "Screen name"
+  },
+  "screenNamePh": {
+    "message": "Work, Games…"
+  },
+  "ownBg": {
+    "message": "Own background"
+  },
+  "removeBg": {
+    "message": "Remove background"
+  },
+  "hasOwnBg": {
+    "message": "Has its own background."
+  },
+  "bgOnSave": {
+    "message": "The new background will be applied when you save."
+  },
+  "bgRemoveOnSave": {
+    "message": "The background will be removed when you save."
+  },
+  "cols": {
+    "message": "Columns"
+  },
+  "rows": {
+    "message": "Rows"
+  },
+  "rowPattern": {
+    "message": "Icons per row, comma separated"
+  },
+  "spacesInfo": {
+    "message": "$1 spaces · $2 items on this screen"
+  },
+  "willMove": {
+    "message": "$1 will move to screen $2"
+  },
+  "applyAll": {
+    "message": "Apply to all"
+  },
+  "applyAllTip": {
+    "message": "Use these spaces on every screen"
+  },
+  "tabIcons": {
+    "message": "Icons"
+  },
+  "tabButtons": {
+    "message": "Buttons"
+  },
+  "tabLook": {
+    "message": "Background"
+  },
+  "tabPage": {
+    "message": "Page"
+  },
+  "tabGCards": {
+    "message": "Drive & Calendar"
+  },
+  "tabExtras": {
+    "message": "Extras"
+  },
+  "tabData": {
+    "message": "Data"
+  },
+  "layout": {
+    "message": "Layout"
+  },
+  "layoutGrid": {
+    "message": "Grid"
+  },
+  "layoutGridTip": {
+    "message": "Phone-like: free sizes and placement"
+  },
+  "layoutRows": {
+    "message": "Custom rows"
+  },
+  "layoutRowsTip": {
+    "message": "E.g. 3 on top, 4 below"
+  },
+  "layoutList": {
+    "message": "List"
+  },
+  "layoutListTip": {
+    "message": "One icon under another, with its name"
+  },
+  "defaultSpacesTip": {
+    "message": "Applies to every screen, except those with their own setup (“⚙ Screen” button in edit mode)."
+  },
+  "noteSpaces1": {
+    "message": "“$1” has its own setup, so this setting won’t change it."
+  },
+  "noteSpaces": {
+    "message": "These screens have their own setup and won’t change: $1."
+  },
+  "useOnAll": {
+    "message": "Use on all"
+  },
+  "noteShape1": {
+    "message": "1 item has its own look or shape: general options won’t change it."
+  },
+  "noteShape": {
+    "message": "$1 items have their own look or shape: general options won’t change them."
+  },
+  "removeOwnShapes": {
+    "message": "Reset custom looks"
+  },
+  "appliedAllIcons": {
+    "message": "All items now use the general appearance."
+  },
+  "noteBg1": {
+    "message": "$1 has its own background: the general one won’t change it."
+  },
+  "noteBg": {
+    "message": "These screens have their own background and won’t change: $1."
+  },
+  "notePageOwn": {
+    "message": "This screen has its own setup: changes in Settings won’t affect it."
+  },
+  "notePageGlobal": {
+    "message": "Uses the same setup as Settings. If you change it here, only this screen changes."
+  },
+  "backToGlobal": {
+    "message": "Go back to Settings’ setup"
+  },
+  "shapeOwnHint": {
+    "message": "With its own shape, color or glass chosen here, this item won’t change when you edit the general look."
+  },
+  "appliedAllScreens": {
+    "message": "Applied to every screen."
+  },
+  "cellSize": {
+    "message": "Max cell size"
+  },
+  "iconSize": {
+    "message": "Icon size"
+  },
+  "gridY": {
+    "message": "Vertical position (height)"
+  },
+  "showLabels": {
+    "message": "Show names"
+  },
+  "iconColor": {
+    "message": "Icon color"
+  },
+  "transparency": {
+    "message": "Transparency"
+  },
+  "customColor": {
+    "message": "Other color…"
+  },
+  "navButtons": {
+    "message": "Screen buttons (arrows, dots and pencil)"
+  },
+  "showArrows": {
+    "message": "Show side arrow buttons"
+  },
+  "arrowSize": {
+    "message": "Arrow button size"
+  },
+  "arrowZoneW": {
+    "message": "Button click area width"
+  },
+  "arrowZoneH": {
+    "message": "Button click area height"
+  },
+  "arrowZoneTip": {
+    "message": "Clicking anywhere in that area switches screens, even if the arrow is small or invisible. While you move these controls, the area is highlighted on the page."
+  },
+  "bgColor": {
+    "message": "Background color"
+  },
+  "symbolColor": {
+    "message": "Symbol color"
+  },
+  "btnBgColor": {
+    "message": "Change button background color"
+  },
+  "btnBgTr": {
+    "message": "Button background transparency"
+  },
+  "btnSymbolColor": {
+    "message": "Change button symbol color"
+  },
+  "btnSymbolTr": {
+    "message": "Button symbol transparency"
+  },
+  "invisibleTip": {
+    "message": "At 100% transparency the buttons are invisible but still work, and appear on hover."
+  },
+  "editMode": {
+    "message": "Edit mode"
+  },
+  "longPress": {
+    "message": "Press and hold an icon to edit"
+  },
+  "longPressTip": {
+    "message": "On: hold your finger or click on an icon for half a second to start editing, like on a phone. Off: only the pencil ✎ starts editing."
+  },
+  "wiggle": {
+    "message": "Wiggle icons while editing"
+  },
+  "wiggleTip": {
+    "message": "On: in edit mode the icons wiggle slightly so you can tell they can be moved. Off: they stay still."
+  },
+  "background": {
+    "message": "Background"
+  },
+  "textColor": {
+    "message": "Text color"
+  },
+  "bgImage": {
+    "message": "+ Upload my own images"
+  },
+  "removeImage": {
+    "message": "Remove image"
+  },
+  "bgRotateOn": {
+    "message": "Automatically rotate selected backgrounds"
+  },
+  "bgEveryTab": {
+    "message": "On every new tab"
+  },
+  "bgEvery15s": {
+    "message": "Every 15 seconds"
+  },
+  "bgEvery1m": {
+    "message": "Every 1 minute"
+  },
+  "bgEvery5m": {
+    "message": "Every 5 minutes"
+  },
+  "bgEvery15m": {
+    "message": "Every 15 minutes"
+  },
+  "bgEvery1h": {
+    "message": "Every 1 hour"
+  },
+  "bgRotateTip": {
+    "message": "Click the images below to check (✓) or uncheck them from the rotation. You can mix included backgrounds with your own uploaded photos."
+  },
+  "bgSelectAll": {
+    "message": "Select / deselect all"
+  },
+  "bgNextNow": {
+    "message": "Next background ↻"
+  },
+  "bgMyPhoto": {
+    "message": "My photo $1"
+  },
+  "bgPresets": {
+    "message": "Background gallery (Included + Your uploaded photos)"
+  },
+  "bg_cosmic_cliffs": {
+    "message": "Carina Nebula (NASA)"
+  },
+  "bg_pillars_creation": {
+    "message": "Pillars of Creation (NASA)"
+  },
+  "bg_earth_aurora": {
+    "message": "Space Aurora (NASA)"
+  },
+  "bg_grand_teton": {
+    "message": "Grand Teton Mountains"
+  },
+  "bg_grand_canyon": {
+    "message": "Grand Canyon Sunrise"
+  },
+  "bg_olympic_coast": {
+    "message": "Olympic Pacific Coast"
+  },
+  "bg_redwood_forest": {
+    "message": "Deep Pine Forest"
+  },
+  "bg_rainier_meadow": {
+    "message": "Alpine Wildflowers"
+  },
+  "bg_autumn_tundra": {
+    "message": "Autumn Mountain Valley"
+  },
+  "bg_milky_way_dunes": {
+    "message": "Milky Way & Dunes"
+  },
+  "bg_starry_arch": {
+    "message": "Starry Arch"
+  },
+  "bg_great_wave": {
+    "message": "The Great Wave (Hokusai)"
+  },
+  "bg_aurora_peaks": {
+    "message": "Aurora Peaks (4K)"
+  },
+  "bg_sunset_dunes": {
+    "message": "Mountain Sunset (4K)"
+  },
+  "bg_ocean_waves": {
+    "message": "Night Waves (4K)"
+  },
+  "bg_misty_forest": {
+    "message": "Misty Hills (4K)"
+  },
+  "bg_cyber_city": {
+    "message": "Night Cityscape (4K)"
+  },
+  "bg_sakura_lake": {
+    "message": "Sakura Lake (4K)"
+  },
+  "dim": {
+    "message": "Darken image"
+  },
+  "bgTooBig": {
+    "message": "The image could not be saved (it is too large)."
+  },
+  "panels": {
+    "message": "Panels"
+  },
+  "panelTheme": {
+    "message": "Menus and dialogs theme"
+  },
+  "themeAuto": {
+    "message": "Automatic (follow system)"
+  },
+  "themeDark": {
+    "message": "Dark"
+  },
+  "themeLight": {
+    "message": "Light"
+  },
+  "logoAndSearch": {
+    "message": "Logo and search"
+  },
+  "showLogo": {
+    "message": "Show logo"
+  },
+  "logoText": {
+    "message": "Logo text"
+  },
+  "logoColor": {
+    "message": "Colorful logo"
+  },
+  "showSearch": {
+    "message": "Show search box"
+  },
+  "topLinks": {
+    "message": "Top-right links"
+  },
+  "topLinksTip": {
+    "message": "One per line: Name = URL. Leave empty to show none."
+  },
+  "topLinksColor": {
+    "message": "General links color"
+  },
+  "topLinkColorFor": {
+    "message": "Color for “$1”"
+  },
+  "bookmarksBar": {
+    "message": "Bookmarks bar"
+  },
+  "showBookmarks": {
+    "message": "Show bookmarks"
+  },
+  "barColor": {
+    "message": "Bar color"
+  },
+  "extrasIntro": {
+    "message": "Optional features. They are off by default to keep the page simple."
+  },
+  "xWidgets": {
+    "message": "Widgets"
+  },
+  "xWidgetsOn": {
+    "message": "Enable widgets: clock, notes and to-dos"
+  },
+  "xWidgetsTip": {
+    "message": "Add them with “+ Widget” in edit mode or by right-clicking. Turning this off does not delete existing ones."
+  },
+  "clock24": {
+    "message": "24-hour clock"
+  },
+  "w_clock": {
+    "message": "Clock"
+  },
+  "w_notes": {
+    "message": "Notes"
+  },
+  "w_todo": {
+    "message": "To-do"
+  },
+  "notesPh": {
+    "message": "Write a note…"
+  },
+  "todoPh": {
+    "message": "Add a task and press Enter"
+  },
+  "xPages": {
+    "message": "Customize each screen"
+  },
+  "xPagesOn": {
+    "message": "Own name and background for each screen"
+  },
+  "xPagesTip": {
+    "message": "Set them with the “⚙ Screen” button in edit mode."
+  },
+  "xSearch": {
+    "message": "Search other sites"
+  },
+  "xSearchWhat": {
+    "message": "The search box always uses Chrome’s search engine. With this option you can also search other sites directly, like YouTube or Wikipedia, without opening them first."
+  },
+  "xSearchOn": {
+    "message": "Turn on searching other sites"
+  },
+  "xSearchEx1": {
+    "message": "Type the shortcut, a space and your search: this searches “cats” on YouTube."
+  },
+  "xSearchEx2": {
+    "message": "Or press the ⌄ button in the search box and pick the site for that search only."
+  },
+  "keysShortcut": {
+    "message": "Shortcut"
+  },
+  "keysSite": {
+    "message": "Searches"
+  },
+  "keysEmpty": {
+    "message": "The list is empty."
+  },
+  "editList": {
+    "message": "Edit the list of sites"
+  },
+  "searchKeys": {
+    "message": "List of sites"
+  },
+  "searchKeysTip": {
+    "message": "One line per site: shortcut = search address, with %s where your text goes. Tip: the / key focuses the search box."
+  },
+  "engineChrome": {
+    "message": "Chrome’s search engine"
+  },
+  "engineChoose": {
+    "message": "Pick a search engine for this search only"
+  },
+  "engineBack": {
+    "message": "Back to Chrome’s search engine"
+  },
+  "privacyNote": {
+    "message": "Your shortcuts, settings, bookmarks and most visited sites are used and stored only on this computer. The extension does not send data to any server."
+  },
+  "importTop": {
+    "message": "Add my most visited"
+  },
+  "addedN": {
+    "message": "$1 shortcuts added."
+  },
+  "haveAllTop": {
+    "message": "You already have all your most visited sites."
+  },
+  "exportBackup": {
+    "message": "Export backup"
+  },
+  "importBackup": {
+    "message": "Import backup"
+  },
+  "backupFile": {
+    "message": "new-tab-backup"
+  },
+  "noScreens": {
+    "message": "it has no screens"
+  },
+  "badBackup": {
+    "message": "This file is not a valid backup: $1"
+  },
+  "imported": {
+    "message": "Backup imported."
+  },
+  "autoBackups": {
+    "message": "Automatic backups"
+  },
+  "autoBackupsTip": {
+    "message": "One copy per day is kept (the last 7), only on this computer."
+  },
+  "backupCount": {
+    "message": "$1 screens · $2 items"
+  },
+  "backupNow": {
+    "message": "Back up now"
+  },
+  "backupDone": {
+    "message": "Backup created."
+  },
+  "noBackups": {
+    "message": "No backups yet."
+  },
+  "restore": {
+    "message": "Restore"
+  },
+  "restoreAsk": {
+    "message": "Restore the backup from $1? You can undo it."
+  },
+  "restored": {
+    "message": "Backup restored."
+  },
+  "dangerZone": {
+    "message": "Danger zone"
+  },
+  "reset": {
+    "message": "Reset everything"
+  },
+  "resetAsk": {
+    "message": "Delete all your shortcuts and settings? You can undo it right after."
+  },
+  "resetDone": {
+    "message": "Everything was reset."
+  },
+  "back": {
+    "message": "Back"
+  },
+  "configure": {
+    "message": "Configure"
+  },
+  "configureW": {
+    "message": "Configure: $1"
+  },
+  "start": {
+    "message": "Start"
+  },
+  "pause": {
+    "message": "Pause"
+  },
+  "restart": {
+    "message": "Restart"
+  },
+  "tomorrow": {
+    "message": "tomorrow"
+  },
+  "yesterday": {
+    "message": "yesterday"
+  },
+  "folderStyle": {
+    "message": "How folders open"
+  },
+  "folderPanel": {
+    "message": "Centered"
+  },
+  "folderPanelTip": {
+    "message": "Like on iPhone: grows from the folder"
+  },
+  "folderBubble": {
+    "message": "Bubble"
+  },
+  "folderBubbleTip": {
+    "message": "Next to the folder, page stays visible"
+  },
+  "folderScreen": {
+    "message": "As a screen"
+  },
+  "folderScreenTip": {
+    "message": "Takes the icons’ place, with “‹ back”"
+  },
+  "w_calendar": {
+    "message": "Calendar"
+  },
+  "w_countdown": {
+    "message": "Countdown"
+  },
+  "w_timer": {
+    "message": "Timer"
+  },
+  "w_world": {
+    "message": "World clock"
+  },
+  "w_progress": {
+    "message": "Progress"
+  },
+  "w_calc": {
+    "message": "Calculator"
+  },
+  "w_photos": {
+    "message": "Photos"
+  },
+  "w_habits": {
+    "message": "Habits"
+  },
+  "w_convert": {
+    "message": "Converter"
+  },
+  "w_breathe": {
+    "message": "Breathe"
+  },
+  "clock_design": {
+    "message": "Design"
+  },
+  "clock_design_digital": {
+    "message": "Digital"
+  },
+  "clock_design_analog": {
+    "message": "Analog"
+  },
+  "clock_design_minimal": {
+    "message": "Minimal"
+  },
+  "clock_design_words": {
+    "message": "In words"
+  },
+  "notes_color": {
+    "message": "Note color"
+  },
+  "notes_color_yellow": {
+    "message": "Yellow"
+  },
+  "notes_color_pink": {
+    "message": "Pink"
+  },
+  "notes_color_green": {
+    "message": "Green"
+  },
+  "notes_color_blue": {
+    "message": "Blue"
+  },
+  "notes_color_purple": {
+    "message": "Lilac"
+  },
+  "notes_color_glass": {
+    "message": "Like the icons"
+  },
+  "notes_copy": {
+    "message": "Copy note"
+  },
+  "notes_copied": {
+    "message": "Note copied to clipboard"
+  },
+  "notes_clear": {
+    "message": "Clear text"
+  },
+  "notes_add": {
+    "message": "New note"
+  },
+  "notes_del": {
+    "message": "Delete note"
+  },
+  "notes_chars": {
+    "message": "$1 characters"
+  },
+  "calPrev": {
+    "message": "Previous month"
+  },
+  "calNext": {
+    "message": "Next month"
+  },
+  "countdown_label": {
+    "message": "What is it for?"
+  },
+  "countdown_date": {
+    "message": "Date"
+  },
+  "cdEmpty": {
+    "message": "Pick a date to start counting."
+  },
+  "cdThatDay": {
+    "message": "the big day"
+  },
+  "cdLeft": {
+    "message": "days until $1"
+  },
+  "cdLeft1": {
+    "message": "day until $1"
+  },
+  "cdAgo": {
+    "message": "days since $1"
+  },
+  "cdAgo1": {
+    "message": "day since $1"
+  },
+  "cdToday": {
+    "message": "Today is $1!"
+  },
+  "tm_work": {
+    "message": "Focus"
+  },
+  "tm_rest": {
+    "message": "Break"
+  },
+  "timer_work": {
+    "message": "Focus (min)"
+  },
+  "timer_rest": {
+    "message": "Break (min)"
+  },
+  "timerWorkDone": {
+    "message": "Time’s up! Take a break."
+  },
+  "timerRestDone": {
+    "message": "Break is over."
+  },
+  "zonesInvalid": {
+    "message": "This time zone was not recognized and was removed: $1"
+  },
+  "world_zones": {
+    "message": "World clock cities"
+  },
+  "world_search_ph": {
+    "message": "Search city (e.g. London, Tokyo, New York)..."
+  },
+  "world_add": {
+    "message": "Add city"
+  },
+  "world_max": {
+    "message": "Maximum 6 cities"
+  },
+  "world_empty": {
+    "message": "Add cities from Configure"
+  },
+  "zonesTip": {
+    "message": "Search and add the cities you want to display (up to 6)."
+  },
+  "progress_scope": {
+    "message": "Measure"
+  },
+  "progress_scope_day": {
+    "message": "The day"
+  },
+  "progress_scope_week": {
+    "message": "The week"
+  },
+  "progress_scope_month": {
+    "message": "The month"
+  },
+  "progress_scope_year": {
+    "message": "The year"
+  },
+  "prog_day": {
+    "message": "of the day has passed"
+  },
+  "prog_week": {
+    "message": "of the week has passed"
+  },
+  "prog_month": {
+    "message": "of the month has passed"
+  },
+  "prog_year": {
+    "message": "of the year has passed"
+  },
+  "photos_photos": {
+    "message": "Photos"
+  },
+  "photos_every": {
+    "message": "Change every (seconds)"
+  },
+  "photosAdd": {
+    "message": "Add photos"
+  },
+  "photosEmpty": {
+    "message": "Add your photos and they rotate on their own."
+  },
+  "photosTip": {
+    "message": "Stored only on this computer, resized so they load fast."
+  },
+  "habits_habits": {
+    "message": "Habits"
+  },
+  "habits_habitsTip": {
+    "message": "One per line (up to 6). Tick each day you do it."
+  },
+  "habitsDefault": {
+    "message": "Drink water\nRead\nExercise"
+  },
+  "habitsEmpty": {
+    "message": "Set up your habits to start."
+  },
+  "cvValue": {
+    "message": "Value"
+  },
+  "cvUnits": {
+    "message": "Units"
+  },
+  "cv_km_mi": {
+    "message": "km → mi"
+  },
+  "cv_mi_km": {
+    "message": "mi → km"
+  },
+  "cv_m_ft": {
+    "message": "m → ft"
+  },
+  "cv_ft_m": {
+    "message": "ft → m"
+  },
+  "cv_cm_in": {
+    "message": "cm → in"
+  },
+  "cv_in_cm": {
+    "message": "in → cm"
+  },
+  "cv_kg_lb": {
+    "message": "kg → lb"
+  },
+  "cv_lb_kg": {
+    "message": "lb → kg"
+  },
+  "cv_c_f": {
+    "message": "°C → °F"
+  },
+  "cv_f_c": {
+    "message": "°F → °C"
+  },
+  "cv_l_gal": {
+    "message": "liters → gallons"
+  },
+  "cv_gal_l": {
+    "message": "gallons → liters"
+  },
+  "brStart": {
+    "message": "Tap to start"
+  },
+  "brIn": {
+    "message": "Breathe in…"
+  },
+  "brHold": {
+    "message": "Hold…"
+  },
+  "brOut": {
+    "message": "Breathe out…"
+  },
+  "calcAC": {
+    "message": "Clear all (AC)"
+  },
+  "calcDel": {
+    "message": "Delete 1 digit"
+  },
+  "calcAns": {
+    "message": "Use last result (Ans)"
+  },
+  "calcSign": {
+    "message": "Change sign (±)"
+  },
+  "calcPct": {
+    "message": "Percentage (%)"
+  },
+  "calcHistEmpty": {
+    "message": "No history yet"
+  },
+  "calcHistUse": {
+    "message": "Click to use this result"
+  },
+  "calcHistClear": {
+    "message": "Clear history"
+  },
+  "w_gdrive": {
+    "message": "Google Drive"
+  },
+  "w_gcal": {
+    "message": "Google Calendar"
+  },
+  "gdriveTitle": {
+    "message": "Google Drive (Recent files)"
+  },
+  "gdriveDesc": {
+    "message": "Automatically shows the latest Docs, Sheets, Slides and Drive files you opened in your browser. Requires no sign-in or links."
+  },
+  "addGDriveBtn": {
+    "message": "+ Show Google Drive on my screen"
+  },
+  "gcardRefresh": {
+    "message": "Refresh list"
+  },
+  "gcalTitle": {
+    "message": "Google Calendar (Upcoming meetings)"
+  },
+  "gcalDesc": {
+    "message": "Shows your meetings for the day, time remaining (“In 4 min”, “In progress”) and the “Join meeting” button for Google Meet, Zoom or Teams."
+  },
+  "addGCalBtn": {
+    "message": "+ Show Calendar on my screen"
+  },
+  "gcalIcsLabel": {
+    "message": "Your Google Calendar iCal (.ics) address"
+  },
+  "gcalSyncBtn": {
+    "message": "Connect calendar"
+  },
+  "gcalUploadIcs": {
+    "message": "Upload exported .ics / .zip file"
+  },
+  "gcalDisconnectBtn": {
+    "message": "Disconnect calendar"
+  },
+  "gcalHowToTitle": {
+    "message": "Which link should you copy under “Integrate calendar”?"
+  },
+  "gcalOpenSettings": {
+    "message": "Open Google Calendar settings ↗"
+  },
+  "gcalStep1": {
+    "message": "Click “Open Google Calendar settings ↗” at the top right."
+  },
+  "gcalStep2": {
+    "message": "In the left sidebar, under “Settings for my calendars”, click your email / calendar."
+  },
+  "gcalStep3": {
+    "message": "Scroll down to “Integrate calendar”. You will see several boxes: copy the bottom one that says “in iCal format” (ends in /basic.ics)."
+  },
+  "gcalStep4": {
+    "message": "Paste it above and click “Connect calendar”."
+  },
+  "gcalWhichNo1": {
+    "message": "Public URL to this calendar (…/calendar/embed?src=…) → Do NOT copy this"
+  },
+  "gcalWhichNo2": {
+    "message": "Embed code (<iframe src=\"…\">) → Do NOT copy this"
+  },
+  "gcalWhichYes": {
+    "message": "Address (secret or public) in iCal format (…/calendar/ical/…/basic.ics) → COPY THIS ONE!"
+  },
+  "gcalPublicNote": {
+    "message": "🔒 Never tick “Make available to public”: keep your calendar 100% private. On work/company accounts (where “Secret address” is hidden), just click “Connect calendar” while signed into Google Calendar in Chrome, or click “Export calendar” in Google Calendar and upload the .zip file here."
+  },
+  "gStatusOnScreen": {
+    "message": "✓ Already on your screen"
+  },
+  "gStatusNotAdded": {
+    "message": "Not on screen"
+  },
+  "gBadgeActive": {
+    "message": "✓ Connected"
+  },
+  "gBadgePending": {
+    "message": "Not connected"
+  },
+  "gCardAddedToast": {
+    "message": "Card added to your screen."
+  },
+  "gPermDenied": {
+    "message": "Permission was not granted."
+  },
+  "gIcsSynced": {
+    "message": "Calendar connected ($1 upcoming events)."
+  },
+  "gIcsCleared": {
+    "message": "Calendar disconnected."
+  },
+  "gIcsError": {
+    "message": "Could not read that calendar. If you used the “Public address in iCal format” (work/company account), Google requires you to either enable “Make available to public” higher up on that page, or click “Export calendar” on that page and upload it here with “Upload exported .ics / .zip file”."
+  },
+  "gIcsNonGoogle": {
+    "message": "For privacy, direct link sync only supports Google Calendar addresses (calendar.google.com). For other calendars (Outlook, iCloud, university, etc.), download the .ics file and upload it with “Upload exported .ics / .zip file”."
+  },
+  "gDriveUpdated": {
+    "message": "Google Drive list updated ($1 files)."
+  },
+  "gDriveEmpty": {
+    "message": "No recent Drive documents found. Open a Google Doc/Sheet or click enable."
+  },
+  "gDriveEnableBtn": {
+    "message": "Enable recent files"
+  },
+  "gDriveOpen": {
+    "message": "Open Google Drive"
+  },
+  "gCalEmpty": {
+    "message": "No upcoming meetings right now."
+  },
+  "gCalSetupBtn": {
+    "message": "Connect calendar"
+  },
+  "gCalJoin": {
+    "message": "Join meeting"
+  },
+  "gCalMore": {
+    "message": "See more"
+  },
+  "gCalNow": {
+    "message": "In progress"
+  },
+  "gCalInMin": {
+    "message": "In $1 min"
+  },
+  "gCalInHr": {
+    "message": "In $1 hr"
+  },
+  "gCalToday": {
+    "message": "Today"
+  },
+  "gCalTomorrow": {
+    "message": "Tomorrow"
+  },
+  "gCalAllDay": {
+    "message": "All day"
+  },
+  "gCalVirtual": {
+    "message": "Virtual"
+  },
+  "gCalAddQuick": {
+    "message": "+ Quick meeting"
+  },
+  "gCalQuickPromptTitle": {
+    "message": "Meeting or event title"
+  },
+  "gCalQuickPromptTime": {
+    "message": "Time (e.g. 14:30 or 20:30)"
+  },
+  "gCalQuickPromptUrl": {
+    "message": "Google Meet / Zoom link (optional)"
+  },
+  "gOpenedJustNow": {
+    "message": "You opened this just now"
+  },
+  "gOpenedMinAgo": {
+    "message": "You opened this $1 min ago"
+  },
+  "gOpenedHrAgo": {
+    "message": "You opened this $1 hr ago"
+  },
+  "gOpenedYesterday": {
+    "message": "You opened this yesterday"
+  },
+  "gOpenedDaysAgo": {
+    "message": "You opened this $1 days ago"
+  },
+  "gOpenedLastMonth": {
+    "message": "You opened this last month"
+  },
+  "gOpenedMonthsAgo": {
+    "message": "You opened this $1 months ago"
+  },
+  "gOpenedLastYear": {
+    "message": "You opened this last year"
+  },
+  "untitled": {
+    "message": "(Untitled)"
+  },
+  "xSearchEx1Code": {
+    "message": "yt cats"
+  },
+  "welcomePickStyle": {
+    "message": "Pick a quick starting style (you can customize everything later):"
+  },
+  "gapX": {
+    "message": "Column spacing"
+  },
+  "gapY": {
+    "message": "Row spacing"
+  },
+  "glassEffect": {
+    "message": "Frosted glass effect (blur on icons and cards)"
+  },
+  "themePresets": {
+    "message": "Quick styles (1 click)"
+  },
+  "themePresetsTip": {
+    "message": "Try a look instantly without touching your shortcuts or widgets. Your previous style is saved automatically so you can go back in 1 click."
+  },
+  "themeApplied": {
+    "message": "“$1” style applied."
+  },
+  "revertStyle": {
+    "message": "↩ Back to my previous style"
+  },
+  "styleRestored": {
+    "message": "Restored your previous style."
+  },
+  "preset_aurora": {
+    "message": "Aurora"
+  },
+  "preset_aurora_tip": {
+    "message": "4K backdrop + frosted icons"
+  },
+  "preset_minimal": {
+    "message": "Minimal"
+  },
+  "preset_minimal_tip": {
+    "message": "Matte dark, no wallpaper, centered"
+  },
+  "preset_focus": {
+    "message": "Focus"
+  },
+  "preset_focus_tip": {
+    "message": "Nebula + time-of-day greeting"
+  },
+  "preset_dock": {
+    "message": "Bottom dock"
+  },
+  "preset_dock_tip": {
+    "message": "Open scenery + icons in bottom bar"
+  },
+  "logoGreeting": {
+    "message": "Dynamic greeting by time of day (Good morning / afternoon / evening)"
+  },
+  "logoGreetingTip": {
+    "message": "If you type your name in “Logo text”, it shows “Good morning, YourName”."
+  },
+  "greetMorning": {
+    "message": "Good morning"
+  },
+  "greetAfternoon": {
+    "message": "Good afternoon"
+  },
+  "greetEvening": {
+    "message": "Good evening"
+  },
+  "changeBg": {
+    "message": "Change background…"
+  },
+  "supportTitle": {
+    "message": "Enjoying My New Tab?"
+  },
+  "supportDesc": {
+    "message": "100% free, no ads and no accounts. If you find it useful, a quick review or an optional coffee helps keep improving it."
+  },
+  "rateStore": {
+    "message": "★ Rate on Chrome Web Store"
+  },
+  "kofiBtn": {
+    "message": "Buy me a coffee"
+  },
+  "kofiTip": {
+    "message": "Support the project on Ko-fi (100% optional)"
+  },
+  "reportIssue": {
+    "message": "Suggest a feature / report a bug"
+  },
+  "dockBarEffect": {
+    "message": "Translucent dock tray around the icon block"
+  },
+  "ownLookTitle": {
+    "message": "This widget’s own appearance"
+  },
+  "glassLabel": {
+    "message": "Frosted glass"
+  },
+  "glassOn": {
+    "message": "On"
+  },
+  "glassOff": {
+    "message": "Off"
+  },
+  "ownColorCheck": {
+    "message": "Use custom color and transparency"
+  },
+  "tabSupport": {
+    "message": "Support"
+  },
+  "kofiCardTitle": {
+    "message": "Buy me a coffee on Ko-fi"
+  },
+  "kofiCardSub": {
+    "message": "100% optional support to keep building and improving this extension with no ads or paywalls."
+  },
+  "rateCardTitle": {
+    "message": "Rate on Chrome Web Store"
+  },
+  "rateCardSub": {
+    "message": "Leaving a review takes a few seconds and helps more people discover My New Tab."
+  },
+  "feedbackTitle": {
+    "message": "Ideas, feedback & open source"
+  },
+  "feedbackDesc": {
+    "message": "Found something to polish or have a feature idea? Share it directly on GitHub."
+  },
+  "sourceRepo": {
+    "message": "View GitHub repository ↗"
+  },
+  "tipChromeFooter": {
+    "message": "The top tab bar color and bottom bar (“Customize Chrome”) belong to the browser: you can match the top bar color or hide the bottom bar by right-clicking it or opening “Customize Chrome”."
+  },
+  "chromeUiTitle": {
+    "message": "Chrome top bar & bottom footer"
+  },
+  "openChromeLook": {
+    "message": "Open Chrome color & appearance settings ↗"
+  }
 }

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,21 +44,38 @@
 
   <div id="toolbar">
     <button type="button" data-act="undo" id="undoBtn" data-i18n="undoBtn" data-i18n-title="undoTip" disabled></button>
+    <span class="tb-sep" aria-hidden="true"></span>
     <button type="button" data-act="add-link" data-i18n="addLink"></button>
     <button type="button" data-act="add-folder" data-i18n="addFolder"></button>
     <button type="button" data-act="add-widget" class="x-widgets-only" data-i18n="addWidget"></button>
-    <button type="button" data-act="page" data-i18n="screen"></button>
-    <button type="button" data-act="add-page" data-i18n="addScreen"></button>
+    <span class="tb-sep" aria-hidden="true"></span>
     <button type="button" data-act="del-page" data-i18n="delScreen"></button>
-    <button type="button" data-act="settings" data-i18n="settings"></button>
+    <button type="button" data-act="add-page" data-i18n="addScreen"></button>
+    <button type="button" data-act="page" data-i18n-title="screenSettings">
+      <svg class="tb-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+      <span data-i18n="screen"></span>
+    </button>
+    <button type="button" data-act="settings" data-i18n-title="settings">
+      <svg class="tb-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg>
+      <span data-i18n="settings"></span>
+    </button>
+    <span class="tb-sep" aria-hidden="true"></span>
     <button type="button" data-act="done" class="primary" data-i18n="done"></button>
   </div>
+
+  <a id="editKofi" href="https://ko-fi.com/fhxdev" target="_blank" rel="noopener noreferrer" data-i18n-title="kofiTip">
+    <svg class="kofi-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.5 5H4a1 1 0 0 0-1 1v7.5A4.5 4.5 0 0 0 7.5 18h6a4.5 4.5 0 0 0 4.47-4H18.5a3.5 3.5 0 0 0 0-7zm0 5H18V7h.5a1.5 1.5 0 0 1 0 3z"/><path fill="#ff5e5b" d="m10.5 14.6-2.25-2.18a1.72 1.72 0 0 1 2.42-2.44l-.17.17.17-.17a1.72 1.72 0 0 1 2.42 2.44L10.5 14.6z"/></svg>
+    <span class="ek-short">Ko-fi</span>
+    <span class="ek-full" data-i18n="kofiBtn"></span>
+  </a>
 
   <div id="toast" role="status"></div>
   <div id="dropPreview" hidden></div>
 
   <div id="welcome" role="dialog" aria-labelledby="welcomeTitle" hidden>
     <h2 id="welcomeTitle" data-i18n="welcomeTitle"></h2>
+    <p class="welcome-sub" data-i18n="welcomePickStyle"></p>
+    <div id="welcomeStyles" class="theme-presets compact"></div>
     <ul>
       <li data-i18n="tip1"></li>
       <li data-i18n="tip2"></li>
@@ -67,6 +84,7 @@
       <li data-i18n="tip5"></li>
       <li data-i18n="tipPrivacy"></li>
     </ul>
+    <p class="welcome-foot-tip" data-i18n="tipChromeFooter"></p>
     <button type="button" class="btn primary" id="welcomeOk" data-i18n="gotIt"></button>
   </div>
 
@@ -87,7 +105,7 @@
       <label class="glyph-in" data-for="link"><span data-i18n="glyph"></span><input name="glyph" maxlength="4" placeholder="🎮"></label>
       <button type="button" class="btn" id="iconReset" data-for="link" data-i18n="useFavicon"></button>
     </div>
-    <div class="two">
+    <div class="three-cols">
       <label data-for="size"><span data-i18n="size"></span>
         <select name="size">
           <option value="1x1" data-i18n="size_1x1"></option>
@@ -102,6 +120,18 @@
         </select>
       </label>
       <label><span data-i18n="shape"></span><select name="shape" id="shapeSelect"><option value="" data-i18n="shapeDefault"></option></select></label>
+      <label><span data-i18n="glassLabel"></span>
+        <select name="tileGlass">
+          <option value="" data-i18n="shapeDefault"></option>
+          <option value="on" data-i18n="glassOn"></option>
+          <option value="off" data-i18n="glassOff"></option>
+        </select>
+      </label>
+    </div>
+    <label class="check"><input type="checkbox" name="ownColor" id="editOwnColor"><span data-i18n="ownColorCheck"></span></label>
+    <div class="colors" id="editColorRow" hidden>
+      <label><span data-i18n="iconColor"></span><input name="tileColor" type="color" id="editTileColor"></label>
+      <label><span class="lr"><span data-i18n="transparency"></span><output id="editTileTrOut">0%</output></span><input name="tileTr" type="range" min="0" max="100" id="editTileTr"></label>
     </div>
     <small class="hint" id="shapeHint" data-i18n="shapeOwnHint" hidden></small>
     <div class="actions">
@@ -148,11 +178,13 @@
 <dialog id="pageDlg">
   <form id="pageForm" method="dialog">
     <h2><span data-i18n="screen"></span> <span id="pageNum"></span></h2>
-    <div class="x-pages-only stack">
-      <label><span data-i18n="screenName"></span><input name="name" maxlength="30" data-i18n-ph="screenNamePh"></label>
-      <div class="iconrow wrap">
-        <label class="btn"><span data-i18n="ownBg"></span><input type="file" id="pageBgFile" accept="image/*" hidden></label>
-        <button type="button" class="btn" id="pageBgRemove" data-i18n="removeBg"></button>
+    <div class="x-pages-only page-top-row">
+      <label class="page-name-in"><span data-i18n="screenName"></span><input name="name" maxlength="30" data-i18n-ph="screenNamePh"></label>
+      <div class="page-bg-ctrls">
+        <div class="iconrow">
+          <label class="btn"><span data-i18n="ownBg"></span><input type="file" id="pageBgFile" accept="image/*" hidden></label>
+          <button type="button" class="btn" id="pageBgRemove" data-i18n="removeBg"></button>
+        </div>
         <small class="hint" id="pageBgState"></small>
       </div>
     </div>
@@ -173,11 +205,14 @@
         <b data-i18n="layoutList"></b>
       </label>
     </div>
-    <div class="two" data-lay="grid list">
-      <label><span data-i18n="cols"></span><input name="cols" type="number" min="1" max="12"></label>
-      <label><span data-i18n="rows"></span><input name="rows" type="number" min="1" max="10"></label>
+    <div class="page-grid-row">
+      <div class="two" data-lay="grid list">
+        <label><span data-i18n="cols"></span><input name="cols" type="number" min="1" max="12"></label>
+        <label><span data-i18n="rows"></span><input name="rows" type="number" min="1" max="10"></label>
+      </div>
+      <label data-lay="rows"><span data-i18n="rowPattern"></span><input name="pattern" placeholder="3,4"></label>
+      <label class="page-gridy"><span class="lr"><span data-i18n="gridY"></span><output id="pageGridYOut">0%</output></span><input name="gridY" type="range" min="0" max="100"></label>
     </div>
-    <label data-lay="rows"><span data-i18n="rowPattern"></span><input name="pattern" placeholder="3,4"></label>
     <p class="note" id="pageSpacesNote" hidden></p>
     <div id="pagePreview" class="ppreview"></div>
     <p class="hint" id="pageInfo"></p>
@@ -230,6 +265,7 @@
       <button type="button" data-tab="gcards" data-i18n="tabGCards"></button>
       <button type="button" data-tab="extras" data-i18n="tabExtras"></button>
       <button type="button" data-tab="data" data-i18n="tabData"></button>
+      <button type="button" data-tab="support" class="tab-support"><i aria-hidden="true">♥</i> <span data-i18n="tabSupport"></span></button>
     </nav>
 
     <!-- Iconos -->
@@ -262,6 +298,11 @@
         <p class="note" id="spacesNote" hidden></p>
         <label><span class="lr"><span data-i18n="cellSize"></span><output data-for="cell" data-unit="px"></output></span><input name="cell" type="range" min="64" max="200"></label>
         <label><span class="lr"><span data-i18n="iconSize"></span><output data-for="icon" data-unit="px"></output></span><input name="icon" type="range" min="28" max="110"></label>
+        <label><span class="lr"><span data-i18n="gridY"></span><output data-for="gridY" data-unit="%"></output></span><input name="gridY" type="range" min="0" max="100"></label>
+        <div class="two">
+          <label><span class="lr"><span data-i18n="gapX"></span><output data-for="gapX" data-unit="px"></output></span><input name="gapX" type="range" min="0" max="40"></label>
+          <label><span class="lr"><span data-i18n="gapY"></span><output data-for="gapY" data-unit="px"></output></span><input name="gapY" type="range" min="0" max="40"></label>
+        </div>
         <label class="check"><input name="showLabels" type="checkbox"><span data-i18n="showLabels"></span></label>
       </fieldset>
       <fieldset>
@@ -292,11 +333,21 @@
           <label><span data-i18n="iconColor"></span><input name="tileColor" type="color"></label>
           <label><span class="lr"><span data-i18n="transparency"></span><output data-for="tileTr" data-unit="%"></output></span><input name="tileTr" type="range" min="0" max="100"></label>
         </div>
+        <label class="check"><input name="glass" type="checkbox"><span data-i18n="glassEffect"></span></label>
+        <label class="check"><input name="dockBar" type="checkbox"><span data-i18n="dockBarEffect"></span></label>
       </fieldset>
     </section>
 
     <!-- Fondo y colores -->
     <section data-tabpanel="look" hidden>
+      <fieldset>
+        <legend data-i18n="themePresets"></legend>
+        <small class="hint" data-i18n="themePresetsTip"></small>
+        <div id="themePresets" class="theme-presets"></div>
+        <div class="preset-actions" id="presetRevertWrap" hidden>
+          <button type="button" class="btn" id="presetRevertBtn" data-i18n="revertStyle"></button>
+        </div>
+      </fieldset>
       <fieldset>
         <legend data-i18n="background"></legend>
         <div class="colors">
@@ -344,6 +395,13 @@
           </select>
         </label>
       </fieldset>
+      <fieldset>
+        <legend data-i18n="chromeUiTitle"></legend>
+        <small class="hint" data-i18n="tipChromeFooter"></small>
+        <div class="iconrow wrap">
+          <button type="button" class="btn" id="openChromeLook" data-i18n="openChromeLook"></button>
+        </div>
+      </fieldset>
     </section>
 
     <!-- Botones -->
@@ -383,6 +441,10 @@
         <label class="check"><input name="showLogo" type="checkbox"><span data-i18n="showLogo"></span></label>
         <label><span data-i18n="logoText"></span><input name="logoText" maxlength="20" data-i18n-ph="logoDefault"></label>
         <label class="check"><input name="logoColor" type="checkbox"><span data-i18n="logoColor"></span></label>
+        <div class="opt">
+          <label class="check"><input name="logoGreeting" type="checkbox"><span data-i18n="logoGreeting"></span></label>
+          <small class="hint" data-i18n="logoGreetingTip"></small>
+        </div>
         <label class="check"><input name="showSearch" type="checkbox"><span data-i18n="showSearch"></span></label>
       </fieldset>
       <fieldset>
@@ -479,7 +541,7 @@
         <label class="check"><input name="xSearch" type="checkbox"><span data-i18n="xSearchOn"></span></label>
         <div data-show="xSearch" class="stack">
           <div class="howto">
-            <div><kbd>yt gatos</kbd><span data-i18n="xSearchEx1"></span></div>
+            <div><kbd data-i18n="xSearchEx1Code"></kbd><span data-i18n="xSearchEx1"></span></div>
             <div><kbd>⌄</kbd><span data-i18n="xSearchEx2"></span></div>
           </div>
           <div class="keys" id="keysTable"></div>
@@ -512,6 +574,41 @@
       <fieldset>
         <legend data-i18n="dangerZone"></legend>
         <div class="iconrow"><button type="button" class="btn danger" id="resetBtn" data-i18n="reset"></button></div>
+      </fieldset>
+    </section>
+
+    <!-- Apoyar y calificar -->
+    <section data-tabpanel="support" hidden>
+      <p class="support-intro" data-i18n="supportDesc"></p>
+      <div class="support-cards">
+        <a class="support-card kofi-card" href="https://ko-fi.com/fhxdev" target="_blank" rel="noopener noreferrer">
+          <span class="sc-badge kofi-badge">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M18.5 5H4a1 1 0 0 0-1 1v7.5A4.5 4.5 0 0 0 7.5 18h6a4.5 4.5 0 0 0 4.47-4H18.5a3.5 3.5 0 0 0 0-7zm0 5H18V7h.5a1.5 1.5 0 0 1 0 3z"/><path fill="#ff5e5b" d="m10.5 14.6-2.25-2.18a1.72 1.72 0 0 1 2.42-2.44l-.17.17.17-.17a1.72 1.72 0 0 1 2.42 2.44L10.5 14.6z"/></svg>
+          </span>
+          <span class="sc-body">
+            <b data-i18n="kofiCardTitle"></b>
+            <small data-i18n="kofiCardSub"></small>
+          </span>
+          <span class="sc-cta kofi-cta"><span data-i18n="kofiBtn"></span> ↗</span>
+        </a>
+
+        <a class="support-card rate-card" href="https://chromewebstore.google.com/detail/nacaekbeegbhbhianboflddghiophdpm/reviews" target="_blank" rel="noopener noreferrer">
+          <span class="sc-badge rate-badge" aria-hidden="true">★</span>
+          <span class="sc-body">
+            <b data-i18n="rateCardTitle"></b>
+            <small data-i18n="rateCardSub"></small>
+          </span>
+          <span class="sc-cta rate-cta">★★★★★ ↗</span>
+        </a>
+      </div>
+
+      <fieldset>
+        <legend data-i18n="feedbackTitle"></legend>
+        <small class="hint" data-i18n="feedbackDesc"></small>
+        <div class="iconrow wrap">
+          <a class="btn" href="https://github.com/FHX23/new-tab-chrome-extension/issues" target="_blank" rel="noopener noreferrer" data-i18n="reportIssue"></a>
+          <a class="btn" href="https://github.com/FHX23/new-tab-chrome-extension" target="_blank" rel="noopener noreferrer" data-i18n="sourceRepo"></a>
+        </div>
       </fieldset>
     </section>
   </form>
