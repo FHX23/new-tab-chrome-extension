@@ -16,8 +16,10 @@ Convierte la nueva pestaña en tu propia pantalla de inicio, como la de un celul
 
 • Accesos directos ilimitados, repartidos en varias pantallas. Cambia de pantalla con las flechas, la rueda del mouse o los puntos.
 • Tú decides cuántos espacios tiene cada pantalla (por ejemplo 3×3, o una fila de 3 y otra de 4) y dónde va cada icono.
-• Iconos y widgets en hasta 9 tamaños (desde 1×1 hasta 4×3) y 7 formas (círculo, redondeado, cuadrado, hexágono, estrella, triángulo y corazón), con botones directos para agrandar (+) y achicar (−).
+• Iconos y widgets en hasta 9 tamaños (desde 1×1 hasta 4×3) y 7 formas (círculo, redondeado, cuadrado, hexágono, estrella, triángulo y corazón), con botones directos para agrandar (+) y achicar (−), más color, transparencia y efecto vidrio esmerilado configurables de forma global o individual en cada icono, carpeta o widget.
+• 4 estilos rápidos en 1 clic (Aurora, Minimalista, Enfoque y Dock inferior) con vuelta atrás automática a tu estilo anterior, posición vertical libre (arriba, centro o abajo), espacio ajustable entre filas/columnas, bandeja dock translúcida y saludo dinámico según la hora del día.
 • Carpetas: suelta un icono sobre otro para agruparlos (con estilos panel centrado, burbuja o pantalla completa).
+• Panel de Ajustes con barra lateral limpia, interruptores nativos y tema claro, oscuro o automático.
 • Tu barra de marcadores, con carpetas y submenús, dentro de la nueva pestaña, y enlaces superiores con color propio e individual para cada enlace.
 • Clic derecho para abrir en pestaña nueva, ventana o incógnito, cambiar tamaño, forma o moverlo de pantalla.
 • Funciona con mouse, pantalla táctil y lápiz. Mantén presionado un icono para editar.
@@ -38,8 +40,10 @@ Turn your new tab into your own home screen, like the one on your phone.
 
 • Unlimited shortcuts across several screens. Switch screens with the arrows, the mouse wheel or the dots.
 • You decide how many spaces each screen has (for example 3×3, or a row of 3 and a row of 4) and where each icon goes.
-• Icons and widgets in up to 9 sizes (from 1×1 up to 4×3) and 7 shapes (circle, rounded, square, hexagon, star, triangle and heart), with direct buttons to enlarge (+) and shrink (−).
+• Icons and widgets in up to 9 sizes (from 1×1 up to 4×3) and 7 shapes (circle, rounded, square, hexagon, star, triangle and heart), with direct buttons to enlarge (+) and shrink (−), plus custom color, transparency and frosted glass globally or individually on every icon, folder or widget.
+• 4 one-click quick styles (Aurora, Minimal, Focus and Bottom dock) with automatic 1-click revert to your previous look, free vertical placement (top, center or bottom), adjustable row/column spacing, translucent dock tray and time-of-day dynamic greeting.
 • Folders: drop one icon on another to group them (with centered panel, bubble or full-screen styles).
+• Clean sidebar Settings panel with native switches and light, dark or automatic theme.
 • Your bookmarks bar, with folders and submenus, inside the new tab, plus top-right links with individual custom colors per link.
 • Right-click to open in a new tab, window or incognito, change size or shape, or move to another screen.
 • Works with mouse, touchscreen and pen. Press and hold an icon to edit.

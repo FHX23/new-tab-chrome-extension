@@ -2,6 +2,30 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). Versiones 0.x = preliminares.
 
+## [1.0.0] – 2026-11-26
+### Agregado
+- **Ajustes rediseñados con barra lateral nativa (`#settingsDlg`):** nueva interfaz de 2 columnas con navegación vertical por grupos (*Apariencia*, *Control e integraciones*, *Datos* y *Apoyar*), soporte de teclado (`↑`/`↓`), encabezados limpios, filas con interruptores nativos en CSS puro y separación clara de zona de peligro.
+- **4 estilos rápidos en 1 clic con vuelta atrás automática:** *Aurora*, *Minimalista*, *Enfoque* y *Dock inferior* disponibles en la bienvenida y en *Ajustes → Fondo*; al probar estilos se guarda automáticamente tu configuración previa para volver en 1 clic (`↩ Volver a mi estilo anterior`).
+- **Posición vertical (`gridY`, 0–100 %) y espaciado fino (`gapX`/`gapY`, 0–40 px):** permite situar tus iconos arriba, al centro o en la parte inferior (global o por pantalla individual), con vista previa semitransparente en vivo al ajustar y bandeja translúcida opcional estilo dock (`dockBar`).
+- **Apariencia individual por elemento:** color propio, transparencia y efecto vidrio esmerilado (`glass`) configurables de forma individual en cualquier icono, carpeta o en cualquiera de los 15 widgets, además del ajuste global.
+- **Saludo dinámico según la hora del día (`logoGreeting`):** *Buenos días / tardes / noches* (con soporte opcional de nombre) en el encabezado.
+- **Pestaña dedicada «♥ Apoyar» y acceso discreto en modo edición:** botones limpios para apoyar en Ko-fi, calificar en Chrome Web Store y abrir incidencias o código fuente en GitHub, además de un acceso discreto en la barra de edición y un atajo para ajustar el color y pie de página de Chrome (`chrome://settings/appearance`).
+- **Suite automática de pruebas de actualización (`tools/test_upgrade.js` y `tools/test_chrome_upgrade.py`):** valida 21 pruebas de sintaxis, paridad ES/EN, actualización sin respaldo desde v0.4.0/v0.5.0 y ausencia de permisos obligatorios nuevos.
+
+### Cambiado
+- **Internacionalización 100 % nativa con `chrome.i18n`:** todos los textos de interfaz se movieron a `_locales/es/messages.json` y `_locales/en/messages.json` (`default_locale: "en"`), reduciendo `js/i18n.js` de ~35 KB a < 1.5 KB y cargando solo un idioma en memoria. Los países de `WORLD_CITIES` se resuelven con códigos ISO y `Intl.DisplayNames`.
+- **Conexión de Google Calendar simplificada:** campo de URL y botón *Conectar* unidos, validación directa y ayuda desplegable concisa (se pliega automáticamente al conectar).
+- **Optimización profunda de arranque y fluidez:** caché de 7 días de favicons verificados (`ntp_fav_ok`, evitando lecturas repetidas de `<canvas>`), inicialización diferida de diálogos (`ensureSettingsUi()` / `ensureEditUi()`), pausa de `backdrop-filter` durante arrastre/temblor, galería de fondos diferida y actualización silenciosa a resolución completa `blob:` en reposo.
+- **Instalaciones nuevas listas desde el primer segundo:** arrancan con el estilo *Aurora* (paisaje 4K + vidrio + widgets activos) sin alterar ninguna configuración de usuarios existentes que actualizan desde v0.5.0 o anteriores.
+- **Diálogo «⚙ Pantalla» compacto:** diseño de 2 columnas sin scroll en la barra de edición.
+
+### Corregido
+- Corregido el estilo de inputs `type="text"`, `type="url"`, `type="time"` y `type="search"` en diálogos para heredar el tema oscuro/claro (incluyendo el campo `.ics` de Google Calendar y el diálogo de reunión rápida).
+- Protección contra cuota llena de `localStorage` (`Store.flush()` prioriza `ntp_state_v1` si `ntp_bgimg` ocupa espacio y respeta `savedAt`).
+- Reloj mundial ahora distingue ciudades con la misma zona horaria (`Barcelona`/`Madrid`, `Miami`/`Nueva York`).
+- Ocultar un archivo en la tarjeta de Google Drive ya no llama a `chrome.history.deleteUrl`.
+- Limpieza automática de referencias huérfanas de IndexedDB al importar respaldos en otro equipo, validación explícita de dominio para feeds `.ics` de Google Calendar y temporizador perezoso para el widget de Fotos.
+
 ## [0.5.0] – 2026-11-20
 ### Agregado
 - **Tarjetas opcionales de Google Drive y Calendario de Google (`Ajustes → Drive y Calendar`):**
@@ -74,5 +98,6 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). V
 - Primera versión: nueva pestaña con buscador, accesos ilimitados en varias pantallas, tamaños, carpetas,
   arrastrar y soltar, y ajustes de colores y fondo.
 
+[1.0.0]: https://github.com/FHX23/new-tab-chrome-extension/releases/tag/v1.0.0
 [0.5.0]: https://github.com/FHX23/new-tab-chrome-extension/releases/tag/v0.5.0
 [0.4.0]: https://github.com/FHX23/new-tab-chrome-extension/releases/tag/v0.4.0

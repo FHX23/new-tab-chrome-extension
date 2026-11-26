@@ -39,14 +39,14 @@ Ningún permiso envía información fuera del computador. Los permisos `history`
 
 ```text
 manifest.json        configuración (Manifest V3), idiomas y permisos obligatorios/opcionales
-_locales/es|en/      nombre y descripción de la extensión en cada idioma
+_locales/es|en/      todos los textos de la interfaz y metadatos en cada idioma (chrome.i18n nativo; Chrome carga solo 1 idioma)
 icons/               íconos: icon.svg (48 y 128 px, colorido) e icon-small.svg (16 y 32 px, gris y discreto,
                      el que se ve en la pestaña); tools/make_icons.py genera los PNG
 bg/                  galería integrada de 18 fondos (12 fotos QHD 2.5K de dominio público + 6 paisajes SVG 4K)
 newtab.html          estructura: barra de marcadores, logo, buscador, pantallas, barra de edición, diálogos
-css/newtab.css       estilos (variables CSS, unidades de contenedor cqw/cqh, formas, widgets y temas)
+css/newtab.css       estilos (variables CSS, unidades de contenedor cqw/cqh, formas, vidrio, sidebar de Ajustes y temas)
 js/boot.js           pinta color, imagen de fondo y rotación automática antes del primer frame
-js/i18n.js           todos los textos bilingües: clave → [español, inglés]
+js/i18n.js           wrapper mínimo (< 1.5 KB) sobre chrome.i18n.getMessage() + aplicación de data-i18n*
 js/store.js          guardar/cargar (localStorage + chrome.storage.local + IndexedDB), bgPool y copias automáticas
 js/core.js           utilidades, colocación libre hasta 4×3, controles +/−, dibujo, deshacer, íconos con inicial
 js/widgets.js        15 widgets (reloj, notas, tareas, calculadora profunda, Drive, Calendar, Pomodoro, etc.)
@@ -103,7 +103,8 @@ Qué se hizo para que cargue al instante:
 - **Fondo instantáneo**: `boot.js` aplica el color, la imagen de la galería `bg/` o la miniatura en caché en el `<head>`, antes de pintar.
 - **Imágenes de fondo optimizadas**: la galería integrada usa WebP QHD 2.5K y SVG 4K; al subir fotos propias se redimensionan a la pantalla y se comprimen en WebP dentro de `IndexedDB` (`bgPool`).
 - **Arrastre sincronizado**: el movimiento de iconos usa `requestAnimationFrame` para mantener 60/120 fps constantes.
-- **Tareas en segundo plano diferidas**: la carga de marcadores, copias automáticas diarias y limpieza de fotos huérfanas en IndexedDB se postergan con `requestIdleCallback`.
+- **Caché de favicons verificados (`ntp_fav_ok`, 7 días)** e **inicialización diferida de diálogos** (`ensureSettingsUi()` / `ensureEditUi()`): cero lecturas de `<canvas>` repetidas y cero nodos de Ajustes construidos hasta que el usuario abre el panel.
+- **Tareas en segundo plano diferidas**: la carga de marcadores, actualización a `blob:` de alta resolución (`upgradeFullResBg`), copias automáticas diarias y limpieza de fotos huérfanas en IndexedDB se postergan con `requestIdleCallback`.
 - `content-visibility: auto`: Chrome no dibuja las pantallas que no se ven.
 - Los favicons de pantallas ocultas se cargan con `loading="lazy"` desde la caché local (`_favicon`).
 
@@ -112,7 +113,7 @@ Revisado contra las políticas vigentes de Manifest V3:
 - **Nueva pestaña con buscador:** respeta siempre el buscador predeterminado del usuario mediante `chrome.search`. En el extra «Buscador avanzado», elegir otro buscador aplica **solo para esa búsqueda puntual** y luego vuelve al predeterminado de Chrome.
 - **Marcas:** valores de fábrica neutros («Inicio») y logo a colores con paleta propia. En la ficha y en las capturas no debe aparecer la marca «Google».
 - **Datos de usuario y permisos opcionales:** todo se procesa localmente. `PRIVACY.md` incluye la declaración de **Uso limitado** exigida por la tienda, y `store/LISTING.md` contiene las justificaciones listas para copiar y pegar.
-- El paquete de distribución se genera con `python tools/build_zip.py` → `dist/mi-nueva-pestana-0.5.0.zip`.
+- El paquete de distribución se genera con `python tools/build_zip.py` → `dist/mi-nueva-pestana-1.0.0.zip`.
 
 ## 5. Limitaciones conocidas (de Chrome, no del código)
 0. **Los 10 accesos internos de la página de Google no se pueden leer.** Chrome no ofrece ninguna API para eso. La extensión parte con tus *sitios más visitados* (`chrome.topSites`).
@@ -121,20 +122,21 @@ Revisado contra las políticas vigentes de Manifest V3:
 3. `_favicon` solo tiene iconos de sitios que ya visitaste en ese perfil. Para los demás se genera un ícono con inicial y color, o puedes elegir un emoji o subir una imagen.
 
 ## 6. Instalación (desde el ZIP o el código)
-1. Descarga el paquete `mi-nueva-pestana-0.5.0.zip` desde **GitHub Releases** (o clona este repositorio).
+1. Descarga el paquete `mi-nueva-pestana-1.0.0.zip` desde **GitHub Releases** (o clona este repositorio).
 2. Abre `chrome://extensions` y activa **Modo de desarrollador** (arriba a la derecha).
 3. Pulsa **Cargar descomprimida** y elige la carpeta descomprimida.
 4. Abre una pestaña nueva y elige *Conservar* si Chrome pregunta.
 
-## 7. Uso y pestañas de Ajustes
+## 7. Uso y secciones de Ajustes
 - **Lápiz** (abajo a la derecha) o **mantener presionado un icono**: entra al modo edición.
-- **Botón «↶ Deshacer»** en la barra superior de edición o `Ctrl+Z` para revertir cualquier cambio.
+- **Botón «↶ Deshacer»** en la barra de edición o `Ctrl+Z` para revertir cualquier cambio.
 - **Botones `+` y `−`** sobre cada icono o widget en modo edición para agrandar o achicar su tamaño hasta `4×3`.
-- **Ajustes** organizados por pestañas:
-  - **Iconos:** disposición (cuadrícula, filas o lista), espacios, tamaños, forma y estilo de carpetas.
-  - **Fondo:** galería de 9 fondos QHD/4K incluidos, subida múltiple de fotos propias, rotación automática y colores/transparencias.
-  - **Página:** logo, buscador, enlaces superiores (con color individual por enlace) y barra de marcadores.
-  - **Botones:** flechas laterales (con altura interactiva configurable), puntos inferiores y botón de editar.
-  - **Extras:** 13 widgets generales, nombre y fondo por pantalla, y buscador avanzado con atajos.
-  - **Drive y Calendar:** activación y configuración local de las tarjetas de Google Drive y Google Calendar.
-  - **Datos:** agregar más visitados, exportar/importar respaldo `.json`, copias automáticas diarias y restablecer.
+- **Ajustes** organizados con barra lateral nativa:
+  - **Fondo:** 4 estilos rápidos en 1 clic (con vuelta atrás automática), galería de 18 fondos QHD/4K incluidos, subida múltiple de fotos propias, rotación automática, tema de paneles y acceso a apariencia de Chrome.
+  - **Iconos:** disposición (cuadrícula, filas o lista), espacios, posición vertical (`0–100 %`), separación entre columnas/filas, tamaños, 7 formas, vidrio esmerilado, bandeja dock y estilo de carpetas.
+  - **Página:** logo, saludo según la hora, buscador, enlaces superiores (con color individual por enlace) y barra de marcadores.
+  - **Botones:** flechas laterales (con altura interactiva configurable), puntos inferiores y opciones del modo edición.
+  - **Extras:** 15 widgets, nombre y fondo por pantalla, y buscador avanzado con atajos.
+  - **Drive y Calendar:** activación y configuración local de las tarjetas de Google Drive y Google Calendar (`.ics`, sesión o archivo exportado).
+  - **Datos:** agregar más visitados, exportar/importar respaldo `.json`, copias automáticas diarias y zona de peligro.
+  - **Apoyar:** enlaces a Ko-fi, reseñas en Chrome Web Store y repositorio de GitHub.

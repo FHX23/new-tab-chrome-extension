@@ -12,11 +12,11 @@
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/nacaekbeegbhbhianboflddghiophdpm"><img alt="Instalar en Chrome Web Store" src="https://img.shields.io/badge/Chrome%20Web%20Store-Instalar%20gratis-4285f4?style=for-the-badge&logo=googlechrome&logoColor=white"></a>
   <a href="https://mi-nueva-pestana.vercel.app"><img alt="Sitio Web Oficial" src="https://img.shields.io/badge/🌐%20Sitio%20Web-mi--nueva--pestana.vercel.app-93f1f7?style=for-the-badge&labelColor=000000"></a>
-  <a href="https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip"><img alt="Descargar v0.5.0 (.zip)" src="https://img.shields.io/badge/⬇%20ZIP%20manual-v0.5.0-2ea44f?style=for-the-badge"></a>
+  <a href="https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-1.0.0.zip"><img alt="Descargar v1.0.0 (.zip)" src="https://img.shields.io/badge/⬇%20ZIP%20manual-v1.0.0-2ea44f?style=for-the-badge"></a>
 </p>
 
 <p align="center">
-  <img alt="Versión 0.5.0" src="https://img.shields.io/badge/versión-0.5.0-orange">
+  <img alt="Versión 1.0.0" src="https://img.shields.io/badge/versión-1.0.0-orange">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Chrome-Manifest%20V3-4c8bf5">
   <img alt="Sin librerías" src="https://img.shields.io/badge/librerías-0-2ea44f">
   <img alt="100% Local" src="https://img.shields.io/badge/privacidad-100%25%20local-0d9488">
@@ -33,8 +33,10 @@
 - **Accesos ilimitados en varias pantallas**, con flechas laterales (de altura configurable), rueda del mouse o puntos inferiores para moverte.
 - **Cada pantalla tiene los espacios que tú eliges** (*Cuadrícula* como `4×3`, *Filas a medida* como `3,4` o *Lista*) y **sin scroll**.
 - **Colocación libre, como en Android:** arrastras un icono o widget a cualquier hueco; si lo sueltas en el centro de otro icono se crea una **carpeta**, y en el borde se intercambian.
-- **9 tamaños y 7 formas:** desde `1×1` hasta `4×3` con botones directos para **agrandar (`+`)** y **achicar (`−`)**; formas en círculo, redondeado, cuadrado, hexágono, estrella, triángulo y corazón.
+- **9 tamaños, 7 formas y apariencia individual:** desde `1×1` hasta `4×3` con botones directos para **agrandar (`+`)** y **achicar (`−`)**; formas en círculo, redondeado, cuadrado, hexágono, estrella, triángulo y corazón, con color, transparencia y **efecto vidrio esmerilado** configurables de forma global o individual en cada icono, carpeta o widget.
+- **4 estilos rápidos en 1 clic y posición vertical libre:** *Aurora*, *Minimalista*, *Enfoque* y *Dock inferior* con vuelta atrás automática a tu estilo anterior; altura vertical (`0–100 %`), espacio entre columnas/filas, bandeja dock translúcida y saludo dinámico según la hora del día.
 - **3 estilos de carpetas:** panel centrado (estilo modal), burbuja contextual pegada a la carpeta o vista a pantalla completa.
+- **Panel de Ajustes con barra lateral nativa:** navegación clara por secciones con interruptores en CSS puro, tema automático/claro/oscuro y carga diferida para mantener el primer pintado en `< 1 ms`.
 - **Galería de 18 fondos de alta resolución y rotación automática:** incluye 12 fotografías QHD 2.5K de dominio público (NASA James Webb, ISS, Parques Nacionales y arte clásico de Hokusai) y 6 paisajes vectoriales 4K (`bg/`), además de subida múltiple de tus propias fotos y rotación automática al abrir una pestaña o cada ciertos minutos.
 - **15 widgets opcionales** (abiertos y redimensionables en cuadrícula, filas y lista):
   - **Productividad y herramientas:** Reloj (digital, analógico, minimalista o en palabras), Notas rápidas (con contador y copiado en 1 clic), Lista de tareas, Calendario mensual, Temporizador Pomodoro, Reloj mundial con buscador de ciudades, Cuenta regresiva, Barra de progreso temporal, Registro semanal de hábitos, Conversor de unidades, Álbum de fotos y Ejercicio de respiración guiada.
@@ -53,7 +55,7 @@
 3. Recibirás las futuras versiones automáticamente sin perder tus pantallas ni configuraciones.
 
 #### Opción manual (paquete `.zip`)
-1. **[Haz clic aquí para descargar `mi-nueva-pestana-0.5.0.zip`](https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip)** y descomprímelo en una carpeta fija de tu computador (por ejemplo, en `Documentos\MiNuevaPestana`).
+1. **[Haz clic aquí para descargar `mi-nueva-pestana-1.0.0.zip`](https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-1.0.0.zip)** y descomprímelo en una carpeta fija de tu computador (por ejemplo, en `Documentos\MiNuevaPestana`).
 2. En Chrome, escribe `chrome://extensions` en la barra de direcciones y activa el interruptor **Modo de desarrollador** (arriba a la derecha).
 3. Pulsa **Cargar descomprimida** (*Load unpacked*) y selecciona la carpeta que descomprimiste.
 4. Abre una pestaña nueva. Si Chrome pregunta si es la página que esperabas, elige **Conservar**.
@@ -66,7 +68,8 @@ Todo se procesa y se guarda **exclusivamente en tu computador** (`localStorage`,
 - La arquitectura, el modelo de datos y las decisiones de rendimiento están en [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
 - `python tools/build_zip.py` arma el paquete limpio de distribución en `dist/mi-nueva-pestana-<versión>.zip`.
 - `python tools/make_icons.py` regenera los íconos desde `icons/icon.svg` (colorido) e `icons/icon-small.svg` (monocromático discreto para la pestaña).
-- Los textos bilingües viven en `js/i18n.js` (`clave: [español, inglés]`).
+- `node tools/test_upgrade.js` ejecuta la suite automática de pruebas (sintaxis, paridad `_locales/`, compatibilidad y migración desde versiones previas).
+- Los textos bilingües viven de forma nativa en `_locales/es/messages.json` y `_locales/en/messages.json` (`chrome.i18n`); Chrome carga solo un idioma en memoria.
 
 ```text
 manifest.json · newtab.html · css/ · js/ · icons/ · bg/ · _locales/   la extensión
@@ -83,8 +86,10 @@ tools/     scripts de íconos y empaquetado (.zip)
 - **Unlimited shortcuts across several screens**, with side arrows, mouse wheel or bottom dots to move around.
 - **Each screen has the spaces you choose** (*Grid* like `4×3`, *Custom rows* like `3,4` or *List*) and **no scrolling**.
 - **Free placement, Android style:** drag an icon or widget to any empty spot; drop it on another icon's center to make a **folder**, or on its edge to swap them.
-- **9 sizes and 7 shapes:** from `1×1` up to `4×3` with direct **enlarge (`+`)** and **shrink (`−`)** buttons; circle, rounded, square, hexagon, star, triangle and heart shapes.
+- **9 sizes, 7 shapes & per-item appearance:** from `1×1` up to `4×3` with direct **enlarge (`+`)** and **shrink (`−`)** buttons; circle, rounded, square, hexagon, star, triangle and heart shapes, with custom color, transparency and **frosted glass** globally or individually on any icon, folder or widget.
+- **4 one-click quick styles & free vertical placement:** *Aurora*, *Minimal*, *Focus* and *Bottom dock* with automatic 1-click revert to your previous look; vertical height (`0–100%`), column/row spacing, translucent dock tray and time-of-day dynamic greeting.
 - **3 folder opening styles:** centered modal panel, contextual bubble next to the folder, or full-screen view.
+- **Native sidebar Settings panel:** clean section navigation with pure-CSS switches, auto/light/dark themes and lazy initialization to keep first paint under `< 1 ms`.
 - **Built-in gallery of 18 high-resolution backgrounds & auto-rotation:** 12 Public Domain QHD 2.5K photographs (NASA James Webb, ISS, U.S. National Park Service & classic Hokusai art) + 6 original 4K vector landscapes (`bg/`), multi-photo local uploads and automatic rotation on every new tab or by minute intervals.
 - **15 optional widgets** (open and resizable in grid, custom rows and list layouts):
   - **Productivity & utilities:** Clock (digital, analog, minimalist or in words), Quick Notes (with character count and 1-click copy), To-do list, Monthly Calendar, Pomodoro Timer, World Clock with city search, Countdown, Time Progress bar, Weekly Habit tracker, Unit Converter, Photo Album and Guided Breathing.
@@ -103,7 +108,7 @@ tools/     scripts de íconos y empaquetado (.zip)
 3. Future updates will install automatically without losing your screens or settings.
 
 #### Manual install (`.zip` package)
-1. **[Click here to download `mi-nueva-pestana-0.5.0.zip`](https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-0.5.0.zip)** and unzip it into a permanent folder on your computer (e.g. `Documents\MyNewTab`).
+1. **[Click here to download `mi-nueva-pestana-1.0.0.zip`](https://github.com/FHX23/new-tab-chrome-extension/releases/latest/download/mi-nueva-pestana-1.0.0.zip)** and unzip it into a permanent folder on your computer (e.g. `Documents\MyNewTab`).
 2. Open `chrome://extensions` in Chrome and turn on **Developer mode** (top right).
 3. Click **Load unpacked** and pick the unzipped folder.
 4. Open a new tab. If Chrome asks whether this is the page you expected, choose **Keep it**.
@@ -116,7 +121,8 @@ Everything is processed and stored **exclusively on your computer** (`localStora
 - Architecture, data model and performance notes (in Spanish): [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
 - `python tools/build_zip.py` builds the clean distribution package in `dist/mi-nueva-pestana-<version>.zip`.
 - `python tools/make_icons.py` regenerates the icons from `icons/icon.svg` (colorful) and `icons/icon-small.svg` (subtle monochrome tab icon).
-- UI strings live in `js/i18n.js` (`key: [Spanish, English]`).
+- `node tools/test_upgrade.js` runs the automated test suite (JS syntax, `_locales/` parity, compatibility and upgrade simulations).
+- UI strings live natively in `_locales/es/messages.json` and `_locales/en/messages.json` (`chrome.i18n`); Chrome loads only one language into memory.
 
 ---
 
